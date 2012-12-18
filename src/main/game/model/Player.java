@@ -27,10 +27,10 @@ public class Player
     
     private int id;
     private String username;
-    private boolean isAlive;
-    private int food;
-    private int numFlees;
-    private boolean boughtCreature;
+    private boolean isAlive = true;
+    private int food = Game.CONST_INIT_START_FOOD;
+    private int numFlees = 0;
+    private boolean boughtCreature = false;
     private Base base;
     private List<Action> actions;
     private List<Creature> creatures;
@@ -44,10 +44,6 @@ public class Player
         this.game = game;
         this.id = id;
         this.username = username;
-        this.isAlive  = true;
-        this.food = Game.CONST_INIT_START_FOOD;
-        this.numFlees = 0;
-        this.boughtCreature = false;
         this.actions = new ArrayList<Action>();
         this.creatures = new ArrayList<Creature>();
     }

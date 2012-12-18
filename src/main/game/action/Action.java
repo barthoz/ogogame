@@ -10,5 +10,27 @@ package main.game.action;
  */
 public abstract class Action
 {
+    /**
+     * Properties
+     */
+    
+    
+    
+    /**
+     * Constructor
+     */
+    
+    
+    
+    /**
+     * Business logic
+     */
+    
+    
+    
+    /**
+     * Getters & Setters
+     */
+    
     
 }

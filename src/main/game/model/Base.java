@@ -4,10 +4,38 @@
  */
 package main.game.model;
 
+import com.jme3.scene.Spatial;
+import com.jme3.scene.control.AbstractControl;
+import main.game.model.control.BaseControl;
+
 /**
  *
  * @author Daniel
  */
-public class Base {
+public class Base
+{
+    /**
+     * Properties
+     */
     
+    private int id;
+    private Spatial model;
+    private Player player;
+    private BaseControl controller;
+    
+    /**
+     * Constructors
+     */
+    
+    public Base(int id, Spatial model, Player player)
+    {
+        this.id = id;
+        this.model = model;
+        this.player = player;
+        this.controller = new BaseControl(model);
+    }
+    
+    /**
+     * Getters & Setters
+     */
 }

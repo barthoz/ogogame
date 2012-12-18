@@ -15,6 +15,13 @@ import main.game.model.control.AirborneCreatureControl;
 public class AirborneCreature extends Creature
 {
     /**
+     * Properties
+     */
+    
+    private int stamina = 100;
+    private boolean airborne = false;
+    
+    /**
      * Constructor
      */
     

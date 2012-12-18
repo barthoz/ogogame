@@ -6,6 +6,7 @@ package main.game;
 
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AppState;
+import com.jme3.collision.CollisionResults;
 import com.jme3.input.KeyInput;
 import com.jme3.input.MouseInput;
 import com.jme3.input.controls.ActionListener;
@@ -14,6 +15,7 @@ import com.jme3.input.controls.KeyTrigger;
 import com.jme3.input.controls.MouseButtonTrigger;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.Ray;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.RenderManager;
 import com.jme3.scene.Geometry;
@@ -38,8 +40,26 @@ public class Game extends SimpleApplication
     
     private ActionListener actionListener = new ActionListener() {
     public void onAction(String name, boolean keyPressed, float tpf) {
-      if (name.equals("Pause") && !keyPressed) {
+      if (name.equals("Pause") && !keyPressed)
+      {
         isRunning = !isRunning;
+      }
+      if (name.equals("Select"))
+      {
+          CollisionResults results = new CollisionResults();
+          Ray ray = new Ray(cam.getLocation(), cam.getDirection());
+          world.getSelectableObjects().collideWith(ray, results);
+          
+          System.out.println("----- Collisions? " + results.size() + "-----");
+          for (int i = 0; i < results.size(); i++)
+          {
+            float dist = results.getCollision(i).getDistance();
+            Vector3f pt = results.getCollision(i).getContactPoint();
+            String hit = results.getCollision(i).getGeometry().getName();
+            System.out.println("* Collision #" + i);
+            System.out.println("  You shot " + hit + " at " + pt + ", " + dist + " wu away.");
+            System.out.println(" Creature id: " + world.findCreatureById((Integer) results.getCollision(i).getGeometry().getUserData("parentId")).getId());
+          }
       }
     }
   };
@@ -154,11 +174,11 @@ public class Game extends SimpleApplication
         inputManager.addMapping("Right",  new KeyTrigger(KeyInput.KEY_K));
         inputManager.addMapping("Rotate", new KeyTrigger(KeyInput.KEY_SPACE));
                                           //new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
-        inputManager.addMapping("Point", new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
+        inputManager.addMapping("Select", new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
         
         
         // Add the names to the action listener.
-        inputManager.addListener(actionListener, new String[]{"Pause"});
+        inputManager.addListener(actionListener, new String[]{"Pause", "Select"});
         inputManager.addListener(analogListener, new String[]{"Left", "Right", "Rotate"});
     }
     
@@ -170,8 +190,14 @@ public class Game extends SimpleApplication
     @Override
     public void simpleUpdate(float tpf)
     {
-        // make the player rotate
-        //this.player.rotate(0, 2*tpf, 0); 
+        /**
+         * Add creature controllers
+         */
+        
+        for (Creature creature : this.world.getCreatures())
+        {
+            creature.getController().update(tpf);
+        }
     }
 
     @Override

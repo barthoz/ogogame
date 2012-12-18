@@ -4,7 +4,7 @@
  */
 package main.lobby;
 
-import main.connection.GameConnector;
+import main.network.GameConnector;
 
 /**
  *

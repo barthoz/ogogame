@@ -18,7 +18,7 @@ import java.io.IOException;
  *
  * @author s116861
  */
-public class LandCreatureControl extends AbstractControl implements Savable, Cloneable
+public class FoodSourceControl extends AbstractControl implements Savable, Cloneable
 {
     /**
      * Constructors
@@ -27,13 +27,13 @@ public class LandCreatureControl extends AbstractControl implements Savable, Clo
     /**
      * Serialization constructor.
      */
-    public LandCreatureControl() { }
+    public FoodSourceControl() { }
     
     /**
      * Optional custom constructor with arguments that can init custom fields.
      * Note: you cannot modify the spatial here yet!
      */
-    public LandCreatureControl(Spatial spatial)
+    public FoodSourceControl(Spatial spatial)
     { 
       super.setSpatial(spatial);
     } 
@@ -58,16 +58,16 @@ public class LandCreatureControl extends AbstractControl implements Savable, Clo
     @Override
     protected void controlUpdate(float tpf)
     {
-      if (spatial != null)
+      if(spatial != null)
       {
-        spatial.rotate(tpf,tpf,tpf); // example behaviour
+        // spatial.rotate(tpf,tpf,tpf); // example behaviour
       }
     }
 
     @Override
     public Control cloneForSpatial(Spatial spatial)
     {
-      final LandCreatureControl control = new LandCreatureControl();
+      final FoodSourceControl control = new FoodSourceControl();
       /* Optional: use setters to copy userdata into the cloned control */
       // control.setIndex(i); // example
       control.setSpatial(spatial);
