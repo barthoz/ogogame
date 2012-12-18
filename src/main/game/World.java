@@ -4,6 +4,7 @@
  */
 package main.game;
 
+import main.game.model.cell.Cell;
 import com.jme3.material.Material;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
