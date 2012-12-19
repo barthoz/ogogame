@@ -16,7 +16,9 @@ import com.jme3.input.controls.MouseButtonTrigger;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Ray;
+import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
+import com.jme3.renderer.Camera;
 import com.jme3.renderer.RenderManager;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
@@ -24,6 +26,8 @@ import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Box;
 import main.game.model.Player;
 import main.game.model.creature.Creature;
+import main.game.setup.GameCamera;
+import main.game.setup.RtsCam;
 import main.lobby.Lobby;
 
 /**
@@ -46,8 +50,12 @@ public class Game extends SimpleApplication
       }
       if (name.equals("Select"))
       {
+          Vector2f click2d = inputManager.getCursorPosition();
+          Vector3f click3d = cam.getWorldCoordinates(new Vector2f(click2d.x, click2d.y), 0f).clone();
+          Vector3f dir = cam.getWorldCoordinates(new Vector2f(click2d.x, click2d.y), 1f).subtractLocal(click3d).normalizeLocal();
+
           CollisionResults results = new CollisionResults();
-          Ray ray = new Ray(cam.getLocation(), cam.getDirection());
+          Ray ray = new Ray(click3d, dir);
           world.getSelectableObjects().collideWith(ray, results);
           
           System.out.println("----- Collisions? " + results.size() + "-----");
@@ -141,11 +149,37 @@ public class Game extends SimpleApplication
     @Override
     public void simpleInitApp()
     {
+        /**
+         * Initialize mouse
+         */
+        
+        inputManager.setCursorVisible(true);
+        
+        /**
+         * Initialize camera
+         */
+        
+        flyCam.setEnabled(false);
+        final RtsCam rtsCam = new RtsCam(cam, rootNode);
+        rtsCam.registerWithInput(inputManager);
+        rtsCam.setCenter(new Vector3f(20,0.5f,20));
+        
+        /**
+         * Initialize world
+         */
+        
         Node worldNode = new Node("worldNode");
         rootNode.attachChild(worldNode);
         this.world = new World(this, worldNode);
         
         this.world.addCreature(this.me, Creature.TYPE_LAND);
+        
+        Box box = new Box(new Vector3f(0, -4, -5), 15, .2f, 15);
+        Geometry floor = new Geometry("the Floor", box);
+        Material mat1 = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+        mat1.setColor("Color", ColorRGBA.Gray);
+        floor.setMaterial(mat1);
+        worldNode.attachChild(floor);
         
         /*Spatial tree = assetManager.loadModel("Models/Tree.j3o");
         Material mat2 = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");

@@ -31,4 +31,24 @@ public class AirborneCreature extends Creature
         this.controller = new AirborneCreatureControl(model);
         this.controller.setEnabled(true);
     }
+    
+    /**
+     * Getters & Setters
+     */
+    
+    public int getStamina() {
+        return stamina;
+    }
+
+    public void setStamina(int stamina) {
+        this.stamina = stamina;
+    }
+
+    public boolean isAirborne() {
+        return airborne;
+    }
+
+    public void setAirborne(boolean airborne) {
+        this.airborne = airborne;
+    }
 }
