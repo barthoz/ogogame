@@ -98,15 +98,18 @@ public class World
         {
             case Creature.TYPE_LAND:
                 creatureModel = game.getAssetManager().loadModel("Models/Tree.j3o");
-                creature = new LandCreature(player, retrieveAllocatedId(), creatureModel);
+                creatureModel.setUserData("modelType", "CreatureLand");
+                creature = new LandCreature(player, new String(retrieveAllocatedId() + ""), creatureModel);
                 break;
             case Creature.TYPE_SEA:
                 creatureModel = game.getAssetManager().loadModel("Models/Tree.j3o");
-                creature = new SeaCreature(player, retrieveAllocatedId(), creatureModel);
+                creatureModel.setUserData("modelType", "CreatureSea");
+                creature = new SeaCreature(player, new String(retrieveAllocatedId() + ""), creatureModel);
                 break;
             case Creature.TYPE_AIR:
                 creatureModel = game.getAssetManager().loadModel("Models/Tree.j3o");
-                creature = new AirborneCreature(player, retrieveAllocatedId(), creatureModel);
+                creatureModel.setUserData("modelType", "CreatureAirborne");
+                creature = new AirborneCreature(player, new String(retrieveAllocatedId() + ""), creatureModel);
                 break;
         }
         
@@ -129,9 +132,9 @@ public class World
         // Find spatial that belongs to this creature
         for (Spatial spatial : this.creatureContainer.getChildren())
         {
-            int id = spatial.getUserData("parentId");
+            String id = spatial.getUserData("parentId");
             
-            if (creature.getId() == id)
+            if (creature.getId().equals(id))
             {
                 foundSpatial = spatial;
                 break;
@@ -150,11 +153,11 @@ public class World
      * @param id to look for
      * @return creature with creature.getId() == id
      */
-    public Creature findCreatureById(int id)
+    public Creature findCreatureById(String id)
     {
         for (Creature creature : this.creatures)
         {
-            if (creature.getId() == id)
+            if (creature.getId().equals(id))
             {
                 return creature;
             }

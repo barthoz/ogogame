@@ -5,6 +5,7 @@
 package main.game.model;
 
 import com.jme3.scene.Spatial;
+import main.game.Game;
 import main.game.model.control.DuckControl;
 
 /**
@@ -25,9 +26,9 @@ public class Duck
      * Constructor
      */
     
-    public Duck(Spatial model)
+    public Duck(Spatial model, Game game)
     {
         this.model = model;
-        this.controller = new DuckControl(model);
+        this.controller = new DuckControl(model, game, this);
     }
 }

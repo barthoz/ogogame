@@ -18,10 +18,10 @@ public class LandCreature extends Creature
      * Constructor
      */
     
-    public LandCreature(Player player, int id, Spatial model)
+    public LandCreature(Player player, String id, Spatial model)
     {
         super(player, id, model);
-        this.controller = new LandCreatureControl(model);
+        this.controller = new LandCreatureControl(model, player.getGame(), this);
         this.controller.setEnabled(true);
     }
 }

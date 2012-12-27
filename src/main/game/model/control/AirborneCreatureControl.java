@@ -13,6 +13,8 @@ import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
 import com.jme3.scene.control.Control;
 import java.io.IOException;
+import main.game.Game;
+import main.game.model.creature.AirborneCreature;
 
 /**
  *
@@ -20,6 +22,13 @@ import java.io.IOException;
  */
 public class AirborneCreatureControl extends AbstractControl implements Savable, Cloneable
 {
+    /**
+     * Properties
+     */
+    
+    private Game game;
+    private AirborneCreature controllee;
+    
     /**
      * Constructors
      */
@@ -29,13 +38,21 @@ public class AirborneCreatureControl extends AbstractControl implements Savable,
      */
     public AirborneCreatureControl() { }
     
+    public AirborneCreatureControl(Spatial spatial, Game game, AirborneCreature controllee)
+    {
+        super.setSpatial(spatial);
+        this.game = game;
+        this.controllee = controllee;
+    }
+    
     /**
      * Optional custom constructor with arguments that can init custom fields.
      * Note: you cannot modify the spatial here yet!
      */
-    public AirborneCreatureControl(Spatial spatial)
+    public AirborneCreatureControl(Spatial spatial, Game game)
     { 
       super.setSpatial(spatial);
+      this.game = game;
     } 
 
     /**

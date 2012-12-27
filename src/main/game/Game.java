@@ -25,8 +25,10 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Box;
 import main.game.model.Player;
+import main.game.model.creature.AirborneCreature;
 import main.game.model.creature.Creature;
-import main.game.setup.GameCamera;
+import main.game.model.creature.LandCreature;
+import main.game.model.creature.SeaCreature;
 import main.game.setup.RtsCam;
 import main.lobby.Lobby;
 
@@ -58,15 +60,57 @@ public class Game extends SimpleApplication
           Ray ray = new Ray(click3d, dir);
           world.getSelectableObjects().collideWith(ray, results);
           
-          System.out.println("----- Collisions? " + results.size() + "-----");
+          // Check if something was selected
+          if (results.getClosestCollision() != null)
+          {
+            Geometry selectedGeometry = results.getClosestCollision().getGeometry();
+            String modelType = selectedGeometry.getUserData("modelType");
+
+            /**
+             * Determine which model has been selected
+             */
+
+            if (modelType.equals("CreatureLand"))
+            {
+                LandCreature creature = (LandCreature) world.findCreatureById((String) selectedGeometry.getUserData("parentId"));
+                System.out.println("test");
+            }
+            else if (modelType.equals("CreatureSea"))
+            {
+                SeaCreature creature = (SeaCreature) world.findCreatureById((String) selectedGeometry.getUserData("parentId"));
+            }
+            else if (modelType.equals("CreatureAirborne"))
+            {
+                AirborneCreature creature = (AirborneCreature) world.findCreatureById((String) selectedGeometry.getUserData("parentId"));
+            }
+            else if (modelType.equals("FoodSource"))
+            {
+
+            }
+            else if (modelType.equals("Base"))
+            {
+
+            }
+            else if (modelType.equals("Duck"))
+            {
+
+            }
+          }
+          
+          
+          
+          //System.out.println("----- Collisions? " + results.size() + "-----");
           for (int i = 0; i < results.size(); i++)
           {
+              //String modelId = (String) results.getCollision(i).getGeometry().getUserData("parentId");
+              
+              
             float dist = results.getCollision(i).getDistance();
             Vector3f pt = results.getCollision(i).getContactPoint();
             String hit = results.getCollision(i).getGeometry().getName();
-            System.out.println("* Collision #" + i);
-            System.out.println("  You shot " + hit + " at " + pt + ", " + dist + " wu away.");
-            System.out.println(" Creature id: " + world.findCreatureById((Integer) results.getCollision(i).getGeometry().getUserData("parentId")).getId());
+            //System.out.println("* Collision #" + i);
+            //System.out.println("  You shot " + hit + " at " + pt + ", " + dist + " wu away.");
+            System.out.println(" Creature id: " + world.findCreatureById((String) results.getCollision(i).getGeometry().getUserData("parentId")).getId());
           }
       }
     }
@@ -270,4 +314,88 @@ public class Game extends SimpleApplication
     }
     
     protected Geometry player;
+    
+    /**
+     * Getters & setters
+     */
+    
+    public boolean isIsRunning() {
+        return isRunning;
+    }
+
+    public void setIsRunning(boolean isRunning) {
+        this.isRunning = isRunning;
+    }
+
+    public GameCredentials getGameCredentials() {
+        return gameCredentials;
+    }
+
+    public void setGameCredentials(GameCredentials gameCredentials) {
+        this.gameCredentials = gameCredentials;
+    }
+
+    public Lobby getLobby() {
+        return lobby;
+    }
+
+    public void setLobby(Lobby lobby) {
+        this.lobby = lobby;
+    }
+
+    public boolean isStarted() {
+        return started;
+    }
+
+    public void setStarted(boolean started) {
+        this.started = started;
+    }
+
+    public boolean isInSetMode() {
+        return inSetMode;
+    }
+
+    public void setInSetMode(boolean inSetMode) {
+        this.inSetMode = inSetMode;
+    }
+
+    public int getRound() {
+        return round;
+    }
+
+    public void setRound(int round) {
+        this.round = round;
+    }
+
+    public int getRegenTime() {
+        return regenTime;
+    }
+
+    public void setRegenTime(int regenTime) {
+        this.regenTime = regenTime;
+    }
+
+    public World getWorld() {
+        return world;
+    }
+
+    public void setWorld(World world) {
+        this.world = world;
+    }
+
+    public Player getMe() {
+        return me;
+    }
+
+    public void setMe(Player me) {
+        this.me = me;
+    }
+
+    public Geometry getPlayer() {
+        return player;
+    }
+
+    public void setPlayer(Geometry player) {
+        this.player = player;
+    }
 }

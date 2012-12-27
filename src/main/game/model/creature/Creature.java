@@ -28,7 +28,7 @@ public abstract class Creature
      */
     
     protected Player player;
-    protected int id;
+    protected String id;
     protected Spatial model;
     protected AbstractControl controller;
     
@@ -44,7 +44,7 @@ public abstract class Creature
      * Constructors
      */
     
-    public Creature(Player player, int id, Spatial model)
+    public Creature(Player player, String id, Spatial model)
     {
         this.player = player;
         this.id = id;
@@ -63,11 +63,11 @@ public abstract class Creature
         this.player = player;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 

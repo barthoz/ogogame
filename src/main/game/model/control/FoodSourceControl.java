@@ -13,6 +13,8 @@ import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
 import com.jme3.scene.control.Control;
 import java.io.IOException;
+import main.game.Game;
+import main.game.model.FoodSource;
 
 /**
  *
@@ -20,6 +22,13 @@ import java.io.IOException;
  */
 public class FoodSourceControl extends AbstractControl implements Savable, Cloneable
 {
+    /**
+     * Properties
+     */
+    
+    private Game game;
+    private FoodSource controllee;
+    
     /**
      * Constructors
      */
@@ -33,9 +42,11 @@ public class FoodSourceControl extends AbstractControl implements Savable, Clone
      * Optional custom constructor with arguments that can init custom fields.
      * Note: you cannot modify the spatial here yet!
      */
-    public FoodSourceControl(Spatial spatial)
+    public FoodSourceControl(Spatial spatial, Game game, FoodSource controllee)
     { 
       super.setSpatial(spatial);
+      this.game = game;
+      this.controllee = controllee;
     } 
 
     /**

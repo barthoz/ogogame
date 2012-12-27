@@ -18,10 +18,10 @@ public class SeaCreature extends Creature
      * Constructor
      */
     
-    public SeaCreature(Player player, int id, Spatial model)
+    public SeaCreature(Player player, String id, Spatial model)
     {
         super(player, id, model);
-        this.controller = new SeaCreatureControl(model);
+        this.controller = new SeaCreatureControl(model, player.getGame(), this);
         this.controller.setEnabled(true);
     }
 }

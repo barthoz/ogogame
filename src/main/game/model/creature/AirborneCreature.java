@@ -25,10 +25,10 @@ public class AirborneCreature extends Creature
      * Constructor
      */
     
-    public AirborneCreature(Player player, int id, Spatial model)
+    public AirborneCreature(Player player, String id, Spatial model)
     {
         super(player, id, model);
-        this.controller = new AirborneCreatureControl(model);
+        this.controller = new AirborneCreatureControl(model, player.getGame(), this);
         this.controller.setEnabled(true);
     }
     

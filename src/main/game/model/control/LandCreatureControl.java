@@ -13,6 +13,9 @@ import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
 import com.jme3.scene.control.Control;
 import java.io.IOException;
+import main.game.Game;
+import main.game.action.Action;
+import main.game.model.creature.LandCreature;
 
 /**
  *
@@ -20,6 +23,14 @@ import java.io.IOException;
  */
 public class LandCreatureControl extends AbstractControl implements Savable, Cloneable
 {
+    /**
+     * Properties
+     */
+    
+    private Game game;
+    private LandCreature controllee;
+    private Action openAction;
+    
     /**
      * Constructors
      */
@@ -33,9 +44,11 @@ public class LandCreatureControl extends AbstractControl implements Savable, Clo
      * Optional custom constructor with arguments that can init custom fields.
      * Note: you cannot modify the spatial here yet!
      */
-    public LandCreatureControl(Spatial spatial)
+    public LandCreatureControl(Spatial spatial, Game game, LandCreature controllee)
     { 
       super.setSpatial(spatial);
+      this.game = game;
+      this.controllee = controllee;
     } 
 
     /**
@@ -58,6 +71,32 @@ public class LandCreatureControl extends AbstractControl implements Savable, Clo
     @Override
     protected void controlUpdate(float tpf)
     {
+        if (this.game.isInSetMode())
+        {
+            /**
+             * Game in SET-mode
+             */
+            
+            
+        }
+        else
+        {
+            /**
+             * Game in GET-mode
+             */
+            
+            // Check if there are any open actions
+            if (this.openAction != null)
+            {
+                // Identify the type of action
+            }
+            else
+            {
+                // Check if there are any other actions
+                
+            }
+        }
+        
       if (spatial != null)
       {
         spatial.rotate(tpf,tpf,tpf); // example behaviour

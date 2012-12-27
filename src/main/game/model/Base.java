@@ -32,7 +32,7 @@ public class Base
         this.id = id;
         this.model = model;
         this.player = player;
-        this.controller = new BaseControl(model);
+        this.controller = new BaseControl(model, player.getGame(), this);
     }
     
     /**
