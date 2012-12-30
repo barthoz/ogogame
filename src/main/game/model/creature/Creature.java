@@ -15,23 +15,20 @@ import main.game.model.Player;
  */
 public abstract class Creature
 {
+
     /**
      * Constants
      */
-    
     public final static int TYPE_LAND = 0;
     public final static int TYPE_SEA = 1;
     public final static int TYPE_AIR = 2;
-    
     /**
      * Properties
      */
-    
     protected Player player;
     protected String id;
     protected Spatial model;
     protected AbstractControl controller;
-    
     protected int health = 100;
     protected int level = 1;
     protected boolean isAlive = true;
@@ -39,51 +36,83 @@ public abstract class Creature
     protected int rangeOfSight = Game.CONST_INIT_RANGE_OF_SIGHT;
     protected int actionRadius;
     protected boolean inFight = false;
-    
+    /**
+     * tweakers, possible define a function to give more dynamic changes
+     */
+    private int extraRangeOfSight = 2;
+    private int extraActionRadius = 2;
+    private int extraHealth = 20;
+
     /**
      * Constructors
      */
-    
     public Creature(Player player, String id, Spatial model)
     {
         this.player = player;
         this.id = id;
         this.model = model;
     }
+
+    /**
+     * Business logic
+     */
     
+    /**
+     * Method that handles everyting when a creature gains a level
+     * such as extra range of sight, action radius etc.
+     */
+    public void levelUp()
+    {
+        level++;
+        rangeOfSight += extraRangeOfSight;
+        actionRadius += extraActionRadius;
+        health += extraHealth;
+        if (health > 100)
+        {
+            health = 100;
+        }
+    }
+
     /**
      * Getters & Setters
      */
-    
-    public Player getPlayer() {
+    public Player getPlayer()
+    {
         return player;
     }
 
-    public void setPlayer(Player player) {
+    public void setPlayer(Player player)
+    {
         this.player = player;
     }
 
-    public String getId() {
+    public String getId()
+    {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(String id)
+    {
         this.id = id;
     }
 
-    public Spatial getModel() {
+    public Spatial getModel()
+    {
         return model;
     }
 
-    public void setModel(Spatial model) {
+    public void setModel(Spatial model)
+    {
         this.model = model;
     }
 
-    public AbstractControl getController() {
+    public AbstractControl getController()
+    {
         return controller;
     }
 
-    public void setController(AbstractControl controller) {
+    public void setController(AbstractControl controller)
+    {
         this.controller = controller;
     }
 }

@@ -19,43 +19,37 @@ import main.game.model.creature.*;
  */
 public class World
 {
+
     private Game game;
-    
     /**
      * World objects
      */
-    
     private Node worldNode;
     private Node selectableObjects;
     private Node creatureContainer;
     private Node baseContainer;
     private Node foodSourceContainer;
-    
     /**
      * Properties
      */
-    
     private List<Player> players;
     private List<Base> bases;
     private List<FoodSource> foodSources;
     private List<Creature> creatures;
     private Cell[][] cells;
-    
     /**
      * Bookkeeping
      */
-    
     private int allocatedId;
-    
+
     /**
      * Constructor
      */
-    
     public World(Game game, Node worldNode)
     {
         this.game = game;
         this.allocatedId = 0;
-        
+
         /**
          * Initialize world in openGL
          */
@@ -64,12 +58,12 @@ public class World
         this.creatureContainer = new Node("creatureContainer");
         this.baseContainer = new Node("baseContainer");
         this.foodSourceContainer = new Node("foodSourceContainer");
-        
+
         this.worldNode.attachChild(this.selectableObjects);
         this.selectableObjects.attachChild(this.creatureContainer);
         this.selectableObjects.attachChild(this.baseContainer);
         this.selectableObjects.attachChild(this.foodSourceContainer);
-        
+
         /**
          * Initialize object lists
          */
@@ -78,14 +72,13 @@ public class World
         this.foodSources = new ArrayList<FoodSource>();
         this.creatures = new ArrayList<Creature>();
     }
-    
+
     /**
      * Business logic
      */
-    
     /**
      * Add a creature to the world and player.
-     * 
+     *
      * @Pre 0 <= type <= 2 && player != null
      * @param player
      */
@@ -93,7 +86,7 @@ public class World
     {
         Spatial creatureModel = null;
         Creature creature = null;
-        
+
         switch (type)
         {
             case Creature.TYPE_LAND:
@@ -112,43 +105,43 @@ public class World
                 creature = new AirborneCreature(player, new String(retrieveAllocatedId() + ""), creatureModel);
                 break;
         }
-        
+
         creatureModel.setUserData("parentId", creature.getId());
         Material mat = new Material(game.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
         creatureModel.setMaterial(mat);
         this.creatureContainer.attachChild(creatureModel);
         this.creatures.add(creature);
     }
-    
+
     /**
      * Remove creature from the world and player.
-     * 
-     * @param creature 
+     *
+     * @param creature
      */
     public void removeCreature(Creature creature)
     {
         Spatial foundSpatial = null;
-        
+
         // Find spatial that belongs to this creature
         for (Spatial spatial : this.creatureContainer.getChildren())
         {
             String id = spatial.getUserData("parentId");
-            
+
             if (creature.getId().equals(id))
             {
                 foundSpatial = spatial;
                 break;
             }
         }
-        
+
         this.creatureContainer.detachChild(foundSpatial);
         this.creatures.remove(creature);
         creature.getPlayer().removeCreature(creature);
     }
-    
+
     /**
      * Find creature by id.
-     * 
+     *
      * @Pre creature exists with this id
      * @param id to look for
      * @return creature with creature.getId() == id
@@ -162,74 +155,87 @@ public class World
                 return creature;
             }
         }
-        
+
         return null;
     }
-    
+
     /**
      * Retrieve an unique id.
-     * 
-     * @return integer which is guaranteed to be unique after calling this function
+     *
+     * @return integer which is guaranteed to be unique after calling this
+     * function
      */
     private int retrieveAllocatedId()
     {
         this.allocatedId++;
         return this.allocatedId - 1;
     }
-    
+
     /**
      * Getters & Setters
      */
-    
-    public Node getSelectableObjects() {
+    public Node getSelectableObjects()
+    {
         return selectableObjects;
     }
 
-    public void setSelectableObjects(Node selectableObjects) {
+    public void setSelectableObjects(Node selectableObjects)
+    {
         this.selectableObjects = selectableObjects;
     }
 
-    public List<Player> getPlayers() {
+    public List<Player> getPlayers()
+    {
         return players;
     }
 
-    public void setPlayers(List<Player> players) {
+    public void setPlayers(List<Player> players)
+    {
         this.players = players;
     }
 
-    public List<Base> getBases() {
+    public List<Base> getBases()
+    {
         return bases;
     }
 
-    public void setBases(List<Base> bases) {
+    public void setBases(List<Base> bases)
+    {
         this.bases = bases;
     }
 
-    public List<FoodSource> getFoodSources() {
+    public List<FoodSource> getFoodSources()
+    {
         return foodSources;
     }
 
-    public void setFoodSources(List<FoodSource> foodSources) {
+    public void setFoodSources(List<FoodSource> foodSources)
+    {
         this.foodSources = foodSources;
     }
 
-    public List<Creature> getCreatures() {
+    public List<Creature> getCreatures()
+    {
         return creatures;
     }
 
-    public void setCreatures(List<Creature> creatures) {
+    public void setCreatures(List<Creature> creatures)
+    {
         this.creatures = creatures;
     }
 
-    public Cell[][] getCells() {
+    public Cell[][] getCells()
+    {
         return cells;
     }
 
-    public void setCells(Cell[][] cells) {
+    public void setCells(Cell[][] cells)
+    {
         this.cells = cells;
     }
 
-    public Node getWorldNode() {
+    public Node getWorldNode()
+    {
         return worldNode;
     }
 }

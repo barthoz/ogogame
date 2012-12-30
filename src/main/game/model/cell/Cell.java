@@ -12,7 +12,8 @@ import static java.lang.Math.*;
  *
  * @author Daniel
  */
-public abstract class Cell {
+public abstract class Cell
+{
 
     /**
      * Properties
@@ -25,65 +26,75 @@ public abstract class Cell {
     /**
      * Constructor
      */
-    public Cell() {
+    public Cell()
+    {
     }
 
     /**
      * Business logic
      */
-    
     /**
      * Calculates the distance between this cell and otherCell
      *
      * @param otherCell
      * @return distance from this cell to otherCell ceiled to an integer value
      */
-    public int distance(Cell otherCell) {
-
+    public int distance(Cell otherCell)
+    {
         int x = otherCell.getXCoor();
         int y = otherCell.getYCoor();
         double result = sqrt(pow(xCoor - x, 2) + pow(yCoor - y, 2));
         return (int) ceil(result);
     }
+
     /**
      * Method to check wether a creature is allowed in this cell
+     *
      * @param creature
      * @return boolean verifying that a creature is allowed in this cell
      */
     public abstract boolean creatureAllowed(Creature creature);
-    
+
     /**
      * Getters & Setters
      */
-    public int getXCoor() {
+    public int getXCoor()
+    {
         return xCoor;
     }
 
-    public void setXCoor(int xCoor) {
+    public void setXCoor(int xCoor)
+    {
         this.xCoor = xCoor;
     }
 
-    public int getYCoor() {
+    public int getYCoor()
+    {
         return yCoor;
     }
 
-    public void setYCoor(int yCoor) {
+    public void setYCoor(int yCoor)
+    {
         this.yCoor = yCoor;
     }
 
-    public List<Creature> getOccupant() {
+    public List<Creature> getOccupant()
+    {
         return occupant;
     }
 
-    public void setOccupant(List<Creature> occupant) {
+    public void setOccupant(List<Creature> occupant)
+    {
         this.occupant = occupant;
     }
 
-    public List<Creature> getAirborneOccupant() {
+    public List<Creature> getAirborneOccupant()
+    {
         return airborneOccupant;
     }
 
-    public void setAirborneOccupant(List<Creature> airborneOccupant) {
+    public void setAirborneOccupant(List<Creature> airborneOccupant)
+    {
         this.airborneOccupant = airborneOccupant;
     }
 }

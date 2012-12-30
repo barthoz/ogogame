@@ -10,15 +10,18 @@ import main.game.model.creature.Creature;
  *
  * @author Adrian
  */
-public class ShallowWaterCell extends Cell {
+public class ShallowWaterCell extends Cell
+{
 
     /**
      * All creatures are allowed
+     *
      * @param creature
      * @return true
      */
     @Override
-    public boolean creatureAllowed(Creature creature) {
+    public boolean creatureAllowed(Creature creature)
+    {
         return true;
     }
 }

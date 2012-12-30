@@ -12,7 +12,8 @@ import main.game.model.creature.SeaCreature;
  *
  * @author Adrian
  */
-public class DeepWaterCell extends Cell {
+public class DeepWaterCell extends Cell
+{
 
     /**
      * A creatur is allowed in a DeepWaterCell if it is a SeaCreature, or if it
@@ -22,14 +23,18 @@ public class DeepWaterCell extends Cell {
      * @return true if satisfies conditions
      */
     @Override
-    public boolean creatureAllowed(Creature creature) {
-        if (creature instanceof SeaCreature) {
+    public boolean creatureAllowed(Creature creature)
+    {
+        if (creature instanceof SeaCreature)
+        {
             return true;
         }
-        if (creature instanceof AirborneCreature) {
+        if (creature instanceof AirborneCreature)
+        {
             AirborneCreature airCreature = (AirborneCreature) creature;
 
-            if (airCreature.isAirborne()) {
+            if (airCreature.isAirborne())
+            {
                 return true;
             }
 
