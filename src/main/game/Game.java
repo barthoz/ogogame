@@ -24,6 +24,10 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Box;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import main.exception.ActionNotEnabledException;
+import main.game.action.MoveAction;
 import main.game.model.Player;
 import main.game.model.creature.AirborneCreature;
 import main.game.model.creature.Creature;
@@ -73,7 +77,12 @@ public class Game extends SimpleApplication
             if (modelType.equals("CreatureLand"))
             {
                 LandCreature creature = (LandCreature) world.findCreatureById((String) selectedGeometry.getUserData("parentId"));
-                System.out.println("test");
+                MoveAction act = new MoveAction(creature);
+                  try {
+                      act.performAction(parent);
+                  } catch (ActionNotEnabledException ex) {
+                      Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
+                  }
             }
             else if (modelType.equals("CreatureSea"))
             {
@@ -141,9 +150,10 @@ public class Game extends SimpleApplication
      * Game identification
      */
     
+    private Game parent = this;
+  
     private GameCredentials gameCredentials;
     private Lobby lobby;
-    
     /**
      * Game constants
      */

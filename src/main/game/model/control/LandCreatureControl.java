@@ -112,7 +112,7 @@ public class LandCreatureControl extends AbstractControl implements Savable, Clo
         
       if (spatial != null)
       {
-        spatial.rotate(tpf,tpf,tpf); // example behaviour
+        //spatial.rotate(tpf,tpf,tpf); // example behaviour
       }
     }
 

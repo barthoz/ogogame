@@ -10,19 +10,17 @@ import main.game.model.creature.Creature;
  *
  * @author s116861
  */
-public class CreatureAction extends Action
+public abstract class CreatureAction extends Action
 {
     /**
      * Properties
      */
     
-    private Creature subject;
+    protected Creature subject;
     
     /**
      * Constructor
      */
-    
-    public CreatureAction() { }
     
     /**
      * Business logic
