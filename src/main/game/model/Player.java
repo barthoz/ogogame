@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Set;
 import main.game.Game;
 import main.game.action.Action;
+import main.game.action.CreatureAction;
 
 /**
  *
@@ -60,6 +61,24 @@ public class Player
     public void removeCreature(Creature creature)
     {
         this.creatures.remove(creature);
+    }
+    
+    public List<CreatureAction> getCreatureActions(Creature subject)
+    {
+        List<CreatureAction> creatureActions = new ArrayList<CreatureAction>();
+        
+        for (Action action : this.actions)
+        {
+            if (action instanceof CreatureAction)
+            {
+                if (((CreatureAction) action).getSubject().equals(subject))
+                {
+                    creatureActions.add((CreatureAction) action);
+                }
+            }
+        }
+        
+        return creatureActions;
     }
     
     /**

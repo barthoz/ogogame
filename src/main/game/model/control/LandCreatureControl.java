@@ -13,8 +13,11 @@ import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
 import com.jme3.scene.control.Control;
 import java.io.IOException;
+import java.util.List;
+import javax.swing.plaf.basic.BasicInternalFrameTitlePane.MoveAction;
 import main.game.Game;
 import main.game.action.Action;
+import main.game.action.CreatureAction;
 import main.game.model.creature.LandCreature;
 
 /**
@@ -88,12 +91,22 @@ public class LandCreatureControl extends AbstractControl implements Savable, Clo
             // Check if there are any open actions
             if (this.openAction != null)
             {
-                // Identify the type of action
+                // Identify the type of action and perform it
+                
             }
             else
             {
                 // Check if there are any other actions
-                
+                List<CreatureAction> actions = this.controllee.getPlayer().getCreatureActions(this.controllee);
+                if (actions.size() > 0)
+                {
+                    // Perform the next action
+                    this.openAction = actions.get(0);
+                }
+                else
+                {
+                    // We are done performing all actions
+                }
             }
         }
         

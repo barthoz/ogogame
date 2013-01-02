@@ -4,31 +4,39 @@
  */
 package main.game.action;
 
+import main.game.model.creature.Creature;
+
 /**
  *
- * @author Daniel
+ * @author s116861
  */
-public abstract class Action
+public class CreatureAction extends Action
 {
     /**
      * Properties
      */
     
+    private Creature subject;
+    
     /**
      * Constructor
      */
     
-    
+    public CreatureAction() { }
     
     /**
      * Business logic
      */
     
-    
-    
     /**
      * Getters & Setters
      */
     
-    
+    public Creature getSubject() {
+        return subject;
+    }
+
+    public void setSubject(Creature subject) {
+        this.subject = subject;
+    }
 }
