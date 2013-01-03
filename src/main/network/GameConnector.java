@@ -6,9 +6,11 @@ package main.network;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import main.lobby.Me;
 import main.game.GameCredentials;
 import main.game.action.Action;
+import main.game.model.Player;
 
 /**
  *
@@ -67,7 +69,7 @@ public class GameConnector
         
     }
     
-    public List<Action> receiveActions()
+    public Map<Player, List<Action>> receiveActions()
     {
         return null;
     }
@@ -78,6 +80,16 @@ public class GameConnector
     }
     
     public void sendQuack()
+    {
+        
+    }
+    
+    public void broadcastSetModeDone()
+    {
+        
+    }
+    
+    public void broadcastGetModeDone()
     {
         
     }

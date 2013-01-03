@@ -35,7 +35,7 @@ public class Player
     private Base base;
     private List<Action> actions;
     private List<Creature> creatures;
-    
+   
     /**
      * Constructor
      */
@@ -61,6 +61,11 @@ public class Player
     public void removeCreature(Creature creature)
     {
         this.creatures.remove(creature);
+    }
+    
+    public void addAction(Action action)
+    {
+        this.actions.add(action);
     }
     
     public List<CreatureAction> getCreatureActions(Creature subject)

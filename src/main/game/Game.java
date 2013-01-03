@@ -6,6 +6,7 @@ package main.game;
 
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AppState;
+import com.jme3.bullet.BulletAppState;
 import com.jme3.collision.CollisionResults;
 import com.jme3.input.KeyInput;
 import com.jme3.input.MouseInput;
@@ -18,15 +19,25 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.math.Ray;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
+import com.jme3.niftygui.NiftyJmeDisplay;
 import com.jme3.renderer.Camera;
 import com.jme3.renderer.RenderManager;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Box;
+import de.lessvoid.nifty.Nifty;
+import de.lessvoid.nifty.builder.ScreenBuilder;
+import de.lessvoid.nifty.screen.DefaultScreenController;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import main.exception.ActionNotEnabledException;
+import main.game.action.Action;
 import main.game.action.MoveAction;
 import main.game.model.Player;
 import main.game.model.creature.AirborneCreature;
@@ -159,7 +170,7 @@ public class Game extends SimpleApplication
      */
     
     public final static int CONST_CREATURES_LIMIT = 10;
-    public final static int CONST_SET_MODE_TIME_LIMIT = 60;
+    public final static int CONST_SET_MODE_TIME_LIMIT = 4;
     public final static int CONST_INIT_RANGE_OF_SIGHT = 10;
     public final static int CONST_INIT_START_FOOD = 10;
     
@@ -178,6 +189,7 @@ public class Game extends SimpleApplication
     
     private World world;
     private Player me;
+    private List<Player> players;
     
     /**
      * Constructor
@@ -191,6 +203,7 @@ public class Game extends SimpleApplication
         this.gameCredentials = gameCredentials;
         
         this.me = new Player(this, 0, "Daniel");
+        this.players = new ArrayList<Player>();
     }
     
     /**
@@ -217,6 +230,22 @@ public class Game extends SimpleApplication
         final RtsCam rtsCam = new RtsCam(cam, rootNode);
         rtsCam.registerWithInput(inputManager);
         rtsCam.setCenter(new Vector3f(20,0.5f,20));
+        
+        /**
+         * Initialize GUI
+         */
+        
+         NiftyJmeDisplay niftyDisplay = new NiftyJmeDisplay(
+            assetManager, inputManager, audioRenderer, guiViewPort);
+         
+         Nifty nifty = niftyDisplay.getNifty();
+         nifty.fromXml("Interface/gui.xml", "hud");
+         guiViewPort.addProcessor(niftyDisplay);
+         
+         /*nifty.addScreen("hud", new ScreenBuilder("hud"){{
+            controller(new DefaultScreenController());
+            // <!-- ... -->
+         }}.build(nifty));*/
         
         /**
          * Initialize world
@@ -249,6 +278,7 @@ public class Game extends SimpleApplication
         rootNode.attachChild(player);
         
         initKeys();
+        initSetMode();
     }
 
     /**
@@ -313,10 +343,63 @@ public class Game extends SimpleApplication
         this.started = false;        
     }
     
-    private void toGetMode()
+    private void initSetMode()
     {
+        System.out.println("Begin SET-mode");
         
+        Timer timer = new Timer();
+        
+        timer.schedule(new TimerTask()
+        {
+            @Override
+            public void run()
+            {
+                disableActions();
+                lobby.getGameConnector().broadcastSetModeDone();
+                Map<Player, List<Action>> actionMap = lobby.getGameConnector().receiveActions();
+                
+                for (Player player : players)
+                {
+                    for (Action action : actionMap.get(player))
+                    {
+                        player.addAction(action);
+                    }
+                }
+                
+                initGetMode();
+            }
+        }, CONST_SET_MODE_TIME_LIMIT * 1000);
+        
+        enableActions();
     }
+    
+    private void initGetMode()
+    {
+        System.out.println("Begin GET-mode");
+        /**
+         * Perform all actions
+         */
+        
+        for (Player player : this.players)
+        {
+            for (Action action : player.getActions())
+            {
+                try
+                {
+                    action.performAction(this);
+                }
+                catch (ActionNotEnabledException ex) {
+                    Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
+        
+        lobby.getGameConnector().broadcastGetModeDone();
+        initSetMode();
+    }
+    
+    private void disableActions() { }
+    private void enableActions() { }
     
     private void nextRound()
     {

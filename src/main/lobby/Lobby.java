@@ -32,4 +32,28 @@ public class Lobby
         LobbyJFrame frame = new LobbyJFrame(this);
         frame.setVisible(true);
     }
+    
+    /**
+     * Business logic
+     */
+    
+    /**
+     * Getters & Setters
+     */
+    
+    public GameConnector getGameConnector() {
+        return gameConnector;
+    }
+
+    public void setGameConnector(GameConnector gameConnector) {
+        this.gameConnector = gameConnector;
+    }
+
+    public Me getMe() {
+        return me;
+    }
+
+    public void setMe(Me me) {
+        this.me = me;
+    }
 }
