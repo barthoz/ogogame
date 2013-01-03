@@ -14,21 +14,42 @@ import main.game.model.control.DuckControl;
  */
 public class Duck
 {
+
     /**
      * Properties
      */
-    
     private Spatial model;
     private DuckControl controller;
-    
-    
+
     /**
      * Constructor
      */
-    
     public Duck(Spatial model, Game game)
     {
         this.model = model;
         this.controller = new DuckControl(model, game, this);
+    }
+
+    /**
+     * Getters & Setters
+     */
+    public Spatial getModel()
+    {
+        return model;
+    }
+
+    public void setModel(Spatial model)
+    {
+        this.model = model;
+    }
+
+    public DuckControl getController()
+    {
+        return controller;
+    }
+
+    public void setController(DuckControl controller)
+    {
+        this.controller = controller;
     }
 }

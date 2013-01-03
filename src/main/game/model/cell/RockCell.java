@@ -11,10 +11,12 @@ import main.game.model.creature.Creature;
  *
  * @author Adrian
  */
-public class RockCell extends Cell {
+public class RockCell extends Cell
+{
 
     /**
      * A creature is allowed in a RockCell if it is airborne
+     *
      * @param creature
      * @return true if creature is an airborne creature and airborne
      */
@@ -24,7 +26,7 @@ public class RockCell extends Cell {
         if (creature instanceof AirborneCreature)
         {
             AirborneCreature airCreature = (AirborneCreature) creature;
-            
+
             if (airCreature.isAirborne())
             {
                 return true;
