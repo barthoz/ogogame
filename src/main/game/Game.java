@@ -723,8 +723,8 @@ public class Game extends SimpleApplication
                     geometry.setMaterial(mat);
                 }
                 
-                this.world.getWorldNode().attachChild(geometry);
-                geometry.setLocalTranslation(cells[i][j].getWorldCoordinates());
+                //this.world.getWorldNode().attachChild(geometry);
+                //geometry.setLocalTranslation(cells[i][j].getWorldCoordinates());
             }
         }
         
