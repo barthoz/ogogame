@@ -6,8 +6,11 @@ package main.game;
 
 import main.game.model.cell.Cell;
 import com.jme3.material.Material;
+import com.jme3.math.Vector3f;
+import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import com.jme3.scene.shape.Box;
 import java.util.ArrayList;
 import java.util.List;
 import main.game.model.*;
@@ -82,7 +85,7 @@ public class World
      * @Pre 0 <= type <= 2 && player != null
      * @param player
      */
-    public void addCreature(Player player, int type)
+    public void addCreature(Player player, int type, Cell cell)
     {
         Spatial creatureModel = null;
         Creature creature = null;
@@ -90,6 +93,8 @@ public class World
         switch (type)
         {
             case Creature.TYPE_LAND:
+                Box b = new Box(Vector3f.ZERO, 1, 1, 1);
+                //creatureModel = new Geometry("blue cube", b);
                 creatureModel = game.getAssetManager().loadModel("Models/Tree.j3o");
                 creatureModel.setUserData("modelType", "CreatureLand");
                 creature = new LandCreature(player, new String(retrieveAllocatedId() + ""), creatureModel);
@@ -111,6 +116,8 @@ public class World
         creatureModel.setMaterial(mat);
         this.creatureContainer.attachChild(creatureModel);
         this.creatures.add(creature);
+        
+        creatureModel.setLocalTranslation(cell.getWorldCoordinates());
     }
 
     /**

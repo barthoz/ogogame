@@ -4,6 +4,7 @@
  */
 package main.game.model.cell;
 
+import com.jme3.math.Vector3f;
 import main.game.model.creature.AirborneCreature;
 import main.game.model.creature.Creature;
 import main.game.model.creature.SeaCreature;
@@ -14,7 +15,25 @@ import main.game.model.creature.SeaCreature;
  */
 public class DeepWaterCell extends Cell
 {
-
+    /**
+     * Properties
+     */
+    
+    /**
+     * Constructor
+     */
+    
+    public DeepWaterCell(int xCoor, int yCoor, Vector3f worldCoordinates)
+    {
+        super(xCoor, yCoor, worldCoordinates);
+    }
+    
+    /**
+     * Business logic
+     */
+    
+    
+    
     /**
      * A creatur is allowed in a DeepWaterCell if it is a SeaCreature, or if it
      * is a AirborneCreature and airborne

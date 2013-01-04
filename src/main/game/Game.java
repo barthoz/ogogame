@@ -6,7 +6,12 @@ package main.game;
 
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AppState;
+import com.jme3.audio.AudioNode;
+import com.jme3.audio.LowPassFilter;
 import com.jme3.bullet.BulletAppState;
+import com.jme3.bullet.collision.shapes.CollisionShape;
+import com.jme3.bullet.control.RigidBodyControl;
+import com.jme3.bullet.util.CollisionShapeFactory;
 import com.jme3.collision.CollisionResults;
 import com.jme3.input.KeyInput;
 import com.jme3.input.MouseInput;
@@ -14,18 +19,32 @@ import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.AnalogListener;
 import com.jme3.input.controls.KeyTrigger;
 import com.jme3.input.controls.MouseButtonTrigger;
+import com.jme3.light.DirectionalLight;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.FastMath;
 import com.jme3.math.Ray;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.niftygui.NiftyJmeDisplay;
+import com.jme3.post.FilterPostProcessor;
+import com.jme3.post.filters.BloomFilter;
+import com.jme3.post.filters.DepthOfFieldFilter;
+import com.jme3.post.filters.LightScatteringFilter;
 import com.jme3.renderer.Camera;
 import com.jme3.renderer.RenderManager;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Box;
+import com.jme3.terrain.geomipmap.TerrainLodControl;
+import com.jme3.terrain.geomipmap.TerrainQuad;
+import com.jme3.terrain.heightmap.AbstractHeightMap;
+import com.jme3.terrain.heightmap.ImageBasedHeightMap;
+import com.jme3.texture.Texture;
+import com.jme3.texture.Texture2D;
+import com.jme3.util.SkyFactory;
+import com.jme3.water.WaterFilter;
 import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.builder.ScreenBuilder;
 import de.lessvoid.nifty.screen.DefaultScreenController;
@@ -40,6 +59,11 @@ import main.exception.ActionNotEnabledException;
 import main.game.action.Action;
 import main.game.action.MoveAction;
 import main.game.model.Player;
+import main.game.model.cell.Cell;
+import main.game.model.cell.DeepWaterCell;
+import main.game.model.cell.LandCell;
+import main.game.model.cell.RockCell;
+import main.game.model.cell.ShallowWaterCell;
 import main.game.model.creature.AirborneCreature;
 import main.game.model.creature.Creature;
 import main.game.model.creature.LandCreature;
@@ -192,6 +216,27 @@ public class Game extends SimpleApplication
     private List<Player> players;
     
     /**
+     * Terrain
+     */
+    
+    private Vector3f lightDir = new Vector3f(-4.9236743f, -1.27054665f, 5.896916f);
+    private WaterFilter water;
+    TerrainQuad terrain;
+    Material matRock;
+    private BulletAppState bulletAppState;
+    private RigidBodyControl landscape;
+    AudioNode waves;
+    LowPassFilter underWaterAudioFilter = new LowPassFilter(0.5f, 0.1f);
+    LowPassFilter underWaterReverbFilter = new LowPassFilter(0.5f, 0.1f);
+    LowPassFilter aboveWaterAudioFilter = new LowPassFilter(1, 1);
+    
+    //This part is to emulate tides, slightly varrying the height of the water plane
+    private float time = 0.0f;
+    private float waterHeight = 0.0f;
+    private float initialWaterHeight = 0.8f;
+    private boolean underWater = false;
+    
+    /**
      * Constructor
      */
     
@@ -241,11 +286,6 @@ public class Game extends SimpleApplication
          Nifty nifty = niftyDisplay.getNifty();
          nifty.fromXml("Interface/gui.xml", "hud");
          guiViewPort.addProcessor(niftyDisplay);
-         
-         /*nifty.addScreen("hud", new ScreenBuilder("hud"){{
-            controller(new DefaultScreenController());
-            // <!-- ... -->
-         }}.build(nifty));*/
         
         /**
          * Initialize world
@@ -254,8 +294,6 @@ public class Game extends SimpleApplication
         Node worldNode = new Node("worldNode");
         rootNode.attachChild(worldNode);
         this.world = new World(this, worldNode);
-        
-        this.world.addCreature(this.me, Creature.TYPE_LAND);
         
         Box box = new Box(new Vector3f(0, -4, -5), 15, .2f, 15);
         Geometry floor = new Geometry("the Floor", box);
@@ -275,7 +313,69 @@ public class Game extends SimpleApplication
           "Common/MatDefs/Misc/Unshaded.j3md");
         mat.setColor("Color", ColorRGBA.Blue);
         player.setMaterial(mat);
-        rootNode.attachChild(player);
+        //rootNode.attachChild(player);
+        
+        /**
+         * Initialize world-terrain
+         */
+        
+        createTerrain(this.world.getWorldNode());
+        createGrid();
+        DirectionalLight sun = new DirectionalLight();
+        sun.setDirection(lightDir);
+        sun.setColor(ColorRGBA.White.clone().multLocal(1.7f));
+        this.world.getWorldNode().addLight(sun);
+
+        Spatial sky = SkyFactory.createSky(assetManager, "Scenes/Beach/FullskiesSunset0068.dds", false);
+        sky.setLocalScale(350);
+
+        this.world.getWorldNode().attachChild(sky);
+        cam.setFrustumFar(4000);
+
+        water = new WaterFilter(rootNode, lightDir);
+        FilterPostProcessor fpp = new FilterPostProcessor(assetManager);
+        fpp.addFilter(water);
+        BloomFilter bloom = new BloomFilter();
+        bloom.setExposurePower(55);
+        bloom.setBloomIntensity(1.0f);
+        fpp.addFilter(bloom);
+        LightScatteringFilter lsf = new LightScatteringFilter(lightDir.mult(-300));
+        lsf.setLightDensity(1.0f);
+        fpp.addFilter(lsf);
+        DepthOfFieldFilter dof = new DepthOfFieldFilter();
+        dof.setFocusDistance(0);
+        dof.setFocusRange(100);
+        fpp.addFilter(dof);
+
+        water.setWaveScale(0.003f);
+        water.setMaxAmplitude(2f);
+        water.setFoamExistence(new Vector3f(1f, 4, 0.5f));
+        water.setFoamTexture((Texture2D) assetManager.loadTexture("Common/MatDefs/Water/Textures/foam2.jpg"));
+        water.setRefractionStrength(0.2f);
+
+        water.setWaterHeight(initialWaterHeight);
+        underWater = cam.getLocation().y < waterHeight;
+
+        waves = new AudioNode(assetManager, "Sound/Environment/Ocean Waves.ogg", false);
+        waves.setLooping(true);
+        waves.setReverbEnabled(true);
+
+        if (underWater)
+        {
+            waves.setDryFilter(new LowPassFilter(0.5f, 0.1f));
+        } else
+        {
+            waves.setDryFilter(aboveWaterAudioFilter);
+        }
+        audioRenderer.playSource(waves);
+        viewPort.addProcessor(fpp);
+        water.setFoamTexture((Texture2D) assetManager.loadTexture("Common/MatDefs/Water/Textures/foam3.jpg"));
+        
+        /**
+         * Test...
+         */
+        
+        this.world.addCreature(this.me, Creature.TYPE_LAND, this.world.getCells()[32][32]);
         
         initKeys();
         initSetMode();
@@ -315,6 +415,26 @@ public class Game extends SimpleApplication
         for (Creature creature : this.world.getCreatures())
         {
             creature.getController().update(tpf);
+        }
+        
+        /**
+         * Terrain
+         */
+        
+        time += tpf;
+        waterHeight = (float) Math.cos(((time * 0.6f) % FastMath.TWO_PI)) * 1.5f;
+        water.setWaterHeight(initialWaterHeight + waterHeight);
+        if (water.isUnderWater() && !underWater)
+        {
+
+            waves.setDryFilter(new LowPassFilter(0.5f, 0.1f));
+            underWater = true;
+        }
+        if (!water.isUnderWater() && underWater)
+        {
+            underWater = false;
+            waves.setDryFilter(new LowPassFilter(1, 1f));
+
         }
     }
 
@@ -407,6 +527,179 @@ public class Game extends SimpleApplication
     }
     
     protected Geometry player;
+    
+    private void createTerrain(Node rootNode)
+    {
+        /**
+         * Set up Physics
+         */
+        bulletAppState = new BulletAppState();
+        stateManager.attach(bulletAppState);
+        /**
+         * 1. Create terrain material and load four textures into it.
+         */
+        Material mat_terrain = new Material(assetManager,
+                "Common/MatDefs/Terrain/Terrain.j3md");
+
+        /**
+         * 1.1) Add ALPHA map (for red-blue-green coded splat textures)
+         */
+        mat_terrain.setTexture("Alpha", assetManager.loadTexture(
+                "Textures/alphamap.jpg"));
+
+        /**
+         * 1.2) Add GRASS texture into the red layer (Tex1).
+         */
+        Texture grass = assetManager.loadTexture(
+                "Textures/Terrain/splat/road.jpg");
+        grass.setWrap(Texture.WrapMode.Repeat);
+        mat_terrain.setTexture("Tex1", grass);
+        mat_terrain.setFloat("Tex1Scale", 64f);
+
+        /**
+         * 1.3) Add DIRT texture into the green layer (Tex2)
+         */
+        Texture dirt = assetManager.loadTexture(
+                "Textures/Terrain/splat/grass.jpg");
+        dirt.setWrap(Texture.WrapMode.Repeat);
+        mat_terrain.setTexture("Tex2", dirt);
+        mat_terrain.setFloat("Tex2Scale", 32f);
+
+        /**
+         * 1.4) Add ROAD texture into the blue layer (Tex3)
+         */
+        Texture rock = assetManager.loadTexture(
+                "Textures/Terrain/splat/dirt.jpg");
+        rock.setWrap(Texture.WrapMode.Repeat);
+        mat_terrain.setTexture("Tex3", rock);
+        mat_terrain.setFloat("Tex3Scale", 128f);
+
+        /**
+         * 2. Create the height map
+         */
+        AbstractHeightMap heightmap = null;
+        Texture heightMapImage = assetManager.loadTexture(
+                "Textures/heightmap_raw.jpg");
+        heightmap = new ImageBasedHeightMap(heightMapImage.getImage());
+        heightmap.load();
+
+        /**
+         * 3. We have prepared material and heightmap. Now we create the actual
+         * terrain: 3.1) Create a TerrainQuad and name it "my terrain". 3.2) A
+         * good value for terrain tiles is 64x64 -- so we supply 64+1=65. 3.3)
+         * We prepared a heightmap of size 1024x1024 -- so we supply
+         * 1024+1=1025. 3.4) As LOD step scale we supply Vector3f(1,1,1). 3.5)
+         * We supply the prepared heightmap itself.
+         */
+        int patchSize = 65;
+        terrain = new TerrainQuad("my terrain", patchSize, 1025, heightmap.getHeightMap());
+
+        /**
+         * 4. We give the terrain its material, position & scale it, and attach
+         * it.
+         */
+        terrain.setMaterial(mat_terrain);
+        terrain.setLocalTranslation(0, -100, 0);
+        terrain.setLocalScale(2f, 1f, 2f);
+        rootNode.attachChild(terrain);
+
+        /**
+         * 5. The LOD (level of detail) depends on were the camera is:
+         */
+        TerrainLodControl control = new TerrainLodControl(terrain, getCamera());
+        terrain.addControl(control);
+
+        /**
+         * 6. Add physics:
+         */
+        // We set up collision detection for the scene by creating a
+        // compound collision shape and a static RigidBodyControl with mass zero.*/
+        CollisionShape terrainShape = CollisionShapeFactory.createMeshShape((Node) terrain);
+        landscape = new RigidBodyControl(terrainShape, 0);
+        terrain.addControl(landscape);
+
+        bulletAppState.getPhysicsSpace().add(terrain);
+
+    }
+
+    private void createGrid()
+    {
+        float height;
+        int cell_size = 32;
+        int num_cells = 2048 / cell_size;
+        Cell[][] cells = new Cell[num_cells][num_cells];
+
+        Vector3f trans = terrain.getWorldTranslation();
+        Vector3f worldCoors;
+
+        for (int i = 0; i < num_cells; i++)
+        {
+            for (int j = 0; j < num_cells; j++)
+            {
+                float xCoord = -1024 + i * cell_size + cell_size / 2f;
+                float yCoord = -1024 + j * cell_size + cell_size / 2f;
+                height = terrain.getHeight(new Vector2f(xCoord, yCoord)) - 100;
+                worldCoors = new Vector3f(xCoord, height, yCoord);
+                worldCoors.add(trans);
+                
+                
+                /*
+                 * use constructor for cell in this way:
+                 * new Cell(xCoor, yCoor, worldCoors)
+                 * xCoor and yCoor are the atributes in the corisponding class
+                 * worldCoor should be added for knowing the absolute position
+                 * of the cell in our world.
+                 */
+                if (height <= 90 - 100)
+                {
+                    cells[i][j] = new DeepWaterCell(i,j, worldCoors);
+                    cells[i][j].setWorldCoordinates(new Vector3f(worldCoors.x, 90 - 100, worldCoors.z));
+                } else if (height > 90 - 100 && height <= 105 - 100)
+                {
+                    cells[i][j] = new ShallowWaterCell(i,j, worldCoors);
+                } else if (height > 105 - 100 && height <= 120 - 100)
+                {
+                    cells[i][j] = new LandCell(i,j, worldCoors);
+                } else if (height > 120 - 100)
+                {
+                    cells[i][j] = new RockCell(i,j, worldCoors);
+                }
+                
+                Box box = new Box(Vector3f.ZERO, 1, 1, 1);
+                Geometry geometry = new Geometry("box_" + i + "_" + j, box);
+                Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+                Material mat2 = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+                
+                mat.setColor("Color", ColorRGBA.Blue);
+                mat2.setColor("Color", ColorRGBA.Yellow);
+                if (i == 40 && j == 40)
+                {
+                    Spatial spatial = assetManager.loadModel("Models/Tree.j3o");
+                    spatial.setMaterial(mat);
+                    geometry.setMaterial(mat);
+                    this.world.getWorldNode().attachChild(spatial);
+                    spatial.setLocalTranslation(cells[i][j].getWorldCoordinates());
+                }
+                else if (i == 55 && j == 40)
+                {
+                    Spatial spatial = assetManager.loadModel("Models/Tree.j3o");
+                    spatial.setMaterial(mat);
+                    geometry.setMaterial(mat);
+                    this.world.getWorldNode().attachChild(spatial);
+                    spatial.setLocalTranslation(cells[i][j].getWorldCoordinates());
+                }
+                else
+                {
+                    geometry.setMaterial(mat);
+                }
+                
+                this.world.getWorldNode().attachChild(geometry);
+                geometry.setLocalTranslation(cells[i][j].getWorldCoordinates());
+            }
+        }
+        
+        this.world.setCells(cells);
+    }
     
     /**
      * Getters & setters

@@ -62,11 +62,11 @@ setMinMaxValues(Degree.ROTATE, Float.NEGATIVE_INFINITY, Float.POSITIVE_INFINITY)
 setMinMaxValues(Degree.TILT, 0.2f, (float)(Math.PI / 2) - 0.001f);
 setMinMaxValues(Degree.DISTANCE, 2, Float.POSITIVE_INFINITY);
 
-setMaxSpeed(Degree.SIDE,10f,0.4f);
-setMaxSpeed(Degree.FWD,10f,0.4f);
-setMaxSpeed(Degree.ROTATE,2f,0.4f);
-setMaxSpeed(Degree.TILT,1f,0.4f);
-setMaxSpeed(Degree.DISTANCE,15f,0.4f);
+setMaxSpeed(Degree.SIDE,30f,0.4f);
+setMaxSpeed(Degree.FWD,50f,0.4f);
+setMaxSpeed(Degree.ROTATE,3f,0.4f);
+setMaxSpeed(Degree.TILT,2f,0.4f);
+setMaxSpeed(Degree.DISTANCE,25f,0.4f);
 target.addControl(this);
 }
 

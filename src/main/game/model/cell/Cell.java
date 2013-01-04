@@ -4,6 +4,7 @@
  */
 package main.game.model.cell;
 
+import com.jme3.math.Vector3f;
 import java.util.List;
 import main.game.model.creature.Creature;
 import static java.lang.Math.*;
@@ -18,16 +19,23 @@ public abstract class Cell
     /**
      * Properties
      */
-    private int xCoor = 0;
-    private int yCoor = 0;
+    private int x;
+    private int y;
+    
+    private int xCoor;
+    private int yCoor;
+    private Vector3f worldCoordinates;
     private List<Creature> occupant = null;
     private List<Creature> airborneOccupant = null;
 
     /**
      * Constructor
      */
-    public Cell()
+    public Cell(int xCoor, int yCoor, Vector3f worldCoordinates)
     {
+        this.xCoor = xCoor;
+        this.yCoor = yCoor;
+        this.worldCoordinates = worldCoordinates;
     }
 
     /**
@@ -96,5 +104,29 @@ public abstract class Cell
     public void setAirborneOccupant(List<Creature> airborneOccupant)
     {
         this.airborneOccupant = airborneOccupant;
+    }
+
+    public int getxCoor() {
+        return xCoor;
+    }
+
+    public void setxCoor(int xCoor) {
+        this.xCoor = xCoor;
+    }
+
+    public int getyCoor() {
+        return yCoor;
+    }
+
+    public void setyCoor(int yCoor) {
+        this.yCoor = yCoor;
+    }
+
+    public Vector3f getWorldCoordinates() {
+        return worldCoordinates;
+    }
+
+    public void setWorldCoordinates(Vector3f worldCoordinates) {
+        this.worldCoordinates = worldCoordinates;
     }
 }

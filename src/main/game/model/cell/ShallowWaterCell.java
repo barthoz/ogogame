@@ -4,6 +4,7 @@
  */
 package main.game.model.cell;
 
+import com.jme3.math.Vector3f;
 import main.game.model.creature.Creature;
 
 /**
@@ -12,7 +13,18 @@ import main.game.model.creature.Creature;
  */
 public class ShallowWaterCell extends Cell
 {
-
+    /**
+     * Properties
+     */
+    
+    /**
+     * Constructor
+     */
+    
+    public ShallowWaterCell(int xCoor, int yCoor, Vector3f worldCoordinates)
+    {
+        super(xCoor, yCoor, worldCoordinates);
+    }
     /**
      * All creatures are allowed
      *
