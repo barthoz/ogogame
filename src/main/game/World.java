@@ -111,6 +111,7 @@ public class World
                 break;
         }
 
+        creature.setLocation(this.cells[32][32]);
         creatureModel.setUserData("parentId", creature.getId());
         Material mat = new Material(game.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
         creatureModel.setMaterial(mat);
@@ -178,6 +179,16 @@ public class World
         return this.allocatedId - 1;
     }
 
+    public Cell getCellFromWorldCoordinates(Vector3f contactPoint)
+    {
+        int cell_size = 32;
+        
+        int i = (int) Math.round((contactPoint.x + 1024) / (float) cell_size - 0.5);
+        int j = (int) Math.round((contactPoint.z + 1024) / (float) cell_size - 0.5);
+        
+        return this.cells[i][j];
+    }
+    
     /**
      * Getters & Setters
      */

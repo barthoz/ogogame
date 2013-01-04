@@ -8,6 +8,7 @@ import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
 import main.game.Game;
 import main.game.model.Player;
+import main.game.model.cell.Cell;
 
 /**
  *
@@ -25,6 +26,7 @@ public abstract class Creature
     /**
      * Properties
      */
+    private Cell location;
     protected Player player;
     protected String id;
     protected Spatial model;
@@ -114,5 +116,13 @@ public abstract class Creature
     public void setController(AbstractControl controller)
     {
         this.controller = controller;
+    }
+
+    public Cell getLocation() {
+        return location;
+    }
+
+    public void setLocation(Cell location) {
+        this.location = location;
     }
 }

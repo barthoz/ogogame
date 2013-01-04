@@ -18,7 +18,7 @@ public abstract class Cell
 
     /**
      * Properties
-     */
+     */    
     private int x;
     private int y;
     

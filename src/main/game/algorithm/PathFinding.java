@@ -5,6 +5,9 @@
 package main.game.algorithm;
 
 import com.jme3.cinematic.MotionPath;
+import com.jme3.math.Vector2f;
+import com.jme3.math.Vector3f;
+import com.jme3.terrain.geomipmap.TerrainQuad;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -33,15 +36,33 @@ public class PathFinding
      * Business logic
      */
     
-    public static MotionPath createMotionPath(Cell[][] cells, Cell from, Cell to, Creature creature) throws NoReachablePathException
+    public static MotionPath createMotionPath(TerrainQuad terrain, Cell[][] cells, Cell from, Cell to, Creature creature) throws NoReachablePathException
     {
         MotionPath motionPath = new MotionPath();
         List<Cell> findPath = findPath(cells, from, to, creature);
         
+        Cell previousCell = null;
+        
         for (Cell cell : findPath)
         {
-            System.out.println(cell.getWorldCoordinates().x + " - " + cell.getWorldCoordinates().y + " - " + cell.getWorldCoordinates().z);
+            if (previousCell != null)
+            {
+                // Smoothen path
+                int numParts = 5;
+                float xDiff = (cell.getWorldCoordinates().x - previousCell.getWorldCoordinates().x) / (float) numParts;
+                float zDiff = (cell.getWorldCoordinates().z - previousCell.getWorldCoordinates().z) / (float) numParts;
+                
+                for (int i = 0; i < numParts; i++)
+                {
+                    float x = previousCell.getWorldCoordinates().x + i * xDiff;
+                    float z = previousCell.getWorldCoordinates().z + i * zDiff;
+                    Vector3f part = new Vector3f(x, terrain.getHeight(new Vector2f(x, z)) - 100,z);
+                    motionPath.addWayPoint(part);
+                }
+            }
+            
             motionPath.addWayPoint(cell.getWorldCoordinates());
+            previousCell = cell;
         }
         
         motionPath.setCycle(false);
@@ -105,7 +126,7 @@ public class PathFinding
             for (Cell neighbour : retrieveNeighbouringCells(cells, currentCell, creature))
             {
                 if (!closedList.contains(neighbour))
-                {                    
+                {
                     int gScoreTentative = gScore.get(currentCell) + computeGScoreIncrease(currentCell, neighbour);
                     
                     if (!openList.contains(neighbour) || gScoreTentative <= gScore.get(neighbour))
@@ -114,7 +135,7 @@ public class PathFinding
                         gScore.put(neighbour, gScoreTentative);
                         fScore.put(neighbour, gScoreTentative + computeEstimatedCost(neighbour, to));
                         
-                        if (!openList.add(neighbour))
+                        if (!openList.contains(neighbour))
                         {
                             openList.add(neighbour);
                         }
@@ -214,10 +235,10 @@ public class PathFinding
         
         for (Cell neighbour : neighbours)
         {
-            //if (!(neighbour instanceof DeepWaterCell) && !(neighbour instanceof RockCell))
-            //{
+            if (!(neighbour instanceof DeepWaterCell))// && !(neighbour instanceof RockCell))
+            {
                 finalNeighbours.add(neighbour);
-//            }
+            }
         }
         
         return finalNeighbours;

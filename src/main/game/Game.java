@@ -78,18 +78,26 @@ import main.lobby.Lobby;
 public class Game extends SimpleApplication
 {
     /**
+     * While running
+     */
+    
+    private Object selectedObject = null;
+    
+    /**
      * Setup
      */
     
     private boolean isRunning = true;
     
     private ActionListener actionListener = new ActionListener() {
-    public void onAction(String name, boolean keyPressed, float tpf) {
+    public void onAction(String name, boolean keyPressed, float tpf)
+    {
       if (name.equals("Pause") && !keyPressed)
       {
         isRunning = !isRunning;
       }
-      if (name.equals("Select"))
+      
+      if (!keyPressed && name.equals("Select") && selectedObject == null)
       {
           Vector2f click2d = inputManager.getCursorPosition();
           Vector3f click3d = cam.getWorldCoordinates(new Vector2f(click2d.x, click2d.y), 0f).clone();
@@ -109,23 +117,24 @@ public class Game extends SimpleApplication
              * Determine which model has been selected
              */
 
+            Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+            mat.setColor("Color", ColorRGBA.Orange);
+            
             if (modelType.equals("CreatureLand"))
             {
                 LandCreature creature = (LandCreature) world.findCreatureById((String) selectedGeometry.getUserData("parentId"));
-                MoveAction act = new MoveAction(creature);
-                  try {
-                      act.performAction(parent);
-                  } catch (ActionNotEnabledException ex) {
-                      Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
-                  }
+                selectedObject = creature;
+                creature.getModel().setMaterial(mat);
             }
             else if (modelType.equals("CreatureSea"))
             {
                 SeaCreature creature = (SeaCreature) world.findCreatureById((String) selectedGeometry.getUserData("parentId"));
+                selectedObject = creature;
             }
             else if (modelType.equals("CreatureAirborne"))
             {
                 AirborneCreature creature = (AirborneCreature) world.findCreatureById((String) selectedGeometry.getUserData("parentId"));
+                selectedObject = creature;
             }
             else if (modelType.equals("FoodSource"))
             {
@@ -140,23 +149,43 @@ public class Game extends SimpleApplication
 
             }
           }
+      }
+      else if (!keyPressed && name.equals("Select") && selectedObject != null)
+      {
+          Vector2f click2d = inputManager.getCursorPosition();
+          Vector3f click3d = cam.getWorldCoordinates(new Vector2f(click2d.x, click2d.y), 0f).clone();
+          Vector3f dir = cam.getWorldCoordinates(new Vector2f(click2d.x, click2d.y), 1f).subtractLocal(click3d).normalizeLocal();
+
+          CollisionResults results = new CollisionResults();
+          Ray ray = new Ray(click3d, dir);
           
-          
-          
-          //System.out.println("----- Collisions? " + results.size() + "-----");
-          for (int i = 0; i < results.size(); i++)
+          terrain.collideWith(ray, results);
+          // Check if something was selected
+          if (results.getClosestCollision() != null)
           {
-              //String modelId = (String) results.getCollision(i).getGeometry().getUserData("parentId");
+              if (selectedObject instanceof Creature)
+              {
+                  MoveAction act = new MoveAction((Creature) selectedObject, world.getCellFromWorldCoordinates(results.getClosestCollision().getContactPoint()));
+                  
+                  try
+                  {
+                    act.performAction(parent);
+                  }
+                  catch (ActionNotEnabledException ex)
+                  {
+                    Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
+                  }
+                  
+                  // De-select creature
+                  Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+                  mat.setColor("Color", ColorRGBA.White);
+                  ((Creature) selectedObject).getModel().setMaterial(mat);
+              }
               
-              
-            float dist = results.getCollision(i).getDistance();
-            Vector3f pt = results.getCollision(i).getContactPoint();
-            String hit = results.getCollision(i).getGeometry().getName();
-            //System.out.println("* Collision #" + i);
-            //System.out.println("  You shot " + hit + " at " + pt + ", " + dist + " wu away.");
-            System.out.println(" Creature id: " + world.findCreatureById((String) results.getCollision(i).getGeometry().getUserData("parentId")).getId());
+              selectedObject = null;
           }
       }
+      
     }
   };
  
@@ -175,6 +204,7 @@ public class Game extends SimpleApplication
           Vector3f v = player.getLocalTranslation();
           player.setLocalTranslation(v.x - value*speed, v.y, v.z);
         }
+        
       } else {
         System.out.println("Press P to unpause.");
       }
@@ -783,5 +813,13 @@ public class Game extends SimpleApplication
 
     public void setPlayer(Geometry player) {
         this.player = player;
+    }
+
+    public TerrainQuad getTerrain() {
+        return terrain;
+    }
+
+    public void setTerrain(TerrainQuad terrain) {
+        this.terrain = terrain;
     }
 }
