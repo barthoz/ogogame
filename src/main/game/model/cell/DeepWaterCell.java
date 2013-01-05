@@ -48,6 +48,7 @@ public class DeepWaterCell extends Cell
         {
             return true;
         }
+        
         if (creature instanceof AirborneCreature)
         {
             AirborneCreature airCreature = (AirborneCreature) creature;
@@ -58,6 +59,7 @@ public class DeepWaterCell extends Cell
             }
 
         }
+        
         return false;
     }
 }

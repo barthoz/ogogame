@@ -165,6 +165,7 @@ public class Game extends SimpleApplication
           {
               if (selectedObject instanceof Creature)
               {
+                  System.out.println("X: " + world.getCellFromWorldCoordinates(results.getClosestCollision().getContactPoint()).getXCoor() + " - Y: " + world.getCellFromWorldCoordinates(results.getClosestCollision().getContactPoint()).getYCoor());
                   MoveAction act = new MoveAction((Creature) selectedObject, world.getCellFromWorldCoordinates(results.getClosestCollision().getContactPoint()));
                   
                   try

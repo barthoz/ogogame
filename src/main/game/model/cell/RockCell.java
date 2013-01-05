@@ -45,6 +45,6 @@ public class RockCell extends Cell
             }
 
         }
-        return false;
+        return true;
     }
 }

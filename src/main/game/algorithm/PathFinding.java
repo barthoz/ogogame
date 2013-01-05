@@ -38,6 +38,11 @@ public class PathFinding
     
     public static MotionPath createMotionPath(TerrainQuad terrain, Cell[][] cells, Cell from, Cell to, Creature creature) throws NoReachablePathException
     {
+        if (!to.creatureAllowed(creature))
+        {
+            throw new NoReachablePathException();
+        }
+        
         MotionPath motionPath = new MotionPath();
         List<Cell> findPath = findPath(cells, from, to, creature);
         
@@ -184,7 +189,7 @@ public class PathFinding
                + Math.abs(currentCell.getYCoor() - to.getYCoor()));
     }
     
-    private static Set<Cell> retrieveNeighbouringCells(Cell[][] cells, Cell cell, Creature creature)
+    public static Set<Cell> retrieveNeighbouringCells(Cell[][] cells, Cell cell, Creature creature)
     {
         Set<Cell> neighbours = new HashSet<Cell>();
         
@@ -235,7 +240,7 @@ public class PathFinding
         
         for (Cell neighbour : neighbours)
         {
-            if (!(neighbour instanceof DeepWaterCell))// && !(neighbour instanceof RockCell))
+            if (neighbour.creatureAllowed(creature))
             {
                 finalNeighbours.add(neighbour);
             }

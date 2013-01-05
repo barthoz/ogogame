@@ -40,6 +40,7 @@ public class World
     private List<FoodSource> foodSources;
     private List<Creature> creatures;
     private Cell[][] cells;
+    
     /**
      * Bookkeeping
      */
@@ -48,6 +49,7 @@ public class World
     /**
      * Constructor
      */
+    
     public World(Game game, Node worldNode)
     {
         this.game = game;
@@ -79,6 +81,31 @@ public class World
     /**
      * Business logic
      */
+    
+    /**
+     * Initialize all bases in the game. Register them with the current players.
+     * 
+     * @Pre this.players.size <= 6 && for all players: 0 <= player.getId() <= 5
+     */
+    public void initializeBases()
+    {
+        Cell[] baseLocations = new Cell[6];
+        baseLocations[0] = this.cells[27][34];
+        baseLocations[1] = this.cells[27][13];
+        baseLocations[2] = this.cells[45][16];
+        baseLocations[3] = this.cells[58][34];
+        baseLocations[4] = this.cells[40][51];
+        baseLocations[5] = this.cells[10][46];
+        
+        for (Player player : this.players)
+        {
+            Base base = ModelFactory.createBase(this.game.getAssetManager(), player.getId(), player, baseLocations[player.getId()]);
+            player.setBase(base);
+            this.bases.add(base);
+            this.baseContainer.attachChild(base.getModel());
+        }
+    }
+    
     /**
      * Add a creature to the world and player.
      *

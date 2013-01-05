@@ -6,7 +6,10 @@ package main.game.model;
 
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
+import main.game.algorithm.PathFinding;
+import main.game.model.cell.Cell;
 import main.game.model.control.BaseControl;
+import main.game.model.creature.Creature;
 
 /**
  *
@@ -22,18 +25,30 @@ public class Base
     private Spatial model;
     private Player player;
     private BaseControl controller;
+    private Cell location;
 
     /**
      * Constructors
      */
-    public Base(int id, Spatial model, Player player)
+    public Base(int id, Spatial model, Player player, Cell location)
     {
         this.id = id;
         this.model = model;
         this.player = player;
+        this.location = location;
         this.controller = new BaseControl(model, player.getGame(), this);
     }
 
+    /**
+     * Business logic
+     */
+    
+    public Cell getClosestSpawnableCell(Creature creature)
+    {
+        //PathFinding.retrieveNeighbouringCells(player.getGame().getWorld().getCells(), , );
+        return null;
+    }
+    
     /**
      * Getters & Setters
      */
@@ -70,5 +85,13 @@ public class Base
     public void setController(BaseControl controller)
     {
         this.controller = controller;
+    }
+
+    public Cell getLocation() {
+        return location;
+    }
+
+    public void setLocation(Cell location) {
+        this.location = location;
     }
 }
