@@ -9,5 +9,6 @@ package main.exception;
  * @author s116861
  */
 public class ActionNotEnabledException extends Exception
-{    
+{
+    // test
 }
