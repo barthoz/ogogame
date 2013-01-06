@@ -35,7 +35,7 @@ public class World
     /**
      * Properties
      */
-    private List<Player> players;
+    
     private List<Base> bases;
     private List<FoodSource> foodSources;
     private List<Creature> creatures;
@@ -72,7 +72,7 @@ public class World
         /**
          * Initialize object lists
          */
-        this.players = new ArrayList<Player>();
+        
         this.bases = new ArrayList<Base>();
         this.foodSources = new ArrayList<FoodSource>();
         this.creatures = new ArrayList<Creature>();
@@ -97,7 +97,7 @@ public class World
         baseLocations[4] = this.cells[40][51];
         baseLocations[5] = this.cells[10][46];
         
-        for (Player player : this.players)
+        for (Player player : this.game.getPlayers())
         {
             Base base = ModelFactory.createBase(this.game.getAssetManager(), player.getId(), player, baseLocations[player.getId()]);
             player.setBase(base);
@@ -112,8 +112,10 @@ public class World
      * @Pre 0 <= type <= 2 && player != null
      * @param player
      */
-    public void addCreature(Player player, int type, Cell cell)
+    public void addCreature(Creature creature)
     {
+        
+        /*
         Spatial creatureModel = null;
         Creature creature = null;
 
@@ -145,7 +147,7 @@ public class World
         this.creatureContainer.attachChild(creatureModel);
         this.creatures.add(creature);
         
-        creatureModel.setLocalTranslation(cell.getWorldCoordinates());
+        creatureModel.setLocalTranslation(cell.getWorldCoordinates());*/
     }
 
     /**
@@ -195,6 +197,22 @@ public class World
     }
 
     /**
+     * Find base by id.
+     */
+    public Base findBaseById(int id)
+    {
+        for (Base base : this.bases)
+        {
+            if (base.getId() == id)
+            {
+                return base;
+            }
+        }
+        
+        return null;
+    }
+    
+    /**
      * Retrieve an unique id.
      *
      * @return integer which is guaranteed to be unique after calling this
@@ -227,16 +245,6 @@ public class World
     public void setSelectableObjects(Node selectableObjects)
     {
         this.selectableObjects = selectableObjects;
-    }
-
-    public List<Player> getPlayers()
-    {
-        return players;
-    }
-
-    public void setPlayers(List<Player> players)
-    {
-        this.players = players;
     }
 
     public List<Base> getBases()

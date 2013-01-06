@@ -7,7 +7,7 @@ package main.game.model.creature;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
 import main.game.Game;
-import main.game.model.Player;
+import main.game.Player;
 import main.game.model.cell.Cell;
 
 /**
@@ -20,6 +20,7 @@ public abstract class Creature
     /**
      * Constants
      */
+    
     public final static int TYPE_LAND = 0;
     public final static int TYPE_SEA = 1;
     public final static int TYPE_AIR = 2;
@@ -58,6 +59,8 @@ public abstract class Creature
     /**
      * Business logic
      */
+    
+    public abstract String getCodeId();
     
     /**
      * Method that handles everyting when a creature gains a level

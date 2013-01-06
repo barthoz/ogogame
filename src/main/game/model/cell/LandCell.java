@@ -5,6 +5,7 @@
 package main.game.model.cell;
 
 import com.jme3.math.Vector3f;
+import main.game.World;
 import main.game.model.creature.Creature;
 import main.game.model.creature.SeaCreature;
 
@@ -22,9 +23,9 @@ public class LandCell extends Cell
      * Constructor
      */
     
-    public LandCell(int xCoor, int yCoor, Vector3f worldCoordinates)
+    public LandCell(World world, int xCoor, int yCoor, Vector3f worldCoordinates)
     {
-        super(xCoor, yCoor, worldCoordinates);
+        super(world, xCoor, yCoor, worldCoordinates);
     }
     /**
      * A creature is allowed in a LandCell if it is not a SeaCreature

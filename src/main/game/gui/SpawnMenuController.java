@@ -12,26 +12,38 @@ import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.screen.Screen;
 import de.lessvoid.nifty.screen.ScreenController;
 import main.game.Game;
+import main.game.action.SpawnAction;
 
 /**
  *
  * @author s116861
  */
-public class HudController  extends AbstractAppState implements ScreenController {
+public class SpawnMenuController  extends AbstractAppState implements ScreenController {
  
   private Nifty nifty;
   private Screen screen;
   private SimpleApplication app;
   private Game game;
  
-  /** custom methods */ 
+  /** custom methods */
+  public void spawnCreature(String creatureType)
+  {
+      SpawnAction action = new SpawnAction(this.game.getMe(), creatureType);
+      System.out.println("spawned: " + creatureType);
+  }
+  
+  public void cancel()
+  {
+      System.out.println("cancelled");
+      nifty.gotoScreen("hud");
+  }
  
-  public HudController(Game game)
+  public SpawnMenuController(Game game)
   {
       this.game = game;
   }
   
-  public HudController(String data) { 
+  public SpawnMenuController(String data) { 
     /** Your custom constructor, can accept arguments */ 
   } 
  
@@ -39,17 +51,12 @@ public class HudController  extends AbstractAppState implements ScreenController
  
   public void bind(Nifty nifty, Screen screen) {
     this.nifty = nifty;
-    this.screen = screen;
+    this.screen = screen;    
   }
  
   public void onStartScreen() { }
  
   public void onEndScreen() { }
- 
-  public void test()
-  {
-      
-  }
   
   /** jME3 AppState methods */ 
  

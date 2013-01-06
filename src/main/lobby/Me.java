@@ -5,7 +5,7 @@
 package main.lobby;
 
 import main.game.Game;
-import main.game.model.Player;
+import main.game.Player;
 
 /**
  *

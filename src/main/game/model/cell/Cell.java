@@ -8,6 +8,9 @@ import com.jme3.math.Vector3f;
 import java.util.List;
 import main.game.model.creature.Creature;
 import static java.lang.Math.*;
+import java.util.HashSet;
+import java.util.Set;
+import main.game.World;
 
 /**
  *
@@ -19,6 +22,7 @@ public abstract class Cell
     /**
      * Properties
      */    
+    private World world;
     private int x;
     private int y;
     
@@ -31,8 +35,9 @@ public abstract class Cell
     /**
      * Constructor
      */
-    public Cell(int xCoor, int yCoor, Vector3f worldCoordinates)
+    public Cell(World world, int xCoor, int yCoor, Vector3f worldCoordinates)
     {
+        this.world = world;
         this.xCoor = xCoor;
         this.yCoor = yCoor;
         this.worldCoordinates = worldCoordinates;
@@ -63,6 +68,62 @@ public abstract class Cell
      */
     public abstract boolean creatureAllowed(Creature creature);
 
+    /**
+     * Retrieves all neighbouring cells which are either orthogonal or diagonal to this cell.
+     * 
+     * @return 
+     */
+    public Set<Cell> retrieveNeighbouringCells()
+    {
+        Cell[][] cells = this.world.getCells();
+        Set<Cell> neighbours = new HashSet<Cell>();
+        
+        int x = this.xCoor;
+        int y = this.yCoor;
+        
+        // left
+        if (x > 1)
+        {
+           // up
+           if (y > 1)
+           {
+               neighbours.add(cells[x - 1][y - 1]);
+               neighbours.add(cells[x][y - 1]);
+           }
+
+           // middle
+           neighbours.add(cells[x - 1][y]);
+
+           // down
+           if (y + 1 < cells[0].length)
+           {
+               neighbours.add(cells[x - 1][y + 1]);
+               neighbours.add(cells[x][y + 1]);
+           }
+        }
+        
+        // right
+        if (x + 1 < cells.length)
+        {
+            // up
+            if (y > 1)
+            {
+                neighbours.add(cells[x + 1][y - 1]);
+            }
+            
+            // middle
+            neighbours.add(cells[x + 1][y]);
+            
+            // down
+            if (y + 1 < cells[0].length)
+            {
+                neighbours.add(cells[x + 1][y + 1]);
+            }
+        }
+        
+        return neighbours;
+    }
+    
     /**
      * Getters & Setters
      */

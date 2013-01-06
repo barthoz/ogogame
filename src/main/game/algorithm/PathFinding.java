@@ -189,7 +189,7 @@ public class PathFinding
                + Math.abs(currentCell.getYCoor() - to.getYCoor()));
     }
     
-    public static Set<Cell> retrieveNeighbouringCells(Cell[][] cells, Cell cell, Creature creature)
+    private static Set<Cell> retrieveNeighbouringCells(Cell[][] cells, Cell cell, Creature creature)
     {
         Set<Cell> neighbours = new HashSet<Cell>();
         

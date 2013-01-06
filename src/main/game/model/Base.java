@@ -4,12 +4,17 @@
  */
 package main.game.model;
 
+import main.game.Player;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.Set;
 import main.game.algorithm.PathFinding;
 import main.game.model.cell.Cell;
 import main.game.model.control.BaseControl;
-import main.game.model.creature.Creature;
+import main.game.model.creature.*;
 
 /**
  *
@@ -37,6 +42,8 @@ public class Base
         this.player = player;
         this.location = location;
         this.controller = new BaseControl(model, player.getGame(), this);
+        
+        model.setLocalTranslation(location.getWorldCoordinates());
     }
 
     /**
@@ -45,7 +52,35 @@ public class Base
     
     public Cell getClosestSpawnableCell(Creature creature)
     {
-        //PathFinding.retrieveNeighbouringCells(player.getGame().getWorld().getCells(), , );
+        Set<Cell> closedSet = new HashSet<Cell>();
+        closedSet.add(this.location);
+        Queue queue = new LinkedList<Cell>();
+        
+        for (Cell neighbour : this.location.retrieveNeighbouringCells())
+        {
+            queue.add(neighbour);
+        }
+        
+        while (!queue.isEmpty())
+        {
+            Cell topCell = (Cell) queue.poll();
+            
+            if (topCell.creatureAllowed(creature))
+            {
+                return topCell;
+            }
+            
+            closedSet.add(topCell);
+            
+            for (Cell neighbour : topCell.retrieveNeighbouringCells())
+            {
+                if (!closedSet.contains(neighbour))
+                {
+                    queue.add(neighbour);
+                }
+            }
+        }
+        
         return null;
     }
     

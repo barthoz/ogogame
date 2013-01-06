@@ -6,20 +6,16 @@ package main.game.action;
 
 import main.exception.ActionNotEnabledException;
 import main.game.Game;
-import main.game.Player;
-import main.game.World;
 
 /**
  *
  * @author Daniel
  */
-public abstract class Action
+public class LeaveAction extends Action
 {
     /**
      * Properties
      */
-    
-    protected Player player;
     
     /**
      * Constructor
@@ -29,13 +25,19 @@ public abstract class Action
      * Business logic
      */
     
-    public abstract boolean isEnabled(Game game);
-    
-    public abstract void performAction(Game game) throws ActionNotEnabledException;
+    @Override
+    public boolean isEnabled(Game game)
+    {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void performAction(Game game) throws ActionNotEnabledException
+    {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
     
     /**
      * Getters & Setters
      */
-    
-    
 }

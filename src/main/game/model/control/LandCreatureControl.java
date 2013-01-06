@@ -17,7 +17,7 @@ import java.util.List;
 import javax.swing.plaf.basic.BasicInternalFrameTitlePane.MoveAction;
 import main.game.Game;
 import main.game.action.Action;
-import main.game.action.CreatureAction;
+import main.game.action.creature.CreatureAction;
 import main.game.model.creature.LandCreature;
 
 /**

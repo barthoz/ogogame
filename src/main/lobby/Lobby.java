@@ -29,8 +29,8 @@ public class Lobby
         this.gameConnector = new GameConnector();
         this.me = null;
         
-        LobbyJFrame frame = new LobbyJFrame(this);
-        frame.setVisible(true);
+        //LobbyJFrame frame = new LobbyJFrame(this);
+        //frame.setVisible(true);
     }
     
     /**

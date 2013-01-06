@@ -2,8 +2,9 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package main.game.action;
+package main.game.action.creature;
 
+import main.game.action.Action;
 import main.game.model.creature.Creature;
 
 /**

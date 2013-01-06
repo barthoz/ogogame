@@ -8,7 +8,7 @@
     
     <screen id="hud" controller="main.game.gui.HudController">
         <layer id="layer1" backgroundColor="#0000" childLayout="center">
-            <panel id="panel_actions" height="25%" width="25%" align="right" valign="bottom" backgroundColor="#f60f" childLayout="center" visibleToMouse="true">
+            <panel id="panel_actions" height="25%" width="25%" align="right" valign="bottom" backgroundColor="#ffffff" childLayout="center" visibleToMouse="true">
                 <control name="button" label="Move" id="StartButton" align="center" valign="center" visibleToMouse="true" >
                     <interact onClick="test(hud)"/>
                 </control>
@@ -19,6 +19,34 @@
                     <interact onClick="test(hud)"/>
                 </control>
             </panel>
+        </layer>
+  </screen>
+  
+  <screen id="spawnMenu" controller="main.game.gui.SpawnMenuController">
+        <layer id="layer1" backgroundColor="#0000" childLayout="vertical">
+            <panel id="spawn_landCreature" height="25%" width="25%" align="center" valign="top" backgroundColor="#ffffff" childLayout="center" visibleToMouse="true">
+                <control name="button" label="Spawn land creature (costs .. food)" id="SpawnCreatureLand" align="center" valign="center" visibleToMouse="true" >
+                    <interact onClick="spawnCreature(Creature-Land)"/>
+                </control>
+            </panel>
+            
+            <panel id="spawn_seaCreature" height="25%" width="25%" align="center" valign="center" backgroundColor="#ffffff" childLayout="center" visibleToMouse="true">
+                <control name="button" label="Spawn sea creature (costs .. food)" id="SpawnCreatureSea" align="center" valign="center" visibleToMouse="true" >
+                    <interact onClick="spawnCreature(Creature-Sea)"/>
+                </control>
+            </panel>
+            
+            <panel id="spawn_airborneCreature" height="25%" width="25%" align="center" valign="bottom" backgroundColor="#ffffff" childLayout="center" visibleToMouse="true">
+                <control name="button" label="Spawn air creature (costs .. food)" id="SpawnCreatureAir" align="center" valign="center" visibleToMouse="true" >
+                    <interact onClick="spawnCreature(Creature-Airborne)"/>
+                </control>
+            </panel>
+            
+            <panel id="cancel" height="25%" width="25%" align="center" valign="center" backgroundColor="#ffffff" childLayout="center" visibleToMouse="true">
+                <control name="button" label="Cancel" id="Cancel" align="center" valign="center" visibleToMouse="true" >
+                    <interact onClick="cancel()"/>
+                </control>
+            </panel>            
         </layer>
   </screen>
 </nifty>

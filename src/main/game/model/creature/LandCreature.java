@@ -5,7 +5,7 @@
 package main.game.model.creature;
 
 import com.jme3.scene.Spatial;
-import main.game.model.Player;
+import main.game.Player;
 import main.game.model.control.LandCreatureControl;
 
 /**
@@ -15,6 +15,12 @@ import main.game.model.control.LandCreatureControl;
 public class LandCreature extends Creature
 {
     /**
+     * Properties
+     */
+    
+    public final static String CODE_ID = "Creature-Land";
+    
+    /**
      * Constructor
      */
     
@@ -23,5 +29,15 @@ public class LandCreature extends Creature
         super(player, id, model);
         this.controller = new LandCreatureControl(model, player.getGame(), this);
         this.controller.setEnabled(true);
+    }
+    
+    /**
+     * Business logic
+     */
+    
+    @Override
+    public String getCodeId()
+    {
+        return "Creature-Land";
     }
 }

@@ -57,8 +57,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import main.exception.ActionNotEnabledException;
 import main.game.action.Action;
-import main.game.action.MoveAction;
-import main.game.model.Player;
+import main.game.action.creature.MoveAction;
+import main.game.gui.HudController;
+import main.game.gui.SpawnMenuController;
+import main.game.model.Base;
 import main.game.model.cell.Cell;
 import main.game.model.cell.DeepWaterCell;
 import main.game.model.cell.LandCell;
@@ -97,6 +99,44 @@ public class Game extends SimpleApplication
         isRunning = !isRunning;
       }
       
+      if (!keyPressed && name.equals("RightClick"))
+      {
+          Vector2f click2d = inputManager.getCursorPosition();
+          Vector3f click3d = cam.getWorldCoordinates(new Vector2f(click2d.x, click2d.y), 0f).clone();
+          Vector3f dir = cam.getWorldCoordinates(new Vector2f(click2d.x, click2d.y), 1f).subtractLocal(click3d).normalizeLocal();
+
+          CollisionResults results = new CollisionResults();
+          Ray ray = new Ray(click3d, dir);
+          world.getSelectableObjects().collideWith(ray, results);
+          
+          // Check if something was selected
+          if (results.getClosestCollision() != null)
+          {
+              System.out.println("Test");
+            Geometry selectedGeometry = results.getClosestCollision().getGeometry();
+            String modelType = selectedGeometry.getUserData("modelType");
+
+            /**
+             * Determine which model has been selected
+             */
+
+            Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+            mat.setColor("Color", ColorRGBA.Orange);
+            
+            if (modelType.equals("Base"))
+            {
+                Base base = (Base) world.findBaseById((Integer) selectedGeometry.getUserData("parentId"));
+                
+                // You can only select your own base
+                if (base.getPlayer().equals(me))
+                {
+                    // Show spawn menu
+                    nifty.gotoScreen("spawnMenu");
+                }
+            }
+          }
+      }
+      
       if (!keyPressed && name.equals("Select") && selectedObject == null)
       {
           Vector2f click2d = inputManager.getCursorPosition();
@@ -120,18 +160,18 @@ public class Game extends SimpleApplication
             Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
             mat.setColor("Color", ColorRGBA.Orange);
             
-            if (modelType.equals("CreatureLand"))
+            if (modelType.equals(LandCreature.CODE_ID))
             {
                 LandCreature creature = (LandCreature) world.findCreatureById((String) selectedGeometry.getUserData("parentId"));
                 selectedObject = creature;
                 creature.getModel().setMaterial(mat);
             }
-            else if (modelType.equals("CreatureSea"))
+            else if (modelType.equals(SeaCreature.CODE_ID))
             {
                 SeaCreature creature = (SeaCreature) world.findCreatureById((String) selectedGeometry.getUserData("parentId"));
                 selectedObject = creature;
             }
-            else if (modelType.equals("CreatureAirborne"))
+            else if (modelType.equals(AirborneCreature.CODE_ID))
             {
                 AirborneCreature creature = (AirborneCreature) world.findCreatureById((String) selectedGeometry.getUserData("parentId"));
                 selectedObject = creature;
@@ -268,6 +308,13 @@ public class Game extends SimpleApplication
     private boolean underWater = false;
     
     /**
+     * GUI
+     */
+    
+    NiftyJmeDisplay niftyDisplay;
+    Nifty nifty;
+    
+    /**
      * Constructor
      */
     
@@ -278,7 +325,6 @@ public class Game extends SimpleApplication
         this.lobby = lobby;
         this.gameCredentials = gameCredentials;
         
-        this.me = new Player(this, 0, "Daniel");
         this.players = new ArrayList<Player>();
     }
     
@@ -305,18 +351,19 @@ public class Game extends SimpleApplication
         flyCam.setEnabled(false);
         final RtsCam rtsCam = new RtsCam(cam, rootNode);
         rtsCam.registerWithInput(inputManager);
-        rtsCam.setCenter(new Vector3f(20,0.5f,20));
+        rtsCam.setCenter(new Vector3f(20f,50f,20f));
         
-        /**
-         * Initialize GUI
+         /**
+         * Initialize GUI setup
          */
         
-         NiftyJmeDisplay niftyDisplay = new NiftyJmeDisplay(
-            assetManager, inputManager, audioRenderer, guiViewPort);
-         
-         Nifty nifty = niftyDisplay.getNifty();
-         nifty.fromXml("Interface/gui.xml", "hud");
-         guiViewPort.addProcessor(niftyDisplay);
+        this.niftyDisplay = new NiftyJmeDisplay(assetManager, inputManager, audioRenderer, guiViewPort);
+        this.nifty = niftyDisplay.getNifty();
+        
+        nifty.fromXml("Interface/gui.xml", "hud", new HudController(this), new SpawnMenuController(this));
+        guiViewPort.addProcessor(niftyDisplay);
+        
+        nifty.gotoScreen("hud");
         
         /**
          * Initialize world
@@ -403,13 +450,27 @@ public class Game extends SimpleApplication
         water.setFoamTexture((Texture2D) assetManager.loadTexture("Common/MatDefs/Water/Textures/foam3.jpg"));
         
         /**
-         * Test...
+         * Initialize me
          */
         
-        this.world.addCreature(this.me, Creature.TYPE_LAND, this.world.getCells()[32][32]);
+        Player me = new Player(this, 0, "TestPlayer");
+        this.players.add(me);
+        this.me = me;
+        
+        /**
+         * Initialize world
+         */
+        
+        this.world.initializeBases();
         
         initKeys();
         initSetMode();
+        
+        /**
+         * Some testing
+         */
+        
+        this.world.addCreature(this.me, Creature.TYPE_LAND, this.world.getCells()[32][32]);
     }
 
     /**
@@ -424,10 +485,11 @@ public class Game extends SimpleApplication
         inputManager.addMapping("Rotate", new KeyTrigger(KeyInput.KEY_SPACE));
                                           //new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
         inputManager.addMapping("Select", new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
+        inputManager.addMapping("RightClick", new MouseButtonTrigger(MouseInput.BUTTON_RIGHT));
         
         
         // Add the names to the action listener.
-        inputManager.addListener(actionListener, new String[]{"Pause", "Select"});
+        inputManager.addListener(actionListener, new String[]{"Pause", "Select", "RightClick"});
         inputManager.addListener(analogListener, new String[]{"Left", "Right", "Rotate"});
     }
     
@@ -481,8 +543,8 @@ public class Game extends SimpleApplication
     @Override
     public void start()
     {
-        super.start();
         this.started = true;
+        super.start();
     }
     
     /**
@@ -683,17 +745,20 @@ public class Game extends SimpleApplication
                  */
                 if (height <= 90 - 100)
                 {
-                    cells[i][j] = new DeepWaterCell(i,j, worldCoors);
+                    cells[i][j] = new DeepWaterCell(this.world, i,j, worldCoors);
                     cells[i][j].setWorldCoordinates(new Vector3f(worldCoors.x, 90 - 100, worldCoors.z));
-                } else if (height > 90 - 100 && height <= 105 - 100)
+                }
+                else if (height > 90 - 100 && height <= 105 - 100)
                 {
-                    cells[i][j] = new ShallowWaterCell(i,j, worldCoors);
-                } else if (height > 105 - 100 && height <= 120 - 100)
+                    cells[i][j] = new ShallowWaterCell(this.world, i,j, worldCoors);
+                }
+                else if (height > 105 - 100 && height <= 120 - 100)
                 {
-                    cells[i][j] = new LandCell(i,j, worldCoors);
-                } else if (height > 120 - 100)
+                    cells[i][j] = new LandCell(this.world, i,j, worldCoors);
+                }
+                else if (height > 120 - 100)
                 {
-                    cells[i][j] = new RockCell(i,j, worldCoors);
+                    cells[i][j] = new RockCell(this.world, i,j, worldCoors);
                 }
                 
                 Box box = new Box(Vector3f.ZERO, 1, 1, 1);
@@ -822,5 +887,13 @@ public class Game extends SimpleApplication
 
     public void setTerrain(TerrainQuad terrain) {
         this.terrain = terrain;
+    }
+
+    public List<Player> getPlayers() {
+        return players;
+    }
+
+    public void setPlayers(List<Player> players) {
+        this.players = players;
     }
 }

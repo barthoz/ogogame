@@ -4,7 +4,7 @@
  */
 package main.network;
 
-import main.game.model.Player;
+import main.game.Player;
 
 /**
  *

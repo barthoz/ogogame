@@ -5,6 +5,7 @@
 package main.game.model.cell;
 
 import com.jme3.math.Vector3f;
+import main.game.World;
 import main.game.model.creature.AirborneCreature;
 import main.game.model.creature.Creature;
 import main.game.model.creature.SeaCreature;
@@ -23,9 +24,9 @@ public class DeepWaterCell extends Cell
      * Constructor
      */
     
-    public DeepWaterCell(int xCoor, int yCoor, Vector3f worldCoordinates)
+    public DeepWaterCell(World world, int xCoor, int yCoor, Vector3f worldCoordinates)
     {
-        super(xCoor, yCoor, worldCoordinates);
+        super(world, xCoor, yCoor, worldCoordinates);
     }
     
     /**

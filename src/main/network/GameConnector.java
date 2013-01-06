@@ -10,7 +10,7 @@ import java.util.Map;
 import main.lobby.Me;
 import main.game.GameCredentials;
 import main.game.action.Action;
-import main.game.model.Player;
+import main.game.Player;
 
 /**
  *

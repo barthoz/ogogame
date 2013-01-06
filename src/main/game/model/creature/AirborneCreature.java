@@ -5,7 +5,7 @@
 package main.game.model.creature;
 
 import com.jme3.scene.Spatial;
-import main.game.model.Player;
+import main.game.Player;
 import main.game.model.control.AirborneCreatureControl;
 
 /**
@@ -17,6 +17,8 @@ public class AirborneCreature extends Creature
     /**
      * Properties
      */
+    
+    public final static String CODE_ID = "Creature-Airborne";
     
     private int stamina = 100;
     private boolean airborne = false;
@@ -30,6 +32,16 @@ public class AirborneCreature extends Creature
         super(player, id, model);
         this.controller = new AirborneCreatureControl(model, player.getGame(), this);
         this.controller.setEnabled(true);
+    }
+    
+    /**
+     * Business logic
+     */
+    
+    @Override
+    public String getCodeId()
+    {
+        return "Creature-Airborne";
     }
     
     /**

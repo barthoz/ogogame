@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package main.game.model;
+package main.game;
 
 import main.game.model.creature.Creature;
 import com.jme3.scene.Geometry;
@@ -12,7 +12,8 @@ import java.util.List;
 import java.util.Set;
 import main.game.Game;
 import main.game.action.Action;
-import main.game.action.CreatureAction;
+import main.game.action.creature.CreatureAction;
+import main.game.model.Base;
 
 /**
  *
@@ -35,6 +36,8 @@ public class Player
     private Base base;
     private List<Action> actions;
     private List<Creature> creatures;
+    
+    private int allocatedCreatureId;
    
     /**
      * Constructor
@@ -47,11 +50,19 @@ public class Player
         this.username = username;
         this.actions = new ArrayList<Action>();
         this.creatures = new ArrayList<Creature>();
+        
+        this.allocatedCreatureId = 0;
     }
     
     /**
      * Business logic
      */
+    
+    public int retrieveAllocatedCreatureId()
+    {
+        this.allocatedCreatureId++;
+        return this.allocatedCreatureId - 1;
+    }
     
     public void addCreature(Creature creature)
     {
@@ -170,5 +181,13 @@ public class Player
 
     public List<Creature> getCreatures() {
         return creatures;
+    }
+
+    public int getAllocatedCreatureId() {
+        return allocatedCreatureId;
+    }
+
+    public void setAllocatedCreatureId(int allocatedCreatureId) {
+        this.allocatedCreatureId = allocatedCreatureId;
     }
 }
