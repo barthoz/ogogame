@@ -383,11 +383,6 @@ public class Game extends SimpleApplication
         floor.setMaterial(mat1);
         worldNode.attachChild(floor);
         
-        /*Spatial tree = assetManager.loadModel("Models/Tree.j3o");
-        Material mat2 = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-        tree.setMaterial(mat2);
-        //rootNode.attachChild(tree);*/
-        
         Box b = new Box(Vector3f.ZERO, 1, 1, 1);
         player = new Geometry("blue cube", b);
         Material mat = new Material(assetManager,

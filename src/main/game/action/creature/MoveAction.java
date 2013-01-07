@@ -12,6 +12,8 @@ import com.jme3.cinematic.events.CinematicEvent;
 import com.jme3.cinematic.events.CinematicEventListener;
 import com.jme3.cinematic.events.MotionEvent;
 import com.jme3.cinematic.events.MotionTrack;
+import com.jme3.math.Vector2f;
+import com.jme3.math.Vector3f;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import main.exception.ActionNotEnabledException;
@@ -20,6 +22,7 @@ import main.game.Game;
 import main.game.World;
 import main.game.algorithm.PathFinding;
 import main.game.model.cell.Cell;
+import main.game.model.creature.AirborneCreature;
 import main.game.model.creature.Creature;
 
 /**
@@ -92,6 +95,8 @@ public class MoveAction extends CreatureAction
                     }
                 });
                 
+                final Vector3f airDestination = new Vector3f(destination.getWorldCoordinates().x, PathFinding.airCreatureHeight, destination.getWorldCoordinates().z);
+                
                 cinematic.addListener(new CinematicEventListener()
                 {
 
@@ -105,7 +110,16 @@ public class MoveAction extends CreatureAction
 
                     public void onStop(CinematicEvent cinematic) {
                         //throw new UnsupportedOperationException("Not supported yet.");
-                        subject.getModel().setLocalTranslation(destination.getWorldCoordinates());//.subtract(subject.getModel().getWorldTranslation()));
+                        
+                        if (subject instanceof AirborneCreature)
+                        {
+                            subject.getModel().setLocalTranslation(airDestination);
+                        }
+                        else
+                        {
+                            subject.getModel().setLocalTranslation(destination.getWorldCoordinates());
+                        }
+                        
                         subject.setLocation(destination);
                     }
                     

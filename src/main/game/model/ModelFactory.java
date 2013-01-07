@@ -76,8 +76,8 @@ public class ModelFactory
         creatureModel.setUserData("modelType", creatureType);
         
         // Determine spawn location
-        Cell location = player.getBase().getLocation().getWorld().getCells()[32][32];
-        //Cell location = player.getBase().getClosestSpawnableCell(creature);
+        //Cell location = player.getBase().getLocation().getWorld().getCells()[32][32];
+        Cell location = player.getBase().getClosestSpawnableCell(creature);
         
         creature.setLocation(location);
         creatureModel.setLocalTranslation(location.getWorldCoordinates());

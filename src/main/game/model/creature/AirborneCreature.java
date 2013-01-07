@@ -44,6 +44,16 @@ public class AirborneCreature extends Creature
         return "Creature-Airborne";
     }
     
+    public void land()
+    {
+        this.airborne = false;
+    }
+    
+    public void takeOff()
+    {
+        this.airborne = true;
+    }
+    
     /**
      * Getters & Setters
      */

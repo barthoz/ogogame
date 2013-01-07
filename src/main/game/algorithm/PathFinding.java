@@ -28,6 +28,8 @@ public class PathFinding
      * Properties
      */
     
+    public final static int airCreatureHeight = 160;
+    
     /**
      * Constructor
      */
@@ -44,30 +46,58 @@ public class PathFinding
         }
         
         MotionPath motionPath = new MotionPath();
-        List<Cell> findPath = findPath(cells, from, to, creature);
         
-        Cell previousCell = null;
-        
-        for (Cell cell : findPath)
+        /**
+         * Different for air creatures
+         */
+        if (creature instanceof AirborneCreature)
         {
-            if (previousCell != null)
-            {
-                // Smoothen path
-                int numParts = 5;
-                float xDiff = (cell.getWorldCoordinates().x - previousCell.getWorldCoordinates().x) / (float) numParts;
-                float zDiff = (cell.getWorldCoordinates().z - previousCell.getWorldCoordinates().z) / (float) numParts;
-                
-                for (int i = 0; i < numParts; i++)
-                {
-                    float x = previousCell.getWorldCoordinates().x + i * xDiff;
-                    float z = previousCell.getWorldCoordinates().z + i * zDiff;
-                    Vector3f part = new Vector3f(x, terrain.getHeight(new Vector2f(x, z)) - 100,z);
-                    motionPath.addWayPoint(part);
-                }
-            }
+            // Take off
+            AirborneCreature airCreature = (AirborneCreature) creature;
+            airCreature.takeOff();
             
-            motionPath.addWayPoint(cell.getWorldCoordinates());
-            previousCell = cell;
+            // Add take off waypoint
+            motionPath.addWayPoint(from.getWorldCoordinates().add(new Vector3f(0, airCreatureHeight, 0)));
+            
+            int numSteps = 100;
+            float diffX = (to.getWorldCoordinates().x - from.getWorldCoordinates().x) / (float) numSteps;
+            float diffZ = (to.getWorldCoordinates().z - from.getWorldCoordinates().z) / (float) numSteps;
+            
+            for (int i = 0; i < numSteps; i++)
+            {
+                float x = from.getWorldCoordinates().x + i * diffX;
+                float z = from.getWorldCoordinates().z + i * diffZ;
+                //float y = terrain.getHeight(new Vector2f(x, z)) + airCreatureHeight;
+                motionPath.addWayPoint(new Vector3f(x, airCreatureHeight, z));
+            }
+        }
+        else
+        {
+            List<Cell> findPath = findPath(cells, from, to, creature);
+
+            Cell previousCell = null;
+
+            for (Cell cell : findPath)
+            {
+                if (previousCell != null)
+                {
+                    // Smoothen path
+                    int numParts = 5;
+                    float xDiff = (cell.getWorldCoordinates().x - previousCell.getWorldCoordinates().x) / (float) numParts;
+                    float zDiff = (cell.getWorldCoordinates().z - previousCell.getWorldCoordinates().z) / (float) numParts;
+
+                    for (int i = 0; i < numParts; i++)
+                    {
+                        float x = previousCell.getWorldCoordinates().x + i * xDiff;
+                        float z = previousCell.getWorldCoordinates().z + i * zDiff;
+                        Vector3f part = new Vector3f(x, terrain.getHeight(new Vector2f(x, z)) - 100,z);
+                        motionPath.addWayPoint(part);
+                    }
+                }
+
+                motionPath.addWayPoint(cell.getWorldCoordinates());
+                previousCell = cell;
+            }
         }
         
         motionPath.setCycle(false);
