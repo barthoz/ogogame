@@ -460,6 +460,10 @@ public class Game extends SimpleApplication
         this.players.add(me);
         this.me = me;
         
+        
+        Player secondPlayer = new Player(this, 1, "Player2");
+        this.players.add(secondPlayer);
+        
         /**
          * Initialize world
          */
