@@ -57,6 +57,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import main.exception.ActionNotEnabledException;
 import main.game.action.Action;
+import main.game.action.SpawnAction;
 import main.game.action.creature.MoveAction;
 import main.game.gui.HudController;
 import main.game.gui.SpawnMenuController;
@@ -162,7 +163,9 @@ public class Game extends SimpleApplication
             
             if (modelType.equals(LandCreature.CODE_ID))
             {
+                System.out.println((String) selectedGeometry.getUserData("parentId"));
                 LandCreature creature = (LandCreature) world.findCreatureById((String) selectedGeometry.getUserData("parentId"));
+                
                 selectedObject = creature;
                 creature.getModel().setMaterial(mat);
             }
@@ -470,7 +473,13 @@ public class Game extends SimpleApplication
          * Some testing
          */
         
-        this.world.addCreature(this.me, Creature.TYPE_LAND, this.world.getCells()[32][32]);
+        //this.world.addCreature(this.me, Creature.TYPE_LAND, this.world.getCells()[32][32]);
+        SpawnAction spawn = new SpawnAction(this.me, LandCreature.CODE_ID);
+        try {
+            spawn.performAction(this);
+        } catch (ActionNotEnabledException ex) {
+            Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
@@ -731,10 +740,12 @@ public class Game extends SimpleApplication
             {
                 float xCoord = -1024 + i * cell_size + cell_size / 2f;
                 float yCoord = -1024 + j * cell_size + cell_size / 2f;
-                height = terrain.getHeight(new Vector2f(xCoord, yCoord)) - 100;
+                height = terrain.getHeight(new Vector2f(xCoord, yCoord));
                 worldCoors = new Vector3f(xCoord, height, yCoord);
-                worldCoors.add(trans);
+                worldCoors = worldCoors.add(trans);
+                //System.out.println(trans);
                 
+                 Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
                 
                 /*
                  * use constructor for cell in this way:
@@ -743,30 +754,34 @@ public class Game extends SimpleApplication
                  * worldCoor should be added for knowing the absolute position
                  * of the cell in our world.
                  */
-                if (height <= 90 - 100)
+                if (height <= 90)
                 {
                     cells[i][j] = new DeepWaterCell(this.world, i,j, worldCoors);
                     cells[i][j].setWorldCoordinates(new Vector3f(worldCoors.x, 90 - 100, worldCoors.z));
+                    mat.setColor("Color", ColorRGBA.Blue);
                 }
-                else if (height > 90 - 100 && height <= 105 - 100)
+                else if (height > 90 && height <= 105)
                 {
                     cells[i][j] = new ShallowWaterCell(this.world, i,j, worldCoors);
+                    mat.setColor("Color", ColorRGBA.Cyan);
                 }
-                else if (height > 105 - 100 && height <= 120 - 100)
+                else if (height > 105 && height <= 130)
                 {
                     cells[i][j] = new LandCell(this.world, i,j, worldCoors);
+                    mat.setColor("Color", ColorRGBA.Green);
                 }
-                else if (height > 120 - 100)
+                else if (height > 130)
                 {
                     cells[i][j] = new RockCell(this.world, i,j, worldCoors);
+                    mat.setColor("Color", ColorRGBA.Gray);
                 }
                 
                 Box box = new Box(Vector3f.ZERO, 1, 1, 1);
                 Geometry geometry = new Geometry("box_" + i + "_" + j, box);
-                Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+               
                 Material mat2 = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
                 
-                mat.setColor("Color", ColorRGBA.Blue);
+                
                 mat2.setColor("Color", ColorRGBA.Yellow);
                 if (i == 40 && j == 40)
                 {
@@ -790,7 +805,7 @@ public class Game extends SimpleApplication
                 }
                 
                 //this.world.getWorldNode().attachChild(geometry);
-                //geometry.setLocalTranslation(cells[i][j].getWorldCoordinates());
+                //geometry.setLocalTranslation(cells[i][j].getWorldCoordinates());/
             }
         }
         

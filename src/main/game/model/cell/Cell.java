@@ -190,4 +190,12 @@ public abstract class Cell
     public void setWorldCoordinates(Vector3f worldCoordinates) {
         this.worldCoordinates = worldCoordinates;
     }
+
+    public World getWorld() {
+        return world;
+    }
+
+    public void setWorld(World world) {
+        this.world = world;
+    }
 }

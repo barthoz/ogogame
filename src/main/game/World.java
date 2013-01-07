@@ -114,6 +114,7 @@ public class World
      */
     public void addCreature(Creature creature)
     {
+        this.creatures.add(creature);
         
         /*
         Spatial creatureModel = null;

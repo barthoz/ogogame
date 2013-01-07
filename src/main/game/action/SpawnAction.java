@@ -8,10 +8,7 @@ import main.exception.ActionNotEnabledException;
 import main.game.Game;
 import main.game.Player;
 import main.game.model.ModelFactory;
-import main.game.model.creature.AirborneCreature;
-import main.game.model.creature.Creature;
-import main.game.model.creature.LandCreature;
-import main.game.model.creature.SeaCreature;
+import main.game.model.creature.*;
 
 /**
  *
@@ -54,8 +51,13 @@ public class SpawnAction extends Action
         }
         else
         {
-            Creature creature = ModelFactory.createCreature(game.getAssetManager(), this.player.getId() + "_" + this.player.retrieveAllocatedCreatureId(), this.player, this.creatureType);
+            String id = this.player.getId() + "_" + this.player.retrieveAllocatedCreatureId();
+            Creature creature = ModelFactory.createCreature(game.getAssetManager(), id, this.player, this.creatureType);
             this.player.addCreature(creature);
+            game.getWorld().addCreature(creature);
+            game.getWorld().getSelectableObjects().attachChild(creature.getModel());
+            
+            System.out.println(id);
         }
     }
     
