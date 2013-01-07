@@ -165,7 +165,6 @@ public class Game extends SimpleApplication
             {
                 System.out.println((String) selectedGeometry.getUserData("parentId"));
                 LandCreature creature = (LandCreature) world.findCreatureById((String) selectedGeometry.getUserData("parentId"));
-                
                 selectedObject = creature;
                 creature.getModel().setMaterial(mat);
             }
@@ -173,11 +172,13 @@ public class Game extends SimpleApplication
             {
                 SeaCreature creature = (SeaCreature) world.findCreatureById((String) selectedGeometry.getUserData("parentId"));
                 selectedObject = creature;
+                creature.getModel().setMaterial(mat);
             }
             else if (modelType.equals(AirborneCreature.CODE_ID))
             {
                 AirborneCreature creature = (AirborneCreature) world.findCreatureById((String) selectedGeometry.getUserData("parentId"));
                 selectedObject = creature;
+                creature.getModel().setMaterial(mat);
             }
             else if (modelType.equals("FoodSource"))
             {
@@ -206,10 +207,35 @@ public class Game extends SimpleApplication
           // Check if something was selected
           if (results.getClosestCollision() != null)
           {
+              Cell selectedCell = null;
+              
+              // Determine which cell was selected
+              Vector3f contactPoint = results.getClosestCollision().getContactPoint();
+             
+              if (contactPoint.y < 0)
+              {
+                  // Water cell must be selected
+
+                  Vector3f inverseDir = dir.negate();
+                  inverseDir = inverseDir.normalize();
+                  inverseDir = inverseDir.mult(0.2f);
+                  Vector3f result = contactPoint.clone();
+                  
+                  while (result.y < 0)
+                  {
+                      result = result.add(inverseDir);
+                  }
+                  
+                  selectedCell = world.getCellFromWorldCoordinates(result);
+              }
+              else
+              {
+                  selectedCell = world.getCellFromWorldCoordinates(contactPoint);
+              }
+              
               if (selectedObject instanceof Creature)
               {
-                  System.out.println("X: " + world.getCellFromWorldCoordinates(results.getClosestCollision().getContactPoint()).getXCoor() + " - Y: " + world.getCellFromWorldCoordinates(results.getClosestCollision().getContactPoint()).getYCoor());
-                  MoveAction act = new MoveAction((Creature) selectedObject, world.getCellFromWorldCoordinates(results.getClosestCollision().getContactPoint()));
+                  MoveAction act = new MoveAction((Creature) selectedObject, selectedCell);
                   
                   try
                   {
@@ -579,13 +605,13 @@ public class Game extends SimpleApplication
                 lobby.getGameConnector().broadcastSetModeDone();
                 Map<Player, List<Action>> actionMap = lobby.getGameConnector().receiveActions();
                 
-                for (Player player : players)
+                /*for (Player player : players)
                 {
                     for (Action action : actionMap.get(player))
                     {
                         player.addAction(action);
                     }
-                }
+                }*/
                 
                 initGetMode();
             }

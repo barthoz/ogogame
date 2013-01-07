@@ -65,17 +65,10 @@ public class MoveAction extends CreatureAction
             throw new ActionNotEnabledException();
         }
         else
-        {
-            System.out.println("Test Move");
-            
-            /**MotionPath path = new MotionPath();
-            path.addWayPoint(this.subject.getModel().getWorldTranslation());
-            path.addWayPoint(new Vector3f(this.subject.getModel().getWorldTranslation().x, this.subject.getModel().getWorldTranslation().y + 10, 0));
-            path.setCycle(false);*/
-            
-            try {//game.getWorld().getCells()[40][40] -> game.getWorld().getCells()[55][40]
+        {            
+            try
+            {
                 final MotionPath path = PathFinding.createMotionPath(game.getTerrain(), game.getWorld().getCells(), this.subject.getLocation(), this.destination, this.subject);
-                
                 
                 final Cinematic cinematic = new Cinematic(game.getWorld().getWorldNode(), 20);
                 MotionTrack track = new MotionTrack(this.subject.getModel(), path);

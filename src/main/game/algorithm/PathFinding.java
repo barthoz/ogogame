@@ -40,6 +40,12 @@ public class PathFinding
     
     public static MotionPath createMotionPath(TerrainQuad terrain, Cell[][] cells, Cell from, Cell to, Creature creature) throws NoReachablePathException
     {
+        if (creature instanceof AirborneCreature)
+        {
+            AirborneCreature airCreature = (AirborneCreature) creature;
+            airCreature.takeOff();
+        }
+        
         if (!to.creatureAllowed(creature))
         {
             throw new NoReachablePathException();
@@ -52,12 +58,11 @@ public class PathFinding
          */
         if (creature instanceof AirborneCreature)
         {
-            // Take off
-            AirborneCreature airCreature = (AirborneCreature) creature;
-            airCreature.takeOff();
-            
             // Add take off waypoint
-            motionPath.addWayPoint(from.getWorldCoordinates().add(new Vector3f(0, airCreatureHeight, 0)));
+            Vector3f takeOffWayPoint = new Vector3f(from.getWorldCoordinates().x, airCreatureHeight, from.getWorldCoordinates().z);
+            
+            motionPath.addWayPoint(creature.getModel().getLocalTranslation());
+            motionPath.addWayPoint(takeOffWayPoint);
             
             int numSteps = 100;
             float diffX = (to.getWorldCoordinates().x - from.getWorldCoordinates().x) / (float) numSteps;
@@ -90,12 +95,32 @@ public class PathFinding
                     {
                         float x = previousCell.getWorldCoordinates().x + i * xDiff;
                         float z = previousCell.getWorldCoordinates().z + i * zDiff;
-                        Vector3f part = new Vector3f(x, terrain.getHeight(new Vector2f(x, z)) - 100,z);
+                        Vector3f part = null;
+                        
+                        if (creature instanceof SeaCreature)
+                        {
+                            System.out.println("test");
+                            part = new Vector3f(x, 0, z);
+                        }
+                        else
+                        {
+                            part = new Vector3f(x, terrain.getHeight(new Vector2f(x, z)) - 100, z);
+                        }
+                        
                         motionPath.addWayPoint(part);
                     }
                 }
 
-                motionPath.addWayPoint(cell.getWorldCoordinates());
+                if (creature instanceof SeaCreature)
+                {
+                    Vector3f old = cell.getWorldCoordinates();
+                    motionPath.addWayPoint(new Vector3f(old.x, 0, old.z));
+                }
+                else
+                {
+                    motionPath.addWayPoint(cell.getWorldCoordinates());
+                }
+
                 previousCell = cell;
             }
         }

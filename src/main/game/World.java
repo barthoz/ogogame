@@ -14,6 +14,7 @@ import com.jme3.scene.shape.Box;
 import java.util.ArrayList;
 import java.util.List;
 import main.game.model.*;
+import main.game.model.cell.RockCell;
 import main.game.model.creature.*;
 
 /**
@@ -90,6 +91,13 @@ public class World
     public void initializeBases()
     {
         Cell[] baseLocations = new Cell[6];
+        this.cells[27][34] = new RockCell(this, 27, 34, this.cells[27][34].getWorldCoordinates());
+        this.cells[27][13] = new RockCell(this, 27, 13, this.cells[27][13].getWorldCoordinates());
+        this.cells[45][16] = new RockCell(this, 45, 16, this.cells[45][16].getWorldCoordinates());
+        this.cells[58][34] = new RockCell(this, 58, 34, this.cells[58][34].getWorldCoordinates());
+        this.cells[40][51] = new RockCell(this, 40, 51, this.cells[40][51].getWorldCoordinates());
+        this.cells[10][46] = new RockCell(this, 10, 46, this.cells[10][46].getWorldCoordinates());
+        
         baseLocations[0] = this.cells[27][34];
         baseLocations[1] = this.cells[27][13];
         baseLocations[2] = this.cells[45][16];

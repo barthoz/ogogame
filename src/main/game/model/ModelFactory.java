@@ -28,7 +28,7 @@ public class ModelFactory
     public static Base createBase(AssetManager assetManager, int id, Player player, Cell location)
     {
         // First create the spatial
-        Box box = new Box(Vector3f.ZERO, 32, 32, 32);
+        Box box = new Box(Vector3f.ZERO, 16, 30, 16);
         Geometry baseModel = new Geometry("base_" + id, box);
         Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
         mat.setColor("Color", ColorRGBA.Red);
