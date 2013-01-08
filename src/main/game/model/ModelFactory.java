@@ -30,12 +30,15 @@ public class ModelFactory
     {
         // First create the spatial
         Box box = new Box(Vector3f.ZERO, 16, 30, 16);
-        Geometry baseModel = new Geometry("base_" + id, box);
+        //Geometry baseModel = new Geometry("base_" + id, box);
         Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
         mat.setColor("Color", ColorRGBA.Red);
         
         
-        //Spatial baseModel = assetManager.loadModel("Models/Tree.j3o");
+       // Spatial baseModel = assetManager.loadModel("Models/Tree.j3o");
+        
+        Spatial baseModel = assetManager.loadModel("Models/Land/stilstaand.mesh.xml");
+            baseModel.setLocalScale(0.2f);
         baseModel.setUserData("modelType", "Base");
         baseModel.setUserData("parentId", id);
         //Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
@@ -74,13 +77,14 @@ public class ModelFactory
         if (creatureType.equals(LandCreature.CODE_ID))
         {
             creatureModel = assetManager.loadModel("Models/Land/stilstaand.mesh.xml");
-            creatureModel.setLocalScale(0.1f);
+            creatureModel.setLocalScale(0.2f);
             mat.setColor("Color", ColorRGBA.Green);
             creature = new LandCreature(player, id, creatureModel);
         }
         else if (creatureType.equals(SeaCreature.CODE_ID))
         {
-            creatureModel = assetManager.loadModel("Models/Tree.j3o");
+            creatureModel = assetManager.loadModel("Models/Sea/octopus.mesh.xml");
+            //creatureModel.setLocalScale(0.2f);
             mat.setColor("Color", ColorRGBA.Cyan);
             creature = new SeaCreature(player, id, creatureModel);
         }
