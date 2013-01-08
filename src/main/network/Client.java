@@ -14,11 +14,14 @@ public class Client
      * Properties
      */
     
-    public final static int PORT = 13337;
+    public final static int PORT = 13338;
     
     private int id;
     private String address;
     private String username;
+    private Client inNeighbour;
+    private Client outNeighbour;
+    private int baseId;
     
     /**
      * Constructor
@@ -62,4 +65,28 @@ public class Client
     public void setUsername(String username) {
         this.username = username;
     }    
+
+    public Client getInNeighbour() {
+        return inNeighbour;
+    }
+
+    public void setInNeighbour(Client inNeighbour) {
+        this.inNeighbour = inNeighbour;
+    }
+
+    public Client getOutNeighbour() {
+        return outNeighbour;
+    }
+
+    public void setOutNeighbour(Client outNeighbour) {
+        this.outNeighbour = outNeighbour;
+    }
+
+    public int getBaseId() {
+        return baseId;
+    }
+
+    public void setBaseId(int baseId) {
+        this.baseId = baseId;
+    }
 }

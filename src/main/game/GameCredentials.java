@@ -17,6 +17,7 @@ public class GameCredentials
     private int gameId;
     private String gameName;
     private String initialHostUsername;
+    private String initialHostIp;
 
     /**
      * Constructor
@@ -25,11 +26,12 @@ public class GameCredentials
     // XStream constructor
     public GameCredentials() { }
     
-    public GameCredentials(int gameId, String gameName, String initialHostUsername)
+    public GameCredentials(int gameId, String gameName, String initialHostUsername, String initialHostIp)
     {
         this.gameId = gameId;
         this.gameName = gameName;
         this.initialHostUsername = initialHostUsername;
+        this.initialHostIp = initialHostIp;
     }
 
     /**
@@ -63,5 +65,13 @@ public class GameCredentials
     public void setInitialHostUsername(String initialHostUsername)
     {
         this.initialHostUsername = initialHostUsername;
+    }
+
+    public String getInitialHostIp() {
+        return initialHostIp;
+    }
+
+    public void setInitialHostIp(String initialHostIp) {
+        this.initialHostIp = initialHostIp;
     }
 }

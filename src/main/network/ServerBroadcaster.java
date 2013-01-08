@@ -30,14 +30,16 @@ public class ServerBroadcaster implements Runnable
     
     private boolean started = true;
     private GameCredentials gameCredentials;
+    private DatagramSocket socket;
     
     /**
      * Constructor
      */
     
-    public ServerBroadcaster(GameCredentials gameCredentials)
+    public ServerBroadcaster(GameCredentials gameCredentials, DatagramSocket socket)
     {
         this.gameCredentials = gameCredentials;
+        this.socket = socket;
     }
     
     /**
@@ -69,20 +71,19 @@ public class ServerBroadcaster implements Runnable
                     MessageGameCredentials msgGameCredentials = new MessageGameCredentials(this.gameCredentials);
                     String strMsg = xstream.toXML(msgGameCredentials);
 
+                    System.out.println("Server out (" + msgGameCredentials.getGameCredentials().getInitialHostIp() + "): " + strMsg);
+                    
                     byte[] message = strMsg.getBytes();
-
-                    DatagramSocket socket = new DatagramSocket();
 
                     for (int i = 1; i <= 255; i++)
                     {
                         ip = beginIp + i;
+                        
                         InetAddress address = InetAddress.getByName(ip.toString());
-                        DatagramPacket packet = new DatagramPacket(message, message.length, address, InitClient.PORT);
+                        DatagramPacket packet = new DatagramPacket(message, message.length, address, Client.PORT);
 
                         socket.send(packet);
                     }
-
-                    socket.close();
 
                     try
                     {

@@ -28,5 +28,16 @@ public class MessageGameCredentials extends Message
     {
         this.gameCredentials = gameCredentials;
     }
+    
+    /**
+     * Getters & Setters
+     */
+    
+    public GameCredentials getGameCredentials() {
+        return gameCredentials;
+    }
 
+    public void setGameCredentials(GameCredentials gameCredentials) {
+        this.gameCredentials = gameCredentials;
+    }
 }
