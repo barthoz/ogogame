@@ -88,7 +88,6 @@ public abstract class Cell
            if (y > 1)
            {
                neighbours.add(cells[x - 1][y - 1]);
-               neighbours.add(cells[x][y - 1]);
            }
 
            // middle
@@ -98,8 +97,19 @@ public abstract class Cell
            if (y + 1 < cells[0].length)
            {
                neighbours.add(cells[x - 1][y + 1]);
-               neighbours.add(cells[x][y + 1]);
            }
+        }
+        
+        // middle-top
+        if (y + 1 < cells[0].length)
+        {
+           neighbours.add(cells[x][y + 1]);
+        }
+        
+        // middle-bottom
+        if (y > 1)
+        {
+            neighbours.add(cells[x][y - 1]);
         }
         
         // right
