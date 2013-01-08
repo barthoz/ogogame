@@ -35,33 +35,7 @@ public class InitialServer
      * Business logic
      */
     
-    public void broadcastGame()
-    {
-        try
-        {
-            InetAddress localHost = Inet4Address.getLocalHost();
-            NetworkInterface networkInterface = NetworkInterface.getByInetAddress(localHost);
-            System.out.println();
-            String[] subnet = networkInterface.getInterfaceAddresses().get(0).getAddress().toString().replaceFirst("/", "").split("\\.");
-            
-            String beginIp = subnet[0] + "." + subnet[1] + "." + subnet[2] + ".";
-            String ip;
-            
-            for (int i = 1; i <= 255; i++)
-            {
-                ip = beginIp + i;
-                System.out.println(ip);
-            }
-        }
-        catch (SocketException ex)
-        {
-            Logger.getLogger(InitialServer.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        catch (UnknownHostException ex)
-        {
-            Logger.getLogger(InitialServer.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
+    
     
     
     /**

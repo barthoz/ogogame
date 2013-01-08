@@ -87,6 +87,7 @@ public class MoveAction extends CreatureAction
                 
                 final Cinematic cinematic = new Cinematic(game.getWorld().getWorldNode(), 20);
                 MotionTrack track = new MotionTrack(this.subject.getModel(), path);
+                track.setDirectionType(MotionEvent.Direction.Path);
                 cinematic.addCinematicEvent(0, track);
                 cinematic.fitDuration();
                 game.getStateManager().attach(cinematic);

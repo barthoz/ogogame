@@ -24,7 +24,7 @@ public class Main
     {
         
         InitialServer server = new InitialServer();
-        server.broadcastGame();
+        //server.broadcastGame();
         Lobby lobby = new Lobby();
         Game game = new Game(lobby, new GameCredentials(0, "test", "hostnamehere"));
         game.start();

@@ -117,9 +117,9 @@ public class Game extends SimpleApplication
           // Check if something was selected
           if (results.getClosestCollision() != null)
           {
-              System.out.println("Test");
-            Geometry selectedGeometry = results.getClosestCollision().getGeometry();
-            String modelType = selectedGeometry.getUserData("modelType");
+            Spatial selectedSpatial = results.getClosestCollision().getGeometry().getParent();
+            //Geometry selectedGeometry = results.getClosestCollision().getGeometry();
+            String modelType = selectedSpatial.getUserData("modelType");
 
             /**
              * Determine which model has been selected
@@ -130,7 +130,7 @@ public class Game extends SimpleApplication
             
             if (modelType.equals("Base"))
             {
-                Base base = (Base) world.findBaseById((Integer) selectedGeometry.getUserData("parentId"));
+                Base base = (Base) world.findBaseById((Integer) selectedSpatial.getUserData("parentId"));
                 
                 // You can only select your own base
                 if (base.getPlayer().equals(me))
@@ -141,20 +141,20 @@ public class Game extends SimpleApplication
             }
             else if (modelType.equals(LandCreature.CODE_ID))
             {
-                System.out.println((String) selectedGeometry.getUserData("parentId"));
-                LandCreature creature = (LandCreature) world.findCreatureById((String) selectedGeometry.getUserData("parentId"));
+                System.out.println((String) selectedSpatial.getUserData("parentId"));
+                LandCreature creature = (LandCreature) world.findCreatureById((String) selectedSpatial.getUserData("parentId"));
                 selectedObject = creature;
                 creature.getModel().setMaterial(mat);
             }
             else if (modelType.equals(SeaCreature.CODE_ID))
             {
-                SeaCreature creature = (SeaCreature) world.findCreatureById((String) selectedGeometry.getUserData("parentId"));
+                SeaCreature creature = (SeaCreature) world.findCreatureById((String) selectedSpatial.getUserData("parentId"));
                 selectedObject = creature;
                 creature.getModel().setMaterial(mat);
             }
             else if (modelType.equals(AirborneCreature.CODE_ID))
             {
-                AirborneCreature creature = (AirborneCreature) world.findCreatureById((String) selectedGeometry.getUserData("parentId"));
+                AirborneCreature creature = (AirborneCreature) world.findCreatureById((String) selectedSpatial.getUserData("parentId"));
                 selectedObject = creature;
                 creature.getModel().setMaterial(mat);
             }
@@ -235,13 +235,13 @@ public class Game extends SimpleApplication
               {
                   if (results.size() > 0)
                   {
-                    if (results.getClosestCollision().getGeometry().getUserData("modelType").equals("FoodSource") && !(selectedObject instanceof AirborneCreature))
+                    if (results.getClosestCollision().getGeometry().getParent().getUserData("modelType").equals("FoodSource") && !(selectedObject instanceof AirborneCreature))
                     {
                         /**
                          * PickupFoodAction
                          */
 
-                        PickupFoodAction act = new PickupFoodAction(me, (Creature) selectedObject, world.findFoodSourceById((Integer) results.getClosestCollision().getGeometry().getUserData("parentId")));
+                        PickupFoodAction act = new PickupFoodAction(me, (Creature) selectedObject, world.findFoodSourceById((Integer) results.getClosestCollision().getGeometry().getParent().getUserData("parentId")));
                         try {
                             act.performAction(parent);
                         } catch (ActionNotEnabledException ex) {
@@ -822,33 +822,11 @@ public class Game extends SimpleApplication
                     mat.setColor("Color", ColorRGBA.Gray);
                 }
                 
-                Box box = new Box(Vector3f.ZERO, 1, 1, 1);
+                /*Box box = new Box(Vector3f.ZERO, 1, 1, 1);
                 Geometry geometry = new Geometry("box_" + i + "_" + j, box);
                
                 Material mat2 = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-                
-                
-                mat2.setColor("Color", ColorRGBA.Yellow);
-                if (i == 40 && j == 40)
-                {
-                    Spatial spatial = assetManager.loadModel("Models/Tree.j3o");
-                    spatial.setMaterial(mat);
-                    geometry.setMaterial(mat);
-                    this.world.getWorldNode().attachChild(spatial);
-                    spatial.setLocalTranslation(cells[i][j].getWorldCoordinates());
-                }
-                else if (i == 55 && j == 40)
-                {
-                    Spatial spatial = assetManager.loadModel("Models/Tree.j3o");
-                    spatial.setMaterial(mat);
-                    geometry.setMaterial(mat);
-                    this.world.getWorldNode().attachChild(spatial);
-                    spatial.setLocalTranslation(cells[i][j].getWorldCoordinates());
-                }
-                else
-                {
-                    geometry.setMaterial(mat);
-                }
+                geometry.setMaterial(mat);*/
                 
                 //this.world.getWorldNode().attachChild(geometry);
                 //geometry.setLocalTranslation(cells[i][j].getWorldCoordinates());/
