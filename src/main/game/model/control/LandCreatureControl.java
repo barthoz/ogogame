@@ -4,6 +4,10 @@
  */
 package main.game.model.control;
 
+import com.jme3.animation.AnimChannel;
+import com.jme3.animation.AnimControl;
+import com.jme3.animation.AnimEventListener;
+import com.jme3.animation.LoopMode;
 import com.jme3.export.JmeExporter;
 import com.jme3.export.JmeImporter;
 import com.jme3.export.Savable;
@@ -24,53 +28,61 @@ import main.game.model.creature.LandCreature;
  *
  * @author s116861
  */
-public class LandCreatureControl extends AbstractControl implements Savable, Cloneable
+public class LandCreatureControl extends AbstractControl implements Savable, Cloneable, AnimEventListener
 {
+
     /**
      * Properties
      */
-    
     private Game game;
     private LandCreature controllee;
     private Action openAction;
-    
+    private AnimChannel channel;
+    private AnimControl control;
+
     /**
      * Constructors
      */
-    
     /**
      * Serialization constructor.
      */
-    public LandCreatureControl() { }
-    
+    public LandCreatureControl()
+    {
+    }
+
     /**
      * Optional custom constructor with arguments that can init custom fields.
      * Note: you cannot modify the spatial here yet!
      */
     public LandCreatureControl(Spatial spatial, Game game, LandCreature controllee)
-    { 
-      super.setSpatial(spatial);
-      this.game = game;
-      this.controllee = controllee;
-    } 
+    {
+        super.setSpatial(spatial);
+        this.game = game;
+        this.controllee = controllee;
+        control = spatial.getControl(AnimControl.class);
+        control.addListener(this);
+        channel = control.createChannel();
+        channel.setAnim("Stilstaand");
+    }
 
     /**
      * Business logic
      */
-    
-    /** This is your init method. Optionally, you can modify 
-      * the spatial from here (transform it, initialize userdata, etc). */
+    /**
+     * This is your init method. Optionally, you can modify the spatial from
+     * here (transform it, initialize userdata, etc).
+     */
     @Override
     public void setSpatial(Spatial spatial)
     {
-      super.setSpatial(spatial);
+        super.setSpatial(spatial);
     }
 
-
-    /** Implement your spatial's behaviour here.
-      * From here you can modify the scene graph and the spatial
-      * (transform them, get and set userdata, etc).
-      * This loop controls the spatial while the Control is enabled. */
+    /**
+     * Implement your spatial's behaviour here. From here you can modify the
+     * scene graph and the spatial (transform them, get and set userdata, etc).
+     * This loop controls the spatial while the Control is enabled.
+     */
     @Override
     protected void controlUpdate(float tpf)
     {
@@ -79,22 +91,16 @@ public class LandCreatureControl extends AbstractControl implements Savable, Clo
             /**
              * Game in SET-mode
              */
-            
-            
-        }
-        else
+        } else
         {
             /**
              * Game in GET-mode
              */
-            
             // Check if there are any open actions
             if (this.openAction != null)
             {
                 // Identify the type of action and perform it
-                
-            }
-            else
+            } else
             {
                 // Check if there are any other actions
                 List<CreatureAction> actions = this.controllee.getPlayer().getCreatureActions(this.controllee);
@@ -102,34 +108,33 @@ public class LandCreatureControl extends AbstractControl implements Savable, Clo
                 {
                     // Perform the next action
                     this.openAction = actions.get(0);
-                }
-                else
+                } else
                 {
                     // We are done performing all actions
                 }
             }
         }
-        
-      if (spatial != null)
-      {
-        //spatial.rotate(tpf,tpf,tpf); // example behaviour
-      }
+
+        if (spatial != null)
+        {
+            //spatial.rotate(tpf,tpf,tpf); // example behaviour
+        }
     }
 
     @Override
     public Control cloneForSpatial(Spatial spatial)
     {
-      final LandCreatureControl control = new LandCreatureControl();
-      /* Optional: use setters to copy userdata into the cloned control */
-      // control.setIndex(i); // example
-      control.setSpatial(spatial);
-      return control;
+        final LandCreatureControl control = new LandCreatureControl();
+        /* Optional: use setters to copy userdata into the cloned control */
+        // control.setIndex(i); // example
+        control.setSpatial(spatial);
+        return control;
     }
 
     @Override
     protected void controlRender(RenderManager rm, ViewPort vp)
     {
-       /* Optional: rendering manipulation (for advanced users) */
+        /* Optional: rendering manipulation (for advanced users) */
     }
 
     @Override
@@ -144,5 +149,20 @@ public class LandCreatureControl extends AbstractControl implements Savable, Clo
     {
         super.write(ex);
         // ex.getCapsule(this).write(...);
-    }    
+    }
+
+    public void onAnimCycleDone(AnimControl control, AnimChannel channel, String animName)
+    {
+        if (animName.equals("Stilstaand"))
+        {
+            channel.setAnim("Stilstaand", 0.50f);
+            channel.setLoopMode(LoopMode.DontLoop);
+            channel.setSpeed(1f);
+        }
+    }
+
+    public void onAnimChange(AnimControl control, AnimChannel channel, String animName)
+    {
+        //throw new UnsupportedOperationException("Not supported yet.");
+    }
 }

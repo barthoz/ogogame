@@ -73,8 +73,9 @@ public class ModelFactory
         
         if (creatureType.equals(LandCreature.CODE_ID))
         {
-            creatureModel = assetManager.loadModel("Models/Tree.j3o");
-            mat.setColor("Color", ColorRGBA.Brown);
+            creatureModel = assetManager.loadModel("Models/Land/stilstaand.mesh.xml");
+            creatureModel.setLocalScale(0.1f);
+            mat.setColor("Color", ColorRGBA.Green);
             creature = new LandCreature(player, id, creatureModel);
         }
         else if (creatureType.equals(SeaCreature.CODE_ID))
