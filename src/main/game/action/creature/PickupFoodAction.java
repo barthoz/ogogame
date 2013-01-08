@@ -4,7 +4,6 @@
  */
 package main.game.action.creature;
 
-import main.game.action.creature.CreatureAction;
 import com.jme3.cinematic.Cinematic;
 import com.jme3.cinematic.MotionPath;
 import com.jme3.cinematic.MotionPathListener;
@@ -12,7 +11,6 @@ import com.jme3.cinematic.events.CinematicEvent;
 import com.jme3.cinematic.events.CinematicEventListener;
 import com.jme3.cinematic.events.MotionEvent;
 import com.jme3.cinematic.events.MotionTrack;
-import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -20,9 +18,8 @@ import main.exception.ActionNotEnabledException;
 import main.exception.NoReachablePathException;
 import main.game.Game;
 import main.game.Player;
-import main.game.World;
 import main.game.algorithm.PathFinding;
-import main.game.model.cell.Cell;
+import main.game.model.FoodSource;
 import main.game.model.creature.AirborneCreature;
 import main.game.model.creature.Creature;
 
@@ -30,60 +27,54 @@ import main.game.model.creature.Creature;
  *
  * @author s116861
  */
-public class MoveAction extends CreatureAction
+public class PickupFoodAction extends CreatureAction
 {
     /**
      * Properties
      */
     
-    private transient Cell destination;
-    
-    private int destinationX;
-    
-    private int destinationY;
+    private FoodSource foodSource;
     
     /**
-     * Constructors
+     * Constructor
      */
     
-    public MoveAction(Player player, Creature subject, Cell destination)
+    public PickupFoodAction(Player player, Creature subject, FoodSource foodSource)
     {
         this.player = player;
         this.subject = subject;
-        this.destination = destination;
+        this.foodSource = foodSource;
     }
-    
+
     /**
-     * Business Logic
+     * Business logic
      */
-    
-    @Override
-    public void prepareForSerialization()
-    {
-        super.prepareForSerialization();
-        
-        this.destinationX = this.destination.getXCoor();
-        this.destinationY = this.destination.getYCoor();
-    }
     
     @Override
     public boolean isEnabled(Game game)
     {
-        return true;
+        if (this.foodSource.hasFood())
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 
     @Override
     public void performAction(Game game) throws ActionNotEnabledException
     {
-        if (!isEnabled(game))
+        if (!this.isEnabled(game))
         {
             throw new ActionNotEnabledException();
         }
         else
-        {            
+        {
             try
             {
-                final MotionPath path = PathFinding.createMotionPath(game.getTerrain(), game.getWorld().getCells(), this.subject.getLocation(), this.destination, this.subject);
+                final MotionPath path = PathFinding.createMotionPath(game.getTerrain(), game.getWorld().getCells(), this.subject.getLocation(), this.foodSource.getLocation(), this.subject);
                 
                 final Cinematic cinematic = new Cinematic(game.getWorld().getWorldNode(), 20);
                 MotionTrack track = new MotionTrack(this.subject.getModel(), path);
@@ -103,7 +94,7 @@ public class MoveAction extends CreatureAction
                     }
                 });
                 
-                final Vector3f airDestination = new Vector3f(destination.getWorldCoordinates().x, PathFinding.airCreatureHeight, destination.getWorldCoordinates().z);
+                final Vector3f airDestination = new Vector3f(foodSource.getLocation().getWorldCoordinates().x, PathFinding.airCreatureHeight, foodSource.getLocation().getWorldCoordinates().z);
                 
                 cinematic.addListener(new CinematicEventListener()
                 {
@@ -125,17 +116,20 @@ public class MoveAction extends CreatureAction
                         }
                         else
                         {
-                            subject.getModel().setLocalTranslation(destination.getWorldCoordinates());
+                            subject.getModel().setLocalTranslation(foodSource.getLocation().getWorldCoordinates());
                         }
                         
-                        subject.setLocation(destination);
+                        subject.setLocation(foodSource.getLocation());
                     }
                     
                 });
                 cinematic.play();
             } catch (NoReachablePathException ex) {
                 Logger.getLogger(MoveAction.class.getName()).log(Level.SEVERE, null, ex);
-            }            
+            }
+            
+            // When succeeded, perform some action
+            this.player.increaseFood(1);
         }
     }
     

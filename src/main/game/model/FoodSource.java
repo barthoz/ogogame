@@ -6,6 +6,7 @@ package main.game.model;
 
 import com.jme3.scene.Spatial;
 import main.game.Game;
+import main.game.model.cell.Cell;
 import main.game.model.control.FoodSourceControl;
 
 /**
@@ -23,14 +24,16 @@ public class FoodSource
     private boolean hasFood;
     private int roundLastEaten;
     private FoodSourceControl controller;
+    private Cell location;
 
     /**
      * Constructor
      */
-    public FoodSource(int id, Spatial model, Game game)
+    public FoodSource(int id, Spatial model, Game game, Cell location)
     {
         this.id = id;
         this.model = model;
+        this.location = location;
         this.hasFood = true;
         this.roundLastEaten = -1;
         this.controller = new FoodSourceControl(model, game, this);
@@ -60,6 +63,16 @@ public class FoodSource
     {
         return id;
     }
+    
+    public void refill()
+    {
+        this.hasFood = true;
+    }
+    
+    public void eat()
+    {
+        this.hasFood = false;
+    }
 
     /**
      * Getters & Setters
@@ -74,14 +87,9 @@ public class FoodSource
         this.model = model;
     }
 
-    public boolean isHasFood()
+    public boolean hasFood()
     {
-        return hasFood;
-    }
-
-    public void setHasFood(boolean hasFood)
-    {
-        this.hasFood = hasFood;
+        return this.hasFood;
     }
 
     public int getRoundLastEaten()
@@ -102,5 +110,13 @@ public class FoodSource
     public void setController(FoodSourceControl controller)
     {
         this.controller = controller;
+    }
+
+    public Cell getLocation() {
+        return location;
+    }
+
+    public void setLocation(Cell location) {
+        this.location = location;
     }
 }

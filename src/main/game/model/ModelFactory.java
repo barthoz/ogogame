@@ -12,6 +12,7 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Box;
+import main.game.Game;
 import main.game.model.cell.Cell;
 import main.game.model.creature.*;
 
@@ -44,6 +45,23 @@ public class ModelFactory
         Base base = new Base(id, baseModel, player, location);
         
         return base;
+    }
+    
+    public static FoodSource createFoodSource(AssetManager assetManager, int id, Game game, Cell location)
+    {
+        // First create the spatial
+        Box box = new Box(Vector3f.ZERO, 16, 30, 16);
+        Geometry fsModel = new Geometry("foodSource_" + id, box);
+        Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+        mat.setColor("Color", ColorRGBA.Green);
+        
+        fsModel.setUserData("modelType", "FoodSource");
+        fsModel.setUserData("parentId", id);
+        fsModel.setMaterial(mat);
+        
+        FoodSource foodSource = new FoodSource(id, fsModel, game, location);
+        
+        return foodSource;
     }
     
     public static Creature createCreature(AssetManager assetManager, String id, Player player, String creatureType)

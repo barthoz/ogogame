@@ -4,6 +4,7 @@
  */
 package main.game.action;
 
+import java.io.Serializable;
 import main.exception.ActionNotEnabledException;
 import main.game.Game;
 import main.game.Player;
@@ -13,13 +14,15 @@ import main.game.World;
  *
  * @author Daniel
  */
-public abstract class Action
+public abstract class Action implements Serializable
 {
     /**
      * Properties
      */
     
-    protected Player player;
+    protected transient Player player;
+    
+    protected int playerId;
     
     /**
      * Constructor
@@ -28,6 +31,11 @@ public abstract class Action
     /**
      * Business logic
      */
+    
+    public void prepareForSerialization()
+    {
+        this.playerId = this.player.getId();
+    }
     
     public abstract boolean isEnabled(Game game);
     

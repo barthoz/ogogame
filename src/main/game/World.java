@@ -14,6 +14,8 @@ import com.jme3.scene.shape.Box;
 import java.util.ArrayList;
 import java.util.List;
 import main.game.model.*;
+import main.game.model.cell.DeepWaterCell;
+import main.game.model.cell.LandCell;
 import main.game.model.cell.RockCell;
 import main.game.model.creature.*;
 
@@ -115,6 +117,38 @@ public class World
     }
     
     /**
+     * Initialize all food sources.
+     */
+    public void initializeFoodSources()
+    {
+        List<Cell> spawnCells = new ArrayList<Cell>();
+        
+        for (int i = 0; i < this.cells.length; i++)
+        {
+            for (int j = 0; j < this.cells[0].length; j++)
+            {
+                if (!(cells[i][j] instanceof RockCell))
+                {
+                    spawnCells.add(cells[i][j]);
+                }
+            }
+        }
+        
+        int numFoodSources = 30;
+        
+        for (int i = 0; i < numFoodSources; i++)
+        {
+            int foodSourceLocationPos = (int) Math.round(Math.random() * (spawnCells.size() - 1));
+            
+            FoodSource foodSource = ModelFactory.createFoodSource(this.game.getAssetManager(), i, this.game, spawnCells.get(foodSourceLocationPos));
+            this.foodSources.add(foodSource);
+            this.foodSourceContainer.attachChild(foodSource.getModel());
+            foodSource.getModel().setLocalTranslation(foodSource.getLocation().getWorldCoordinates());
+            spawnCells.remove(foodSourceLocationPos);
+        }
+    }
+    
+    /**
      * Add a creature to the world and player.
      *
      * @Pre 0 <= type <= 2 && player != null
@@ -123,40 +157,6 @@ public class World
     public void addCreature(Creature creature)
     {
         this.creatures.add(creature);
-        
-        /*
-        Spatial creatureModel = null;
-        Creature creature = null;
-
-        switch (type)
-        {
-            case Creature.TYPE_LAND:
-                Box b = new Box(Vector3f.ZERO, 1, 1, 1);
-                //creatureModel = new Geometry("blue cube", b);
-                creatureModel = game.getAssetManager().loadModel("Models/Tree.j3o");
-                creatureModel.setUserData("modelType", "CreatureLand");
-                creature = new LandCreature(player, new String(retrieveAllocatedId() + ""), creatureModel);
-                break;
-            case Creature.TYPE_SEA:
-                creatureModel = game.getAssetManager().loadModel("Models/Tree.j3o");
-                creatureModel.setUserData("modelType", "CreatureSea");
-                creature = new SeaCreature(player, new String(retrieveAllocatedId() + ""), creatureModel);
-                break;
-            case Creature.TYPE_AIR:
-                creatureModel = game.getAssetManager().loadModel("Models/Tree.j3o");
-                creatureModel.setUserData("modelType", "CreatureAirborne");
-                creature = new AirborneCreature(player, new String(retrieveAllocatedId() + ""), creatureModel);
-                break;
-        }
-
-        creature.setLocation(this.cells[32][32]);
-        creatureModel.setUserData("parentId", creature.getId());
-        Material mat = new Material(game.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
-        creatureModel.setMaterial(mat);
-        this.creatureContainer.attachChild(creatureModel);
-        this.creatures.add(creature);
-        
-        creatureModel.setLocalTranslation(cell.getWorldCoordinates());*/
     }
 
     /**
@@ -215,6 +215,22 @@ public class World
             if (base.getId() == id)
             {
                 return base;
+            }
+        }
+        
+        return null;
+    }
+    
+    /**
+     * Find food source by id.
+     */
+    public FoodSource findFoodSourceById(int id)
+    {
+        for (FoodSource foodSource : this.foodSources)
+        {
+            if (foodSource.getId() == id)
+            {
+                return foodSource;
             }
         }
         

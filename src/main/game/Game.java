@@ -59,6 +59,7 @@ import main.exception.ActionNotEnabledException;
 import main.game.action.Action;
 import main.game.action.SpawnAction;
 import main.game.action.creature.MoveAction;
+import main.game.action.creature.PickupFoodAction;
 import main.game.gui.HudController;
 import main.game.gui.SpawnMenuController;
 import main.game.model.Base;
@@ -100,6 +101,9 @@ public class Game extends SimpleApplication
         isRunning = !isRunning;
       }
       
+      /**
+       * [RIGHT-CLICK] Select creature, base
+       */
       if (!keyPressed && name.equals("RightClick"))
       {
           Vector2f click2d = inputManager.getCursorPosition();
@@ -135,33 +139,7 @@ public class Game extends SimpleApplication
                     nifty.gotoScreen("spawnMenu");
                 }
             }
-          }
-      }
-      
-      if (!keyPressed && name.equals("Select") && selectedObject == null)
-      {
-          Vector2f click2d = inputManager.getCursorPosition();
-          Vector3f click3d = cam.getWorldCoordinates(new Vector2f(click2d.x, click2d.y), 0f).clone();
-          Vector3f dir = cam.getWorldCoordinates(new Vector2f(click2d.x, click2d.y), 1f).subtractLocal(click3d).normalizeLocal();
-
-          CollisionResults results = new CollisionResults();
-          Ray ray = new Ray(click3d, dir);
-          world.getSelectableObjects().collideWith(ray, results);
-          
-          // Check if something was selected
-          if (results.getClosestCollision() != null)
-          {
-            Geometry selectedGeometry = results.getClosestCollision().getGeometry();
-            String modelType = selectedGeometry.getUserData("modelType");
-
-            /**
-             * Determine which model has been selected
-             */
-
-            Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-            mat.setColor("Color", ColorRGBA.Orange);
-            
-            if (modelType.equals(LandCreature.CODE_ID))
+            else if (modelType.equals(LandCreature.CODE_ID))
             {
                 System.out.println((String) selectedGeometry.getUserData("parentId"));
                 LandCreature creature = (LandCreature) world.findCreatureById((String) selectedGeometry.getUserData("parentId"));
@@ -180,21 +158,17 @@ public class Game extends SimpleApplication
                 selectedObject = creature;
                 creature.getModel().setMaterial(mat);
             }
-            else if (modelType.equals("FoodSource"))
-            {
-
-            }
-            else if (modelType.equals("Base"))
-            {
-
-            }
             else if (modelType.equals("Duck"))
             {
 
             }
           }
       }
-      else if (!keyPressed && name.equals("Select") && selectedObject != null)
+      
+      /**
+       * [LEFT-CLICK while nothing selected]
+       */
+      if (!keyPressed && name.equals("Select") && selectedObject == null)
       {
           Vector2f click2d = inputManager.getCursorPosition();
           Vector3f click3d = cam.getWorldCoordinates(new Vector2f(click2d.x, click2d.y), 0f).clone();
@@ -202,15 +176,39 @@ public class Game extends SimpleApplication
 
           CollisionResults results = new CollisionResults();
           Ray ray = new Ray(click3d, dir);
+          world.getSelectableObjects().collideWith(ray, results);
           
-          terrain.collideWith(ray, results);
           // Check if something was selected
           if (results.getClosestCollision() != null)
+          {
+            Geometry selectedGeometry = results.getClosestCollision().getGeometry();
+            String modelType = selectedGeometry.getUserData("modelType");
+
+            // Determine which model has been selected
+          }
+      }
+      /**
+       * [LEFT-CLICK while something selected] Select terrain, food source
+       */
+      else if (!keyPressed && name.equals("Select") && selectedObject != null)
+      {
+          Vector2f click2d = inputManager.getCursorPosition();
+          Vector3f click3d = cam.getWorldCoordinates(new Vector2f(click2d.x, click2d.y), 0f).clone();
+          Vector3f dir = cam.getWorldCoordinates(new Vector2f(click2d.x, click2d.y), 1f).subtractLocal(click3d).normalizeLocal();
+
+          CollisionResults terrainResults = new CollisionResults();
+          CollisionResults results = new CollisionResults();
+          Ray ray = new Ray(click3d, dir);
+          
+          terrain.collideWith(ray, terrainResults);
+          world.getSelectableObjects().collideWith(ray, results);
+          // Check if something was selected
+          if (terrainResults.getClosestCollision() != null)
           {
               Cell selectedCell = null;
               
               // Determine which cell was selected
-              Vector3f contactPoint = results.getClosestCollision().getContactPoint();
+              Vector3f contactPoint = terrainResults.getClosestCollision().getContactPoint();
              
               if (contactPoint.y < 0)
               {
@@ -235,21 +233,43 @@ public class Game extends SimpleApplication
               
               if (selectedObject instanceof Creature)
               {
-                  MoveAction act = new MoveAction((Creature) selectedObject, selectedCell);
-                  
-                  try
+                  if (results.size() > 0)
                   {
-                    act.performAction(parent);
+                    if (results.getClosestCollision().getGeometry().getUserData("modelType").equals("FoodSource") && !(selectedObject instanceof AirborneCreature))
+                    {
+                        /**
+                         * PickupFoodAction
+                         */
+
+                        PickupFoodAction act = new PickupFoodAction(me, (Creature) selectedObject, world.findFoodSourceById((Integer) results.getClosestCollision().getGeometry().getUserData("parentId")));
+                        try {
+                            act.performAction(parent);
+                        } catch (ActionNotEnabledException ex) {
+                            Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
                   }
-                  catch (ActionNotEnabledException ex)
+                  else
                   {
-                    Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
+                      /**
+                       * MoveAction
+                       */
+                        MoveAction act = new MoveAction(me, (Creature) selectedObject, selectedCell);
+
+                        try
+                        {
+                          act.performAction(parent);
+                        }
+                        catch (ActionNotEnabledException ex)
+                        {
+                          Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+
+                        // De-select creature
+                        Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+                        mat.setColor("Color", ColorRGBA.White);
+                        ((Creature) selectedObject).getModel().setMaterial(mat);
                   }
-                  
-                  // De-select creature
-                  Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-                  mat.setColor("Color", ColorRGBA.White);
-                  ((Creature) selectedObject).getModel().setMaterial(mat);
               }
               
               selectedObject = null;
@@ -490,6 +510,7 @@ public class Game extends SimpleApplication
          */
         
         this.world.initializeBases();
+        this.world.initializeFoodSources();
         
         initKeys();
         initSetMode();

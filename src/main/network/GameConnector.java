@@ -4,9 +4,17 @@
  */
 package main.network;
 
+import com.thoughtworks.xstream.XStream;
+import java.io.ByteArrayOutputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import main.lobby.Me;
 import main.game.GameCredentials;
 import main.game.action.Action;

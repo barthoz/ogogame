@@ -108,6 +108,23 @@ public class Player
     }
     
     /**
+     * Increase the food of the player.
+     */
+    public void increaseFood(int food)
+    {
+        this.food += food;
+    }
+    
+    /**
+     * Decrease the food of the player.
+     * @Pre this.food - food >= 0
+     */
+    public void decreaseFood(int food)
+    {
+        this.food -= food;
+    }
+    
+    /**
      * Getters & Setters
      */
     

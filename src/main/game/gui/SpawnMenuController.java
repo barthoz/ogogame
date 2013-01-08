@@ -8,6 +8,7 @@ import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
+import com.thoughtworks.xstream.XStream;
 import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.screen.Screen;
 import de.lessvoid.nifty.screen.ScreenController;
@@ -31,13 +32,16 @@ public class SpawnMenuController  extends AbstractAppState implements ScreenCont
   /** custom methods */
   public void spawnCreature(String creatureType)
   {
-      SpawnAction action = new SpawnAction(this.game.getMe(), creatureType);
-        try {
-            action.performAction(this.game);
-        } catch (ActionNotEnabledException ex) {
-            Logger.getLogger(SpawnMenuController.class.getName()).log(Level.SEVERE, null, ex);
-        }
-      System.out.println("spawned: " + creatureType);
+    SpawnAction action = new SpawnAction(this.game.getMe(), creatureType);
+    
+    try
+    {
+        action.performAction(this.game);
+    }
+    catch (ActionNotEnabledException ex)
+    {
+        Logger.getLogger(SpawnMenuController.class.getName()).log(Level.SEVERE, null, ex);
+    }
   }
   
   public void cancel()

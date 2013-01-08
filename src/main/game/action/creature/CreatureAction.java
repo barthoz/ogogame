@@ -17,7 +17,9 @@ public abstract class CreatureAction extends Action
      * Properties
      */
     
-    protected Creature subject;
+    protected transient Creature subject;
+    
+    protected String subjectId;
     
     /**
      * Constructor
@@ -26,6 +28,14 @@ public abstract class CreatureAction extends Action
     /**
      * Business logic
      */
+    
+    @Override
+    public void prepareForSerialization()
+    {
+        super.prepareForSerialization();
+        
+        this.subjectId = this.subject.getId();
+    }
     
     /**
      * Getters & Setters

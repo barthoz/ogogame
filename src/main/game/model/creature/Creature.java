@@ -77,6 +77,33 @@ public abstract class Creature
             health = 100;
         }
     }
+    
+    public void increaseHealth(int health)
+    {        
+        this.health += health;
+        
+        if (this.health > 100)
+        {
+            this.health = 100;
+        }
+    }
+    
+    public void decreaseHealth(int health)
+    {
+        this.health -= health;
+        
+        if (this.health <= 0)
+        {
+            // Creature died
+            this.die();
+            this.health = 0;
+        }
+    }
+    
+    public void die()
+    {
+        this.isAlive = false;
+    }
 
     /**
      * Getters & Setters

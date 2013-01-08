@@ -6,6 +6,7 @@ package main.game.action;
 
 import main.exception.ActionNotEnabledException;
 import main.game.Game;
+import main.game.Player;
 
 /**
  *
@@ -20,6 +21,11 @@ public class LeaveAction extends Action
     /**
      * Constructor
      */
+    
+    public LeaveAction(Player player)
+    {
+        this.player = player;
+    }
     
     /**
      * Business logic
