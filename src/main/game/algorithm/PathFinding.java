@@ -29,6 +29,7 @@ public class PathFinding
      */
     
     public final static int airCreatureHeight = 160;
+    public final static int seaCreatureHeight = -10;
     
     /**
      * Constructor
@@ -114,7 +115,7 @@ public class PathFinding
                 if (creature instanceof SeaCreature)
                 {
                     Vector3f old = cell.getWorldCoordinates();
-                    motionPath.addWayPoint(new Vector3f(old.x, 0, old.z));
+                    motionPath.addWayPoint(new Vector3f(old.x, creature.getModel().getLocalTranslation().y, old.z));
                 }
                 else
                 {
