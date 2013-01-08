@@ -20,6 +20,8 @@ public class Lobby
     
     private Me me;
     
+    private LobbyJFrame lobbyFrame;
+    
     /**
      * Constructor
      */
@@ -29,8 +31,8 @@ public class Lobby
         this.gameConnector = new GameConnector();
         this.me = null;
         
-        //LobbyJFrame frame = new LobbyJFrame(this);
-        //frame.setVisible(true);
+        this.lobbyFrame = new LobbyJFrame(this);
+        lobbyFrame.setVisible(true);
     }
     
     /**
@@ -55,5 +57,13 @@ public class Lobby
 
     public void setMe(Me me) {
         this.me = me;
+    }
+
+    public LobbyJFrame getLobbyFrame() {
+        return lobbyFrame;
+    }
+
+    public void setLobbyFrame(LobbyJFrame lobbyFrame) {
+        this.lobbyFrame = lobbyFrame;
     }
 }

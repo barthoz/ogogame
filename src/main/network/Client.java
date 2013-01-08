@@ -4,91 +4,62 @@
  */
 package main.network;
 
-import java.net.InetAddress;
-import java.net.Socket;
-
-public class Client implements Runnable
+/**
+ *
+ * @author s116861
+ */
+public class Client
 {
-	public final static String RING_MSG = "RING_MSG";
-	
-	private InetAddress ipAddress;
-	private String name;
-	private Client neighborIn;
-	private Client neighborOut;
-	private boolean hasToken;
-	private String criticalSection;
-	private Socket socketIn;
-	private Socket socketOut;
-	
-	public Client(String name, InetAddress ipAddress){
-		this.name = name;
-		this.ipAddress = ipAddress;
-		hasToken = false;
-	}
-	
-	public InetAddress getIpAddress()
-	{
-		return ipAddress;
-	}
-	public void setIpAddress(InetAddress ipAddress)
-	{
-		this.ipAddress = ipAddress;
-	}
-	public String getName()
-	{
-		return name;
-	}
-	public void setName(String name)
-	{
-		this.name = name;
-	}
-	
-	public void updateCriticalSection(){
-		
-	}
-	
-	public void assignToken(){
-		this.hasToken = true;
-	}
-	
-	public void passToken(){
-		this.hasToken = false;
-	}
-	
-	public Client getNeighborIn()
-	{
-		return neighborIn;
-	}
+    /**
+     * Properties
+     */
+    
+    public final static int PORT = 13337;
+    
+    private int id;
+    private String address;
+    private String username;
+    
+    /**
+     * Constructor
+     */
+    
+    public Client(int id, String address, String username)
+    {
+        this.id = id;
+        this.address = address;
+        this.username = username;
+    }
+    
+    /**
+     * Business logic
+     */
+    
+    /**
+     * Getters & Setters
+     */
+    
+    public int getId() {
+        return id;
+    }
 
-	public void setNeighborIn(Client neighborIn)
-	{
-		this.neighborIn = neighborIn;
-	}
+    public void setId(int id) {
+        this.id = id;
+    }
 
-	public Client getNeighborOut()
-	{
-		return neighborOut;
-	}
+    public String getAddress() {
+        return address;
+    }
 
-	public void setNeighborOut(Client neighborOut)
-	{
-		this.neighborOut = neighborOut;
-	}
+    public void setAddress(String address) {
+        this.address = address;
+    }
 
-	public String getCriticalSection()
-	{
-		return criticalSection;
-	}
+    public String getUsername() {
+        return username;
+    }
 
-	public void setCriticalSection(String criticalSection)
-	{
-		this.criticalSection = criticalSection;
-	}
-	
-	@Override
-	public void run(){
-		
-	}
-	
-	
+    public void setUsername(String username) {
+        this.username = username;
+    }    
 }

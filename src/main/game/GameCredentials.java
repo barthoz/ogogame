@@ -21,6 +21,10 @@ public class GameCredentials
     /**
      * Constructor
      */
+    
+    // XStream constructor
+    public GameCredentials() { }
+    
     public GameCredentials(int gameId, String gameName, String initialHostUsername)
     {
         this.gameId = gameId;
