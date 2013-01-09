@@ -17,17 +17,33 @@ public class GameCredentials
     private int gameId;
     private String gameName;
     private String initialHostUsername;
+    private String initialHostIp;
 
     /**
      * Constructor
      */
-    public GameCredentials(int gameId, String gameName, String initialHostUsername)
+    
+    // XStream constructor
+    public GameCredentials() { }
+    
+    public GameCredentials(int gameId, String gameName, String initialHostUsername, String initialHostIp)
     {
         this.gameId = gameId;
         this.gameName = gameName;
         this.initialHostUsername = initialHostUsername;
+        this.initialHostIp = initialHostIp;
     }
 
+    /**
+     * Business logic
+     */
+    
+    @Override
+    public String toString()
+    {
+        return this.gameName + " (" + this.initialHostIp + ") - " + this.initialHostUsername;
+    }
+    
     /**
      * Getters & Setters
      */
@@ -60,4 +76,13 @@ public class GameCredentials
     {
         this.initialHostUsername = initialHostUsername;
     }
+
+    public String getInitialHostIp() {
+        return initialHostIp;
+    }
+
+    public void setInitialHostIp(String initialHostIp) {
+        this.initialHostIp = initialHostIp;
+    }
+    
 }
