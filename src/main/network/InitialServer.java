@@ -156,7 +156,7 @@ public class InitialServer
                                 clients.add(client);
 
                                 // Success, so send message back to client with success
-                                MessageJoinApproved messageApproved = new MessageJoinApproved();
+                                MessageJoinApproved messageApproved = new MessageJoinApproved(client);
                                 String strMessageApproved = xstream.toXML(messageApproved);
                                 byte[] sendBuffer = strMessageApproved.getBytes();
                                 DatagramPacket sendPacket = new DatagramPacket(sendBuffer, sendBuffer.length, packet.getAddress(), Client.PORT);
