@@ -154,6 +154,7 @@ public class InitialServer
                                 Client client = new Client(retrieveNewId(), packet.getAddress().getHostAddress(), messageJoinReq.getUsername());
                                 System.out.println("Added client! Details:");
                                 clients.add(client);
+                                lobby.addPlayer(client.getUsername());
 
                                 // Success, so send message back to client with success
                                 MessageJoinApproved messageApproved = new MessageJoinApproved(client);
