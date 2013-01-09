@@ -68,7 +68,7 @@ public class InitialServer
             try
             {
                 this.socket = new DatagramSocket(PORT);
-                this.socket.setSoTimeout(500);
+                this.socket.setSoTimeout(5000);
             } catch (SocketException ex) {
                 Logger.getLogger(InitialServer.class.getName()).log(Level.SEVERE, null, ex);
             }
