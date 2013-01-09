@@ -112,6 +112,7 @@ public class Client
                             sendMessage = message;
                         }
                         
+                        sendMessage = new MessagePassToken();
                         sendMessage.setFromClientId(id);
                         sendBuffer = xstream.toXML(sendMessage).getBytes();
                         System.out.println("Client out: " + xstream.toXML(sendMessage));

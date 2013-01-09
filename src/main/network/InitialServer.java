@@ -328,9 +328,8 @@ public class InitialServer
             } catch (IOException ex) {
                 Logger.getLogger(InitialServer.class.getName()).log(Level.SEVERE, null, ex);
             }
-            
-            // Start game
-            lobby.startGame(this.me, this.clients, socket);
+
+            lobby.startGame(this.me, this.clients, lobby.getInitialClient().getSocket());
         }
         else
         {
