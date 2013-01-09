@@ -20,9 +20,15 @@ import main.game.GameCredentials;
 import main.network.message.Message;
 import main.network.message.MessageJoinRequest;
 import com.thoughtworks.xstream.XStream;
+import java.util.HashMap;
+import java.util.Map;
 import main.lobby.Lobby;
+import main.network.message.MessageGameCredentials;
 import main.network.message.MessageJoinApproved;
+import main.network.message.MessageJoinDisapproved;
+import main.network.message.MessagePing;
 import main.network.message.MessagePlayerJoined;
+import main.network.message.MessagePong;
 import main.network.message.MessageStartGame;
 
 /**
@@ -67,8 +73,8 @@ public class InitialServer
             NetworkInterface networkInterface = NetworkInterface.getByInetAddress(localHost);
             String address = networkInterface.getInterfaceAddresses().get(0).getAddress().toString().replaceFirst("/", "");
             
-            Client me = new Client(0, address, "Test");
-            this.clients.add(me);
+            //Client me = new Client(0, address, "Test");
+            //this.clients.add(me);
         } catch (SocketException ex) {
             Logger.getLogger(InitialServer.class.getName()).log(Level.SEVERE, null, ex);
         } catch (UnknownHostException ex) {
@@ -80,8 +86,10 @@ public class InitialServer
      * Business logic
      */
     
-    public void broadcastGame(GameCredentials gameCredentials)
+    public void broadcastGame(GameCredentials gameCredentials, Client me)
     {
+        this.clients.add(me);
+        this.lobby.addPlayer(me.getUsername());
         this.serverBroadcaster = new ServerBroadcaster(gameCredentials, socket);
         
         Thread thread = new Thread(this.serverBroadcaster);
@@ -121,38 +129,59 @@ public class InitialServer
                         {
                             MessageJoinRequest messageJoinReq = (MessageJoinRequest) message;
                             
-                            // Create new client
-                            Client client = new Client(retrieveNewId(), packet.getAddress().getHostAddress(), messageJoinReq.getUsername());
-                            System.out.println("Added client! Details:");
-                            //System.out.println(xstream.toXML(client));
-                            clients.add(client);
-                            
-                            // Success, so send message back to client with success
-                            MessageJoinApproved messageApproved = new MessageJoinApproved();
-                            String strMessageApproved = xstream.toXML(messageApproved);
-                            byte[] sendBuffer = strMessageApproved.getBytes();
-                            DatagramPacket sendPacket = new DatagramPacket(sendBuffer, sendBuffer.length, packet.getAddress(), Client.PORT);
-                            socket.send(sendPacket);
-                            
-                            // Send the update to all clients that a player has joined
-                            MessagePlayerJoined msgPlayerJoined = new MessagePlayerJoined(client.getUsername());
-                            sendBuffer = xstream.toXML(msgPlayerJoined).getBytes();
-                            
-                            for (Client c : clients)
+                            // Check whether client is allowed to join.
+                            if (clients.size() > 6 || lobby.getPlayersInGame().contains(messageJoinReq.getUsername()))
                             {
-                                sendPacket = new DatagramPacket(sendBuffer, sendBuffer.length, InetAddress.getByName(c.getAddress()), Client.PORT);
-                                
-                                MessagePlayerJoined msgPlayersIn;
-                                DatagramPacket packetPlayersIn;
-                                
-                                if (!c.equals(client))
+                                // Client disapproved
+                                String reason;
+                                if (clients.size() > 6)
                                 {
-                                    msgPlayersIn = new MessagePlayerJoined(client.getUsername());
-                                    sendBuffer = xstream.toXML(msgPlayersIn).getBytes();
-                                    packetPlayersIn = new DatagramPacket(sendBuffer, sendBuffer.length, packet.getAddress(), Client.PORT);
+                                    reason = "Server is full.";
+                                }
+                                else if (lobby.getPlayersInGame().add(messageJoinReq.getUsername()))
+                                {
+                                    reason = "Username has already been taken.";
                                 }
                                 
+                                MessageJoinDisapproved msgDisapproved = new MessageJoinDisapproved();
+                                byte[] sendBuffer = xstream.toXML(msgDisapproved).getBytes();
+                                DatagramPacket sendPacket = new DatagramPacket(sendBuffer, sendBuffer.length, packet.getAddress(), Client.PORT);
                                 socket.send(sendPacket);
+                            }
+                            else
+                            {
+                                // Create new client
+                                Client client = new Client(retrieveNewId(), packet.getAddress().getHostAddress(), messageJoinReq.getUsername());
+                                System.out.println("Added client! Details:");
+                                clients.add(client);
+
+                                // Success, so send message back to client with success
+                                MessageJoinApproved messageApproved = new MessageJoinApproved();
+                                String strMessageApproved = xstream.toXML(messageApproved);
+                                byte[] sendBuffer = strMessageApproved.getBytes();
+                                DatagramPacket sendPacket = new DatagramPacket(sendBuffer, sendBuffer.length, packet.getAddress(), Client.PORT);
+                                socket.send(sendPacket);
+
+                                // Send the update to all clients that a player has joined
+                                MessagePlayerJoined msgPlayerJoined = new MessagePlayerJoined(client.getUsername());
+                                sendBuffer = xstream.toXML(msgPlayerJoined).getBytes();
+
+                                for (Client c : clients)
+                                {
+                                    sendPacket = new DatagramPacket(sendBuffer, sendBuffer.length, InetAddress.getByName(c.getAddress()), Client.PORT);
+
+                                    MessagePlayerJoined msgPlayersIn;
+                                    DatagramPacket packetPlayersIn;
+
+                                    /*if (!c.equals(client))
+                                    {
+                                        msgPlayersIn = new MessagePlayerJoined(client.getUsername());
+                                        sendBuffer = xstream.toXML(msgPlayersIn).getBytes();
+                                        packetPlayersIn = new DatagramPacket(sendBuffer, sendBuffer.length, packet.getAddress(), Client.PORT);
+                                    }*/
+
+                                    socket.send(sendPacket);
+                                }
                             }
                         }
                         
@@ -181,25 +210,123 @@ public class InitialServer
      */
     public void startGame()
     {
-        this.stopBroadcasting();
-        this.buildTokenRing();
-        this.initializeBases();
+        // Check which clients are still active
         
-        MessageStartGame message = new MessageStartGame(this.clients);
-        String strMessage = xstream.toXML(message);
-        byte[] sendBuffer = strMessage.getBytes();
+        Thread listening = new Thread(new Runnable()
+        {
+            public void run()
+            {
+                Map<Client, Boolean> responded = new HashMap<Client, Boolean>();
+                
+                for (Client client : clients)
+                {
+                    responded.put(client, false);
+                }
+                
+                try
+                {
+                    //DatagramSocket socket = new DatagramSocket(Client.PORT);
+                    byte[] buffer = new byte[2048];
+                    DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
+
+                    long count = 0;
+                    
+                    //GameCredentials gameCredentials = null;
+                    
+                    while (true && count < 5000)
+                    {
+                        socket.receive(packet);
+                        String strMessage = new String(buffer, 0, packet.getLength());
+                        packet.setLength(buffer.length);
+                        
+                        // Handle message
+                        Message message = (Message) xstream.fromXML(strMessage);
+                        System.out.println("Server in: " + strMessage);
+                        
+                        if (message instanceof MessagePong)
+                        {
+                            responded.put(getClientByAddress(packet.getAddress()), true);
+                        }
+                        
+                        try {
+                            count += 10;
+                            Thread.sleep(10);
+                        } catch (InterruptedException ex) {
+                            Logger.getLogger(InitialServer.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+                    
+                    for (Client client : responded.keySet())
+                    {
+                        if (responded.get(client).equals(false))
+                        {
+                            clients.remove(client);
+                        }
+                    }
+                    
+                } catch (IOException ex) {
+                    Logger.getLogger(InitialServer.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        });
+        
+        listening.start();
+        
+        byte[] sendMsg = xstream.toXML(new MessagePing()).getBytes();
+        DatagramPacket packet;
         
         for (Client client : this.clients)
         {
-            try {
-                DatagramPacket sendPacket = new DatagramPacket(sendBuffer, sendBuffer.length, InetAddress.getByName(client.getAddress()), Client.PORT);
-                socket.send(sendPacket);
+            try
+            {
+                packet = new DatagramPacket(sendMsg, sendMsg.length, InetAddress.getByName(client.getAddress()), Client.PORT);
+                socket.send(packet);
             } catch (UnknownHostException ex) {
                 Logger.getLogger(InitialServer.class.getName()).log(Level.SEVERE, null, ex);
             } catch (IOException ex) {
                 Logger.getLogger(InitialServer.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+        
+        // Check whether number of new clients are between 2 and 6
+        if (this.clients.size() >= 2 && this.clients.size() <= 6)
+        {
+            this.stopBroadcasting();
+            this.buildTokenRing();
+
+            MessageStartGame message = new MessageStartGame(this.clients);
+            String strMessage = xstream.toXML(message);
+            byte[] sendBuffer = strMessage.getBytes();
+
+            for (Client client : this.clients)
+            {
+                try {
+                    DatagramPacket sendPacket = new DatagramPacket(sendBuffer, sendBuffer.length, InetAddress.getByName(client.getAddress()), Client.PORT);
+                    socket.send(sendPacket);
+                } catch (UnknownHostException ex) {
+                    Logger.getLogger(InitialServer.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (IOException ex) {
+                    Logger.getLogger(InitialServer.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
+        else
+        {
+            System.out.println("Cannot start game.");
+        }
+    }
+    
+    private Client getClientByAddress(InetAddress address)
+    {
+        for (Client client : this.clients)
+        {
+            if (client.getAddress().equals(address.getHostAddress()))
+            {
+                return client;
+            }
+        }
+        
+        return null;
     }
     
     /**
@@ -215,6 +342,8 @@ public class InitialServer
         
         for (Client client : this.clients)
         {
+            client.setId(i);
+            
             if (i == 0)
             {
                 client.setInNeighbour(this.clients.get(numClients - 1));
@@ -231,23 +360,6 @@ public class InitialServer
                 client.setOutNeighbour(this.clients.get(i + 1));
             }
             
-            i++;
-        }
-    }
-    
-    /**
-     * Give unique base to each client.
-     * 
-     * @Pre this.clients.size() <= 6
-     * @Post each client is assigned a unique base
-     */
-    private void initializeBases()
-    {
-        int i = 0;
-        
-        for (Client client : this.clients)
-        {
-            client.setBaseId(i);
             i++;
         }
     }

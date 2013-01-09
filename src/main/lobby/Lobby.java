@@ -15,6 +15,7 @@ import java.util.logging.Logger;
 import main.Main;
 import main.game.Game;
 import main.game.GameCredentials;
+import main.network.Client;
 import main.network.GameConnector;
 import main.network.InitialClient;
 import main.network.InitialServer;
@@ -98,9 +99,12 @@ public class Lobby
     
     public void addPlayer(String username)
     {
-        this.playersInGame.add(username);
-        this.intermediateClientJFrame.updatePlayers();
-        
+        if (!this.playersInGame.contains(username))
+        {
+            this.playersInGame.add(username);
+            this.intermediateClientJFrame.updatePlayers();
+            this.intermediateServerJFrame.updatePlayers();
+        }
     }
     
     public void joinGame(GameCredentials gameCredentials, String username)
@@ -114,7 +118,9 @@ public class Lobby
            String address = NetworkInterface.getByInetAddress(Inet4Address.getLocalHost()).getInterfaceAddresses().get(0).getAddress().toString().replaceFirst("/", "");
            
            GameCredentials gameCredentials = new GameCredentials(0, gameName, username, address);
-           this.initialServer.broadcastGame(gameCredentials);
+           Client me = new Client(0, address, username);
+           this.initialServer.broadcastGame(gameCredentials, me);
+           this.initialServer.listenToClients();
         } catch (SocketException ex) {
                 Logger.getLogger(Lobby.class.getName()).log(Level.SEVERE, null, ex);    
         } catch (UnknownHostException ex) {

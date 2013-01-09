@@ -8,34 +8,34 @@ package main.network.message;
  *
  * @author s116861
  */
-public class MessageJoinRequest extends Message
+public class MessageJoinDisapproved extends Message
 {
     /**
      * Properties
      */
     
-    private String username;
+    private String reason;
     
     /**
      * Constructor
      */
     
-    public MessageJoinRequest() { }
+    public MessageJoinDisapproved() { }
     
-    public MessageJoinRequest(String username)
+    public MessageJoinDisapproved(String reason)
     {
-        this.username = username;
+        this.reason = reason;
     }
     
     /**
      * Getters & Setters
      */
     
-    public String getUsername() {
-        return username;
+    public String getReason() {
+        return reason;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setReason(String reason) {
+        this.reason = reason;
     }
 }

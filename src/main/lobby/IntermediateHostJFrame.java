@@ -4,6 +4,8 @@
  */
 package main.lobby;
 
+import javax.swing.DefaultListModel;
+
 /**
  *
  * @author Daniel
@@ -25,6 +27,18 @@ public class IntermediateHostJFrame extends javax.swing.JFrame {
         initComponents();
     }
 
+    public void updatePlayers()
+    {
+        DefaultListModel model = new DefaultListModel();
+        
+        for (String username : this.lobby.getPlayersInGame())
+        {
+            model.addElement(username);
+        }
+        
+        this.jList1.setModel(model);
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -93,7 +107,7 @@ public class IntermediateHostJFrame extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
+        this.lobby.getInitialServer().startGame();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**

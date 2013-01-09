@@ -21,8 +21,11 @@ import main.lobby.Lobby;
 import main.network.message.Message;
 import main.network.message.MessageGameCredentials;
 import main.network.message.MessageJoinApproved;
+import main.network.message.MessageJoinDisapproved;
 import main.network.message.MessageJoinRequest;
+import main.network.message.MessagePing;
 import main.network.message.MessagePlayerJoined;
+import main.network.message.MessagePong;
 import main.network.old.InitClient;
 
 /**
@@ -184,11 +187,23 @@ public class InitialClient
                                 System.out.println("Approved!");
                                 //System.out.println(strMessage);
                             }
+                            else if (message instanceof MessageJoinDisapproved)
+                            {
+                                MessageJoinDisapproved msgJoinDisapproved = (MessageJoinDisapproved) message;
+                                
+                                System.out.println("Disapproved! Reason: " + msgJoinDisapproved);
+                            }
                             else if (message instanceof MessagePlayerJoined)
                             {
                                 MessagePlayerJoined msgPlayerJoined = (MessagePlayerJoined) message;
                                 lobby.addPlayer(msgPlayerJoined.getUsername());
                                 System.out.println("Player joined: " + msgPlayerJoined.getUsername());
+                            }
+                            else if (message instanceof MessagePing)
+                            {
+                                byte[] sendMsg = xstream.toXML(new MessagePong()).getBytes();
+                                DatagramPacket sendPacket = new DatagramPacket(sendMsg, sendMsg.length, packet.getAddress(), InitialServer.PORT);
+                                socket.send(sendPacket);
                             }
                             
                             try {

@@ -18,7 +18,7 @@ public class Message
     public final static int TYPE_JOIN_REQUEST = 1;
     public final static int TYPE_JOIN_APPROVED = 2;
     
-    private int messageType;
+    private int fromClientId = -1;
     
     /**
      * Business logic
@@ -26,20 +26,15 @@ public class Message
     
     public Message() { }
     
-    public Message(int messageType)
-    {
-        this.messageType = messageType;
-    }
-    
     /**
      * Getters & Setters
      */
     
-    public int getMessageType() {
-        return messageType;
+    public int getFromClientId() {
+        return fromClientId;
     }
 
-    public void setMessageType(int messageType) {
-        this.messageType = messageType;
+    public void setFromClientId(int fromClientId) {
+        this.fromClientId = fromClientId;
     }
 }
