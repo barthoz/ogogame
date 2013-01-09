@@ -227,7 +227,18 @@ public class InitialClient
                             {
                                 MessageStartGame msgStartGame = (MessageStartGame) message;
                                 
-                                lobby.startGame(me, msgStartGame.getTokenRing(), false);
+                                // Find me in token ring
+                                // (new instance of me since it has been sent over the network with the message)
+                                Client newMe = null;
+                                for (Client client : msgStartGame.getTokenRing())
+                                {
+                                    if (client.getId() == me.getId())
+                                    {
+                                        newMe = client;
+                                    }
+                                }
+                                
+                                lobby.startGame(newMe, msgStartGame.getTokenRing(), false);
                                 joiningServer = false;
                             }
                             
