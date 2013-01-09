@@ -238,8 +238,7 @@ public class InitialClient
                                     }
                                 }
                                 
-                                socket.close();
-                                lobby.startGame(newMe, msgStartGame.getTokenRing(), false);
+                                lobby.startGame(newMe, msgStartGame.getTokenRing(), socket);
                                 joiningServer = false;
                             }
                             

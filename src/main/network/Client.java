@@ -55,14 +55,8 @@ public class Client
      * Business logic
      */
     
-    public void startListening(boolean beginsWithToken)
-    {
-        try {
-            this.socket = new DatagramSocket(Client.PORT);
-        } catch (SocketException ex) {
-            Logger.getLogger(InitialClient.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        
+    public void startListening()
+    {        
         this.isListening = true;
         
         Thread listening = new Thread(new Runnable()

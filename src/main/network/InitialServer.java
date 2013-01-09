@@ -295,6 +295,7 @@ public class InitialServer
         // Check whether number of new clients are between 2 and 6
         if (this.clients.size() >= 2 && this.clients.size() <= 6)
         {
+            this.stopListening();
             this.stopBroadcasting();
             this.buildTokenRing();
 
@@ -328,12 +329,8 @@ public class InitialServer
                 Logger.getLogger(InitialServer.class.getName()).log(Level.SEVERE, null, ex);
             }
             
-            this.socket.close();
-            this.stopBroadcasting();
-            this.stopListening();
-            
             // Start game
-            lobby.startGame(this.me, this.clients, true);
+            lobby.startGame(this.me, this.clients, socket);
         }
         else
         {

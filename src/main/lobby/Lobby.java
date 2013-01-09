@@ -4,6 +4,7 @@
  */
 package main.lobby;
 
+import java.net.DatagramSocket;
 import java.net.Inet4Address;
 import java.net.NetworkInterface;
 import java.net.SocketException;
@@ -132,11 +133,12 @@ public class Lobby
         }
     }
     
-    public void startGame(Client me, List<Client> tokenRing, boolean hasToken)
+    public void startGame(Client me, List<Client> tokenRing, DatagramSocket socket)
     {
         this.me = me;
         this.tokenRing = tokenRing;
-        me.startListening(hasToken);
+        me.setSocket(socket);
+        me.startListening();
     }
     
     /**
