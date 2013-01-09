@@ -268,6 +268,50 @@ public class InitialServer
                         }
                     }
                     
+                    // Check whether number of new clients are between 2 and 6
+                    if (clients.size() >= 2 && clients.size() <= 6)
+                    {
+                        stopListening();
+                        stopBroadcasting();
+                        buildTokenRing();
+
+                        MessageStartGame message = new MessageStartGame(clients);
+                        String strMessage = xstream.toXML(message);
+                        byte[] sendBuffer = strMessage.getBytes();
+
+                        for (Client client : clients)
+                        {
+                            try {
+                                DatagramPacket sendPacket = new DatagramPacket(sendBuffer, sendBuffer.length, InetAddress.getByName(client.getAddress()), Client.PORT);
+                                socket.send(sendPacket);
+                            } catch (UnknownHostException ex) {
+                                Logger.getLogger(InitialServer.class.getName()).log(Level.SEVERE, null, ex);
+                            } catch (IOException ex) {
+                                Logger.getLogger(InitialServer.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                        }
+
+                        MessagePassToken msgInitialToken = new MessagePassToken();
+                        msgInitialToken.setFromClientId(me.getId());
+
+                        sendBuffer = xstream.toXML(msgInitialToken).getBytes();
+
+                        try {
+                            DatagramPacket sendPacket = new DatagramPacket(sendBuffer, sendBuffer.length, InetAddress.getByName(me.getOutNeighbour().getAddress()), Client.PORT);
+                            socket.send(sendPacket);
+                        } catch (UnknownHostException ex) {
+                            Logger.getLogger(InitialServer.class.getName()).log(Level.SEVERE, null, ex);
+                        } catch (IOException ex) {
+                            Logger.getLogger(InitialServer.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+
+                        lobby.startGame(me, clients, lobby.getInitialClient().getSocket());
+                    }
+                    else
+                    {
+                        System.out.println("Cannot start game.");
+                    }
+                    
                 } catch (IOException ex) {
                     Logger.getLogger(InitialServer.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -290,50 +334,6 @@ public class InitialServer
             } catch (IOException ex) {
                 Logger.getLogger(InitialServer.class.getName()).log(Level.SEVERE, null, ex);
             }
-        }
-        
-        // Check whether number of new clients are between 2 and 6
-        if (this.clients.size() >= 2 && this.clients.size() <= 6)
-        {
-            this.stopListening();
-            this.stopBroadcasting();
-            this.buildTokenRing();
-
-            MessageStartGame message = new MessageStartGame(this.clients);
-            String strMessage = xstream.toXML(message);
-            byte[] sendBuffer = strMessage.getBytes();
-
-            for (Client client : this.clients)
-            {
-                try {
-                    DatagramPacket sendPacket = new DatagramPacket(sendBuffer, sendBuffer.length, InetAddress.getByName(client.getAddress()), Client.PORT);
-                    socket.send(sendPacket);
-                } catch (UnknownHostException ex) {
-                    Logger.getLogger(InitialServer.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (IOException ex) {
-                    Logger.getLogger(InitialServer.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-            
-            MessagePassToken msgInitialToken = new MessagePassToken();
-            msgInitialToken.setFromClientId(this.me.getId());
-            
-            sendBuffer = xstream.toXML(msgInitialToken).getBytes();
-            
-            try {
-                DatagramPacket sendPacket = new DatagramPacket(sendBuffer, sendBuffer.length, InetAddress.getByName(me.getOutNeighbour().getAddress()), Client.PORT);
-                socket.send(sendPacket);
-            } catch (UnknownHostException ex) {
-                Logger.getLogger(InitialServer.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (IOException ex) {
-                Logger.getLogger(InitialServer.class.getName()).log(Level.SEVERE, null, ex);
-            }
-
-            lobby.startGame(this.me, this.clients, lobby.getInitialClient().getSocket());
-        }
-        else
-        {
-            System.out.println("Cannot start game.");
         }
     }
     

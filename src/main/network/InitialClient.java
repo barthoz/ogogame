@@ -247,6 +247,8 @@ public class InitialClient
                                 
                                 joiningServer = false;
                                 
+                                lobby.startGame(me, tokenRing, socket);
+                                
                                 break;
                             }
                             
@@ -266,11 +268,6 @@ public class InitialClient
             });
             
             thread.start();
-            
-            if (this.serverStarted)
-            {
-                lobby.startGame(this.me, this.tokenRing, socket);
-            }
             
             // Close socket
             //socket.close();
