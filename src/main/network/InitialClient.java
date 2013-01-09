@@ -38,6 +38,9 @@ public class InitialClient
     private Client me;
     private boolean joiningServer = false;
     
+    private boolean serverStarted;
+    private List<Client> tokenRing;
+    
     /**
      * Constructor
      */
@@ -238,8 +241,13 @@ public class InitialClient
                                     }
                                 }
                                 
-                                lobby.startGame(newMe, msgStartGame.getTokenRing(), socket);
+                                me = newMe;
+                                tokenRing = msgStartGame.getTokenRing();
+                                serverStarted = true;
+                                
                                 joiningServer = false;
+                                
+                                break;
                             }
                             
                             try
@@ -258,6 +266,11 @@ public class InitialClient
             });
             
             thread.start();
+            
+            if (this.serverStarted)
+            {
+                lobby.startGame(this.me, this.tokenRing, socket);
+            }
             
             // Close socket
             //socket.close();
