@@ -114,6 +114,7 @@ public class Client
                         
                         sendMessage.setFromClientId(id);
                         sendBuffer = xstream.toXML(sendMessage).getBytes();
+                        System.out.println("Client out: " + xstream.toXML(sendMessage));
                         sendPacket = new DatagramPacket(sendBuffer, sendBuffer.length, InetAddress.getByName(outNeighbour.getAddress()), Client.PORT);
                         socket.send(sendPacket);
                             
