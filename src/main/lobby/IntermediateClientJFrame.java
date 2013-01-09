@@ -4,15 +4,26 @@
  */
 package main.lobby;
 
+import javax.swing.DefaultListModel;
+import javax.swing.ListModel;
+
 /**
  *
  * @author Daniel
  */
 public class IntermediateClientJFrame extends javax.swing.JFrame {
 
+    private Lobby lobby;
+    
     /**
      * Creates new form IntermediateClientJFrame
      */
+    public IntermediateClientJFrame(Lobby lobby)
+    {
+        this.lobby = lobby;
+        initComponents();
+    }
+    
     public IntermediateClientJFrame() {
         initComponents();
     }
@@ -121,4 +132,16 @@ public class IntermediateClientJFrame extends javax.swing.JFrame {
     private javax.swing.JList jList1;
     private javax.swing.JScrollPane jScrollPane1;
     // End of variables declaration//GEN-END:variables
+
+    public void updatePlayers()
+    {
+        DefaultListModel model = new DefaultListModel();
+        
+        for (String username : this.lobby.getPlayersInGame())
+        {
+            model.addElement(username);
+        }
+        
+        this.jList1.setModel(model);
+    }
 }

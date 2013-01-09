@@ -4,6 +4,10 @@
  */
 package main.lobby;
 
+import java.util.List;
+import javax.swing.DefaultListModel;
+import main.game.GameCredentials;
+
 /**
  *
  * @author Daniel
@@ -25,6 +29,22 @@ public class LobbyJFrame extends javax.swing.JFrame {
         initComponents();
     }
 
+    /**
+     * Business logic
+     */
+    
+    public void updateAvailableGames()
+    {
+        DefaultListModel model = new DefaultListModel();
+        
+        for (GameCredentials gc : lobby.getAvailableGames())
+        {
+            model.addElement(gc);
+        }
+        
+        this.jList1.setModel(model);
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -145,7 +165,7 @@ public class LobbyJFrame extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
+        this.lobby.getInitialClient().listenToServers();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
@@ -153,11 +173,13 @@ public class LobbyJFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_jTextField1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        new IntermediateClientJFrame().setVisible(true);
+        GameCredentials selectedGame = (GameCredentials) this.jList1.getSelectedValue();
+        lobby.joinGame(selectedGame, this.jTextField1.getText());
+        lobby.getIntermediateClientJFrame().setVisible(true);
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        new IntermediateHostJFrame().setVisible(true);
+        lobby.getStartGameJFrame().setVisible(true);
     }//GEN-LAST:event_jButton3ActionPerformed
 
     /**

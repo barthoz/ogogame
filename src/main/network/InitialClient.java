@@ -12,6 +12,8 @@ import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import main.game.GameCredentials;
@@ -20,6 +22,7 @@ import main.network.message.Message;
 import main.network.message.MessageGameCredentials;
 import main.network.message.MessageJoinApproved;
 import main.network.message.MessageJoinRequest;
+import main.network.message.MessagePlayerJoined;
 import main.network.old.InitClient;
 
 /**
@@ -72,9 +75,9 @@ public class InitialClient
 
                     long count = 0;
                     
-                    GameCredentials gameCredentials = null;
+                    //GameCredentials gameCredentials = null;
                     
-                    while (true && count < 10000)
+                    while (true && count < 5000)
                     {
                         socket.receive(packet);
                         String strMessage = new String(buffer, 0, packet.getLength());
@@ -92,22 +95,25 @@ public class InitialClient
                             //System.out.println("Found!");
                             //System.out.println(strMessage);
                             
-                            gameCredentials = messageGameCredentials.getGameCredentials();
+                            //gameCredentials = messageGameCredentials.getGameCredentials();
+                            lobby.addGameCredentials(messageGameCredentials.getGameCredentials());
                             break;
                         }
                         
                         try {
-                            count += 10;
-                            Thread.sleep(10);
+                            count += 100;
+                            Thread.sleep(100);
                         } catch (InterruptedException ex) {
                             Logger.getLogger(InitialServer.class.getName()).log(Level.SEVERE, null, ex);
                         }
                     }
                     
-                    if (gameCredentials != null)
+                    //lobby.getLobbyFrame().updateAvailableGames(lobby.getAvailableGames());
+                    
+                    /*if (gameCredentials != null)
                     {
                         joinGame(gameCredentials, "Daniel");
-                    }
+                    }*/
                     
                 } catch (IOException ex) {
                     Logger.getLogger(InitialServer.class.getName()).log(Level.SEVERE, null, ex);
@@ -177,6 +183,12 @@ public class InitialClient
                                 // Add new server to lobbyframe if it is new
                                 System.out.println("Approved!");
                                 //System.out.println(strMessage);
+                            }
+                            else if (message instanceof MessagePlayerJoined)
+                            {
+                                MessagePlayerJoined msgPlayerJoined = (MessagePlayerJoined) message;
+                                lobby.addPlayer(msgPlayerJoined.getUsername());
+                                System.out.println("Player joined: " + msgPlayerJoined.getUsername());
                             }
                             
                             try {

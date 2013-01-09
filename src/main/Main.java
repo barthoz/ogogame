@@ -33,7 +33,7 @@ public class Main
     
     public static void main(String[] args)
     {
-        try {
+        /*try {
             GameCredentials testGame = new GameCredentials(0, "test", "hostnamehere", NetworkInterface.getByInetAddress(Inet4Address.getLocalHost()).getInterfaceAddresses().get(0).getAddress().toString().replaceFirst("/", ""));
             
             Lobby lobby = new Lobby();
@@ -50,6 +50,8 @@ public class Main
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         } catch (UnknownHostException ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        }*/
+        
+        Lobby lobby = new Lobby();
     }
 }

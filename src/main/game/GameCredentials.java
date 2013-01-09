@@ -35,6 +35,16 @@ public class GameCredentials
     }
 
     /**
+     * Business logic
+     */
+    
+    @Override
+    public String toString()
+    {
+        return this.gameName + " (" + this.initialHostIp + ") - " + this.initialHostUsername;
+    }
+    
+    /**
      * Getters & Setters
      */
     public int getGameId()
@@ -74,4 +84,5 @@ public class GameCredentials
     public void setInitialHostIp(String initialHostIp) {
         this.initialHostIp = initialHostIp;
     }
+    
 }

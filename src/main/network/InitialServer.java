@@ -20,7 +20,9 @@ import main.game.GameCredentials;
 import main.network.message.Message;
 import main.network.message.MessageJoinRequest;
 import com.thoughtworks.xstream.XStream;
+import main.lobby.Lobby;
 import main.network.message.MessageJoinApproved;
+import main.network.message.MessagePlayerJoined;
 import main.network.message.MessageStartGame;
 
 /**
@@ -32,6 +34,8 @@ public class InitialServer
     /**
      * Properties
      */
+    
+    private Lobby lobby;
     
     public final static int PORT = 13337;
     
@@ -46,8 +50,10 @@ public class InitialServer
      * Constructor
      */
     
-    public InitialServer()
+    public InitialServer(Lobby lobby)
     {
+        this.lobby = lobby;
+        
         try
         {
             try
@@ -127,6 +133,27 @@ public class InitialServer
                             byte[] sendBuffer = strMessageApproved.getBytes();
                             DatagramPacket sendPacket = new DatagramPacket(sendBuffer, sendBuffer.length, packet.getAddress(), Client.PORT);
                             socket.send(sendPacket);
+                            
+                            // Send the update to all clients that a player has joined
+                            MessagePlayerJoined msgPlayerJoined = new MessagePlayerJoined(client.getUsername());
+                            sendBuffer = xstream.toXML(msgPlayerJoined).getBytes();
+                            
+                            for (Client c : clients)
+                            {
+                                sendPacket = new DatagramPacket(sendBuffer, sendBuffer.length, InetAddress.getByName(c.getAddress()), Client.PORT);
+                                
+                                MessagePlayerJoined msgPlayersIn;
+                                DatagramPacket packetPlayersIn;
+                                
+                                if (!c.equals(client))
+                                {
+                                    msgPlayersIn = new MessagePlayerJoined(client.getUsername());
+                                    sendBuffer = xstream.toXML(msgPlayersIn).getBytes();
+                                    packetPlayersIn = new DatagramPacket(sendBuffer, sendBuffer.length, packet.getAddress(), Client.PORT);
+                                }
+                                
+                                socket.send(sendPacket);
+                            }
                         }
                         
                         try {
