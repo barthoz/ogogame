@@ -73,7 +73,7 @@ public class Client
                 Message sendMessage = new MessagePassToken();
                 sendMessage.setFromClientId(id);
                 byte[] sendBuffer = xstream.toXML(sendMessage).getBytes();
-                DatagramPacket sendPacket = new DatagramPacket(sendBuffer, sendBuffer.length, InetAddress.getByName(outNeighbour.getAddress()), Client.PORT);
+                DatagramPacket sendPacket = new DatagramPacket(sendBuffer, sendBuffer.length, InetAddress.getByName(outNeighbour.getAddress()), Client.INGAME_PORT);
                 socket.send(sendPacket);
             } catch (UnknownHostException ex) {
                 Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
@@ -136,7 +136,7 @@ public class Client
                         
                         sendMessage.setFromClientId(id);
                         sendBuffer = xstream.toXML(sendMessage).getBytes();
-                        sendPacket = new DatagramPacket(sendBuffer, sendBuffer.length, InetAddress.getByName(outNeighbour.getAddress()), Client.PORT);
+                        sendPacket = new DatagramPacket(sendBuffer, sendBuffer.length, InetAddress.getByName(outNeighbour.getAddress()), Client.INGAME_PORT);
                         socket.send(sendPacket);
                             
                         try
