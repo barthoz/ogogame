@@ -26,19 +26,28 @@ public class ModelFactory
      * Business logic
      */
     
+    public static Duck createDuck(AssetManager assetManager, Game game, Cell location)
+    {
+        // First create the spatial
+        Spatial duckModel = assetManager.loadModel("Models/duck/duck.mesh.xml");
+        //duckModel.setLocalScale(0.2f);
+        
+        duckModel.setUserData("modelType", "duck");
+       // duckModel.setUserData("parentId", id);
+        
+        Duck duck = new Duck(duckModel, game, location);
+        
+        return duck;
+    }
+    
     public static Base createBase(AssetManager assetManager, int id, Player player, Cell location)
     {
         // First create the spatial
-        Box box = new Box(Vector3f.ZERO, 16, 30, 16);
-        //Geometry baseModel = new Geometry("base_" + id, box);
         Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
         mat.setColor("Color", ColorRGBA.Red);
         
-        
-       // Spatial baseModel = assetManager.loadModel("Models/Tree.j3o");
-        
         Spatial baseModel = assetManager.loadModel("Models/Land/stilstaand.mesh.xml");
-            baseModel.setLocalScale(0.2f);
+        //baseModel.setLocalScale(0.2f);
         baseModel.setUserData("modelType", "Base");
         baseModel.setUserData("parentId", id);
         //Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
@@ -53,14 +62,11 @@ public class ModelFactory
     public static FoodSource createFoodSource(AssetManager assetManager, int id, Game game, Cell location)
     {
         // First create the spatial
-        Box box = new Box(Vector3f.ZERO, 16, 30, 16);
-        Geometry fsModel = new Geometry("foodSource_" + id, box);
-        Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-        mat.setColor("Color", ColorRGBA.Green);
+        Spatial fsModel = assetManager.loadModel("Models/Food/banana.mesh.xml");
+        //creatureModel.setLocalScale(0.2f);
         
         fsModel.setUserData("modelType", "FoodSource");
         fsModel.setUserData("parentId", id);
-        fsModel.setMaterial(mat);
         
         FoodSource foodSource = new FoodSource(id, fsModel, game, location);
         
@@ -72,26 +78,23 @@ public class ModelFactory
         Spatial creatureModel = null;
         Creature creature = null;
         
-        Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+        //Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
         
         if (creatureType.equals(LandCreature.CODE_ID))
         {
             creatureModel = assetManager.loadModel("Models/Land/stilstaand.mesh.xml");
-            creatureModel.setLocalScale(0.2f);
-            mat.setColor("Color", ColorRGBA.Green);
+            //creatureModel.setLocalScale(0.2f);
             creature = new LandCreature(player, id, creatureModel);
         }
         else if (creatureType.equals(SeaCreature.CODE_ID))
         {
             creatureModel = assetManager.loadModel("Models/Sea/octopus.mesh.xml");
             //creatureModel.setLocalScale(0.2f);
-            mat.setColor("Color", ColorRGBA.Cyan);
             creature = new SeaCreature(player, id, creatureModel);
         }
         else if (creatureType.equals(AirborneCreature.CODE_ID))
         {
-            creatureModel = assetManager.loadModel("Models/Tree.j3o");
-            mat.setColor("Color", ColorRGBA.Pink);
+            creatureModel = assetManager.loadModel("Models/Air/dragon.mesh.xml");
             creature = new AirborneCreature(player, id, creatureModel);
         }
         

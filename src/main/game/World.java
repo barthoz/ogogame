@@ -35,15 +35,15 @@ public class World
     private Node creatureContainer;
     private Node baseContainer;
     private Node foodSourceContainer;
+    private Node duckContainer;
     /**
      * Properties
      */
-    
     private List<Base> bases;
     private List<FoodSource> foodSources;
     private List<Creature> creatures;
+    private Duck duck;
     private Cell[][] cells;
-    
     /**
      * Bookkeeping
      */
@@ -52,7 +52,6 @@ public class World
     /**
      * Constructor
      */
-    
     public World(Game game, Node worldNode)
     {
         this.game = game;
@@ -75,7 +74,6 @@ public class World
         /**
          * Initialize object lists
          */
-        
         this.bases = new ArrayList<Base>();
         this.foodSources = new ArrayList<FoodSource>();
         this.creatures = new ArrayList<Creature>();
@@ -84,10 +82,9 @@ public class World
     /**
      * Business logic
      */
-    
     /**
      * Initialize all bases in the game. Register them with the current players.
-     * 
+     *
      * @Pre this.players.size <= 6 && for all players: 0 <= player.getId() <= 5
      */
     public void initializeBases()
@@ -99,14 +96,14 @@ public class World
         this.cells[58][34] = new RockCell(this, 58, 34, this.cells[58][34].getWorldCoordinates());
         this.cells[40][51] = new RockCell(this, 40, 51, this.cells[40][51].getWorldCoordinates());
         this.cells[10][46] = new RockCell(this, 10, 46, this.cells[10][46].getWorldCoordinates());
-        
+
         baseLocations[0] = this.cells[27][34];
         baseLocations[1] = this.cells[27][13];
         baseLocations[2] = this.cells[45][16];
         baseLocations[3] = this.cells[58][34];
         baseLocations[4] = this.cells[40][51];
         baseLocations[5] = this.cells[10][46];
-        
+
         for (Player player : this.game.getPlayers())
         {
             Base base = ModelFactory.createBase(this.game.getAssetManager(), player.getId(), player, baseLocations[player.getId()]);
@@ -115,14 +112,14 @@ public class World
             this.baseContainer.attachChild(base.getModel());
         }
     }
-    
+
     /**
      * Initialize all food sources.
      */
     public void initializeFoodSources()
     {
         List<Cell> spawnCells = new ArrayList<Cell>();
-        
+
         for (int i = 0; i < this.cells.length; i++)
         {
             for (int j = 0; j < this.cells[0].length; j++)
@@ -133,13 +130,13 @@ public class World
                 }
             }
         }
-        
+
         int numFoodSources = 30;
-        
+
         for (int i = 0; i < numFoodSources; i++)
         {
             int foodSourceLocationPos = (int) Math.round(Math.random() * (spawnCells.size() - 1));
-            
+
             FoodSource foodSource = ModelFactory.createFoodSource(this.game.getAssetManager(), i, this.game, spawnCells.get(foodSourceLocationPos));
             this.foodSources.add(foodSource);
             this.foodSourceContainer.attachChild(foodSource.getModel());
@@ -147,7 +144,21 @@ public class World
             spawnCells.remove(foodSourceLocationPos);
         }
     }
-    
+
+    /**
+     * Initialize all food sources.
+     */
+    public void initializeDuck()
+    {
+        Cell duckLocation;
+        this.cells[40][40] = new RockCell(this, 27, 34, this.cells[40][40].getWorldCoordinates());
+
+        duckLocation = this.cells[40][40];
+        this.duck = ModelFactory.createDuck(this.game.getAssetManager(), this.game, duckLocation);
+
+        this.duckContainer.attachChild(duck.getModel());
+    }
+
     /**
      * Add a creature to the world and player.
      *
@@ -217,10 +228,10 @@ public class World
                 return base;
             }
         }
-        
+
         return null;
     }
-    
+
     /**
      * Find food source by id.
      */
@@ -233,10 +244,15 @@ public class World
                 return foodSource;
             }
         }
-        
+
         return null;
     }
-    
+
+    public Duck findDuck()
+    {
+        return duck;
+    }
+
     /**
      * Retrieve an unique id.
      *
@@ -252,13 +268,13 @@ public class World
     public Cell getCellFromWorldCoordinates(Vector3f contactPoint)
     {
         int cell_size = 32;
-        
+
         int i = (int) Math.round((contactPoint.x + 1024) / (float) cell_size - 0.5);
         int j = (int) Math.round((contactPoint.z + 1024) / (float) cell_size - 0.5);
-        
+
         return this.cells[i][j];
     }
-    
+
     /**
      * Getters & Setters
      */

@@ -60,7 +60,7 @@ public class SeaCreatureControl extends AbstractControl implements Savable, Clon
         control = spatial.getControl(AnimControl.class);
         control.addListener(this);
         channel = control.createChannel();
-        channel.setAnim("Stilstaand");
+        channel.setAnim("Swim");
     }
 
     /**

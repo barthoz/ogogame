@@ -4,6 +4,10 @@
  */
 package main.game.model.control;
 
+import com.jme3.animation.AnimChannel;
+import com.jme3.animation.AnimControl;
+import com.jme3.animation.AnimEventListener;
+import com.jme3.animation.LoopMode;
 import com.jme3.export.JmeExporter;
 import com.jme3.export.JmeImporter;
 import com.jme3.export.Savable;
@@ -22,7 +26,7 @@ import main.game.model.creature.AirborneCreature;
  *
  * @author s116861
  */
-public class AirborneCreatureControl extends AbstractControl implements Savable, Cloneable
+public class AirborneCreatureControl extends AbstractControl implements Savable, Cloneable, AnimEventListener
 {
 
     /**
@@ -30,6 +34,8 @@ public class AirborneCreatureControl extends AbstractControl implements Savable,
      */
     private Game game;
     private AirborneCreature controllee;
+    private AnimChannel channel;
+    private AnimControl control;
     private double time = 0;
 
     /**
@@ -47,6 +53,10 @@ public class AirborneCreatureControl extends AbstractControl implements Savable,
         super.setSpatial(spatial);
         this.game = game;
         this.controllee = controllee;
+        control = spatial.getControl(AnimControl.class);
+        control.addListener(this);
+        channel = control.createChannel();
+        channel.setAnim("Stilstaand");
     }
 
     /**
@@ -123,5 +133,20 @@ public class AirborneCreatureControl extends AbstractControl implements Savable,
     {
         super.write(ex);
         // ex.getCapsule(this).write(...);
+    }
+    
+     public void onAnimCycleDone(AnimControl control, AnimChannel channel, String animName)
+    {
+        if (animName.equals("Stilstaand"))
+        {
+            channel.setAnim("Stilstaand", 0.50f);
+            channel.setLoopMode(LoopMode.DontLoop);
+            channel.setSpeed(1f);
+        }
+    }
+
+    public void onAnimChange(AnimControl control, AnimChannel channel, String animName)
+    {
+        //throw new UnsupportedOperationException("Not supported yet.");
     }
 }

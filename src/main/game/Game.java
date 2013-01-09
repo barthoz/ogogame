@@ -160,7 +160,7 @@ public class Game extends SimpleApplication
             }
             else if (modelType.equals("Duck"))
             {
-
+                
             }
           }
       }
@@ -511,6 +511,7 @@ public class Game extends SimpleApplication
         
         this.world.initializeBases();
         this.world.initializeFoodSources();
+        this.world.initializeDuck();
         
         initKeys();
         initSetMode();
