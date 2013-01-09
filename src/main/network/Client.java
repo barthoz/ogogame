@@ -28,7 +28,7 @@ public class Client
      */
     
     public final static int PORT = 13338;
-    public final static int INGAME_PORT = 13339;
+    //public final static int INGAME_PORT = 13339;
     
     private int id;
     private String address;
@@ -58,7 +58,7 @@ public class Client
     public void startListening(boolean beginsWithToken)
     {
         try {
-            this.socket = new DatagramSocket(Client.INGAME_PORT);
+            this.socket = new DatagramSocket(Client.PORT);
         } catch (SocketException ex) {
             Logger.getLogger(InitialClient.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -120,7 +120,7 @@ public class Client
                         
                         sendMessage.setFromClientId(id);
                         sendBuffer = xstream.toXML(sendMessage).getBytes();
-                        sendPacket = new DatagramPacket(sendBuffer, sendBuffer.length, InetAddress.getByName(outNeighbour.getAddress()), Client.INGAME_PORT);
+                        sendPacket = new DatagramPacket(sendBuffer, sendBuffer.length, InetAddress.getByName(outNeighbour.getAddress()), Client.PORT);
                         socket.send(sendPacket);
                             
                         try
@@ -139,7 +139,7 @@ public class Client
         listening.start();
         
         // Pass token on to next user
-        if (beginsWithToken)
+        /*if (beginsWithToken)
         {
             try {
                 XStream xstream = new XStream();
@@ -147,14 +147,14 @@ public class Client
                 sendMessage.setFromClientId(id);
                 System.out.println(xstream.toXML(sendMessage));
                 byte[] sendBuffer = xstream.toXML(sendMessage).getBytes();
-                DatagramPacket sendPacket = new DatagramPacket(sendBuffer, sendBuffer.length, InetAddress.getByName(outNeighbour.getAddress()), Client.INGAME_PORT);
-                socket.send(sendPacket);
+                //DatagramPacket sendPacket = new DatagramPacket(sendBuffer, sendBuffer.length, InetAddress.getByName(outNeighbour.getAddress()), Client.INGAME_PORT);
+                //socket.send(sendPacket);
             } catch (UnknownHostException ex) {
                 Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
             } catch (IOException ex) {
                 Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
             }
-        }
+        }*/
     }
     
     public void stopListening()

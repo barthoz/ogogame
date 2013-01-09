@@ -26,6 +26,7 @@ import main.lobby.Lobby;
 import main.network.message.MessageGameCredentials;
 import main.network.message.MessageJoinApproved;
 import main.network.message.MessageJoinDisapproved;
+import main.network.message.MessagePassToken;
 import main.network.message.MessagePing;
 import main.network.message.MessagePlayerJoined;
 import main.network.message.MessagePong;
@@ -315,6 +316,21 @@ public class InitialServer
             
             // Start game
             lobby.startGame(this.me, this.clients, true);
+            
+            MessagePassToken msgInitialToken = new MessagePassToken();
+            msgInitialToken.setFromClientId(this.me.getId());
+            
+            sendBuffer = xstream.toXML(msgInitialToken).getBytes();
+            
+            try {
+                DatagramPacket sendPacket = new DatagramPacket(sendBuffer, sendBuffer.length, InetAddress.getByName(me.getOutNeighbour().getAddress()), Client.PORT);
+                socket.send(sendPacket);
+            } catch (UnknownHostException ex) {
+                Logger.getLogger(InitialServer.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IOException ex) {
+                Logger.getLogger(InitialServer.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
             this.stopBroadcasting();
             this.stopListening();
         }
