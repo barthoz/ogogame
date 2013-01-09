@@ -314,9 +314,6 @@ public class InitialServer
                 }
             }
             
-            // Start game
-            lobby.startGame(this.me, this.clients, true);
-            
             MessagePassToken msgInitialToken = new MessagePassToken();
             msgInitialToken.setFromClientId(this.me.getId());
             
@@ -331,8 +328,12 @@ public class InitialServer
                 Logger.getLogger(InitialServer.class.getName()).log(Level.SEVERE, null, ex);
             }
             
+            this.socket.close();
             this.stopBroadcasting();
             this.stopListening();
+            
+            // Start game
+            lobby.startGame(this.me, this.clients, true);
         }
         else
         {
