@@ -247,7 +247,7 @@ public class InitialClient
                                 
                                 joiningServer = false;
                                 
-                                lobby.startGame(me, tokenRing, socket);
+                                lobby.startGame(me, tokenRing);
                                 
                                 break;
                             }

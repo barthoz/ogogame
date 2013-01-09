@@ -133,11 +133,12 @@ public class Lobby
         }
     }
     
-    public void startGame(Client me, List<Client> tokenRing, DatagramSocket socket)
+    public void startGame(Client me, List<Client> tokenRing)
     {
+        System.out.println("Server started!");
         this.me = me;
         this.tokenRing = tokenRing;
-        me.setSocket(socket);
+        me.setSocket(this.initialClient.getSocket());
         me.startListening();
     }
     

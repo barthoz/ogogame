@@ -237,8 +237,24 @@ public class InitialServer
                     
                     //GameCredentials gameCredentials = null;
                     
-                    while (true && count < 5000)
+                    while (true && count < 3000)
                     {
+                        byte[] sendMsg = xstream.toXML(new MessagePing()).getBytes();
+                        DatagramPacket packetPing;
+
+                        for (Client client : clients)
+                        {
+                            try
+                            {
+                                packetPing = new DatagramPacket(sendMsg, sendMsg.length, InetAddress.getByName(client.getAddress()), Client.PORT);
+                                socket.send(packetPing);
+                            } catch (UnknownHostException ex) {
+                                Logger.getLogger(InitialServer.class.getName()).log(Level.SEVERE, null, ex);
+                            } catch (IOException ex) {
+                                Logger.getLogger(InitialServer.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                        }
+                        
                         socket.receive(packet);
                         String strMessage = new String(buffer, 0, packet.getLength());
                         packet.setLength(buffer.length);
@@ -305,7 +321,7 @@ public class InitialServer
                             Logger.getLogger(InitialServer.class.getName()).log(Level.SEVERE, null, ex);
                         }
 
-                        lobby.startGame(me, clients, lobby.getInitialClient().getSocket());
+                        lobby.startGame(me, clients);
                     }
                     else
                     {
@@ -319,22 +335,6 @@ public class InitialServer
         });
         
         listening.start();
-        
-        byte[] sendMsg = xstream.toXML(new MessagePing()).getBytes();
-        DatagramPacket packet;
-        
-        for (Client client : this.clients)
-        {
-            try
-            {
-                packet = new DatagramPacket(sendMsg, sendMsg.length, InetAddress.getByName(client.getAddress()), Client.PORT);
-                socket.send(packet);
-            } catch (UnknownHostException ex) {
-                Logger.getLogger(InitialServer.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (IOException ex) {
-                Logger.getLogger(InitialServer.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
     }
     
     private Client getClientByAddress(InetAddress address)
