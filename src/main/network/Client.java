@@ -12,6 +12,8 @@ import java.util.logging.Logger;
 import main.network.message.Message;
 import com.thoughtworks.xstream.XStream;
 import java.net.InetAddress;
+import java.net.SocketException;
+import java.net.UnknownHostException;
 import main.game.Player;
 import main.network.message.*;
 
@@ -26,6 +28,7 @@ public class Client
      */
     
     public final static int PORT = 13338;
+    public final static int INGAME_PORT = 13339;
     
     private int id;
     private String address;
@@ -52,12 +55,32 @@ public class Client
      * Business logic
      */
     
-    /**
-     * @Pre socket != null
-     */
-    public void startListening()
+    public void startListening(boolean beginsWithToken)
     {
+        try {
+            this.socket = new DatagramSocket(Client.INGAME_PORT);
+        } catch (SocketException ex) {
+            Logger.getLogger(InitialClient.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
         this.isListening = true;
+        
+        // Pass token on to next user
+        if (beginsWithToken)
+        {
+            try {
+                XStream xstream = new XStream();
+                Message sendMessage = new MessagePassToken();
+                sendMessage.setFromClientId(id);
+                byte[] sendBuffer = xstream.toXML(sendMessage).getBytes();
+                DatagramPacket sendPacket = new DatagramPacket(sendBuffer, sendBuffer.length, InetAddress.getByName(outNeighbour.getAddress()), Client.PORT);
+                socket.send(sendPacket);
+            } catch (UnknownHostException ex) {
+                Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IOException ex) {
+                Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
         
         Thread listening = new Thread(new Runnable()
         {
