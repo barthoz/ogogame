@@ -18,14 +18,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import main.game.GameCredentials;
 import main.lobby.Lobby;
-import main.network.message.Message;
-import main.network.message.MessageGameCredentials;
-import main.network.message.MessageJoinApproved;
-import main.network.message.MessageJoinDisapproved;
-import main.network.message.MessageJoinRequest;
-import main.network.message.MessagePing;
-import main.network.message.MessagePlayerJoined;
-import main.network.message.MessagePong;
+import main.network.message.*;
 import main.network.old.InitClient;
 
 /**
@@ -42,6 +35,8 @@ public class InitialClient
     private Lobby lobby;
     
     private DatagramSocket socket = null;
+    private Client me;
+    private boolean joiningServer = false;
     
     /**
      * Constructor
@@ -156,7 +151,7 @@ public class InitialClient
             /**
              * Listen to server for response (for 10 seconds, then continue if approved)
              */
-            
+                        
             Thread thread = new Thread(new Runnable()
             {
                 public void run()
@@ -169,7 +164,7 @@ public class InitialClient
 
                         long count = 0;
                         
-                        while (true && count < 50000)
+                        while (true && count < 5000)
                         {
                             socket.receive(packet);
                             String strMessage = new String(buffer, 0, packet.getLength());
@@ -184,16 +179,39 @@ public class InitialClient
                                 MessageJoinApproved msgJoinApproved = (MessageJoinApproved) message;
                                 
                                 // Add new server to lobbyframe if it is new
+                                me = msgJoinApproved.getClient();
                                 System.out.println("Approved!");
-                                //System.out.println(strMessage);
+                                joiningServer = true;
+                                break;
                             }
                             else if (message instanceof MessageJoinDisapproved)
                             {
                                 MessageJoinDisapproved msgJoinDisapproved = (MessageJoinDisapproved) message;
                                 
-                                System.out.println("Disapproved! Reason: " + msgJoinDisapproved);
+                                System.out.println("Disapproved! Reason: " + msgJoinDisapproved.getReason());
+                                joiningServer = false;
+                                break;
                             }
-                            else if (message instanceof MessagePlayerJoined)
+                            
+                            try {
+                                count += 10;
+                                Thread.sleep(10);
+                            } catch (InterruptedException ex) {
+                                Logger.getLogger(InitialClient.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                        }
+                        
+                        while (true && joiningServer)
+                        {
+                            socket.receive(packet);
+                            String strMessage = new String(buffer, 0, packet.getLength());
+                            packet.setLength(buffer.length);
+                            
+                            // Add new server to lobbyframe if it is new
+                            Message message = (Message) xstream.fromXML(strMessage);
+                            System.out.println("Client in: " + strMessage);
+                            
+                            if (message instanceof MessagePlayerJoined)
                             {
                                 MessagePlayerJoined msgPlayerJoined = (MessagePlayerJoined) message;
                                 lobby.addPlayer(msgPlayerJoined.getUsername());
@@ -205,8 +223,16 @@ public class InitialClient
                                 DatagramPacket sendPacket = new DatagramPacket(sendMsg, sendMsg.length, packet.getAddress(), InitialServer.PORT);
                                 socket.send(sendPacket);
                             }
+                            else if (message instanceof MessageStartGame)
+                            {
+                                MessageStartGame msgStartGame = (MessageStartGame) message;
+                                
+                                lobby.startGame(me, msgStartGame.getTokenRing(), false);
+                                joiningServer = false;
+                            }
                             
-                            try {
+                            try
+                            {
                                 Thread.sleep(10);
                             } catch (InterruptedException ex) {
                                 Logger.getLogger(InitialClient.class.getName()).log(Level.SEVERE, null, ex);

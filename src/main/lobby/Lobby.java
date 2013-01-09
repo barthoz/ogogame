@@ -32,7 +32,8 @@ public class Lobby
     
     private GameConnector gameConnector;
     
-    private Me me;
+    //private Me me;
+    
     
     private LobbyJFrame lobbyFrame;
     private IntermediateClientJFrame intermediateClientJFrame;
@@ -45,6 +46,9 @@ public class Lobby
     private InitialClient initialClient = null;
     private InitialServer initialServer = null;
     
+    private List<Client> tokenRing;
+    private Client me;
+    
     /**
      * Constructor
      */
@@ -52,7 +56,7 @@ public class Lobby
     public Lobby()
     {
         this.gameConnector = new GameConnector();
-        this.me = null;
+        //this.me = null;
         
         this.lobbyFrame = new LobbyJFrame(this);
         this.intermediateClientJFrame = new IntermediateClientJFrame(this);
@@ -112,7 +116,7 @@ public class Lobby
         this.initialClient.joinGame(gameCredentials, username);
     }
     
-    public void startGame(String gameName, String username)
+    public void createGame(String gameName, String username)
     {
         try {
            String address = NetworkInterface.getByInetAddress(Inet4Address.getLocalHost()).getInterfaceAddresses().get(0).getAddress().toString().replaceFirst("/", "");
@@ -128,6 +132,14 @@ public class Lobby
         }
     }
     
+    public void startGame(Client me, List<Client> tokenRing, boolean hasToken)
+    {
+        this.me = me;
+        this.tokenRing = tokenRing;
+        
+        me.startListening();
+    }
+    
     /**
      * Getters & Setters
      */
@@ -138,14 +150,6 @@ public class Lobby
 
     public void setGameConnector(GameConnector gameConnector) {
         this.gameConnector = gameConnector;
-    }
-
-    public Me getMe() {
-        return me;
-    }
-
-    public void setMe(Me me) {
-        this.me = me;
     }
 
     public LobbyJFrame getLobbyFrame() {

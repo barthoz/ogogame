@@ -134,6 +134,29 @@ public class Client
     {
         this.isListening = false;
     }
+
+    @Override
+    public int hashCode() {
+        int hash = this.id;
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Client other = (Client) obj;
+        if (this.id != other.id) {
+            return false;
+        }
+        return true;
+    }
+    
+    
     
     /**
      * Getters & Setters

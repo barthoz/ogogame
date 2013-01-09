@@ -51,6 +51,7 @@ public class InitialServer
     private List<Client> clients = new ArrayList<Client>();
     private boolean started = true;
     private DatagramSocket socket = null;
+    private Client me;
     
     /**
      * Constructor
@@ -88,6 +89,7 @@ public class InitialServer
     
     public void broadcastGame(GameCredentials gameCredentials, Client me)
     {
+        this.me = me;
         this.clients.add(me);
         this.lobby.addPlayer(me.getUsername());
         this.serverBroadcaster = new ServerBroadcaster(gameCredentials, socket);
@@ -170,18 +172,18 @@ public class InitialServer
                                 for (Client c : clients)
                                 {
                                     sendPacket = new DatagramPacket(sendBuffer, sendBuffer.length, InetAddress.getByName(c.getAddress()), Client.PORT);
-
-                                    MessagePlayerJoined msgPlayersIn;
-                                    DatagramPacket packetPlayersIn;
-
-                                    /*if (!c.equals(client))
-                                    {
-                                        msgPlayersIn = new MessagePlayerJoined(client.getUsername());
-                                        sendBuffer = xstream.toXML(msgPlayersIn).getBytes();
-                                        packetPlayersIn = new DatagramPacket(sendBuffer, sendBuffer.length, packet.getAddress(), Client.PORT);
-                                    }*/
-
                                     socket.send(sendPacket);
+                                }
+                                
+                                // Send the update to the new client of all joined clients
+                                for (Client c : clients)
+                                {
+                                    MessagePlayerJoined msgPlayerJoinedNew = new MessagePlayerJoined(c.getUsername());
+                                    System.out.println("Server out: " + xstream.toXML(msgPlayerJoinedNew));
+                                    sendBuffer = xstream.toXML(msgPlayerJoinedNew).getBytes();
+
+                                    sendPacket = new DatagramPacket(sendBuffer, sendBuffer.length, InetAddress.getByName(client.getAddress()), Client.PORT);
+                                    socket.send(sendPacket);                                    
                                 }
                             }
                         }
@@ -310,6 +312,11 @@ public class InitialServer
                     Logger.getLogger(InitialServer.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
+            
+            // Start game
+            lobby.startGame(this.me, this.clients, true);
+            this.stopBroadcasting();
+            this.stopListening();
         }
         else
         {

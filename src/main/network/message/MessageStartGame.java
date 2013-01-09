@@ -29,4 +29,17 @@ public class MessageStartGame extends Message
     {
         this.tokenRing = tokenRing;
     }
+
+    /**
+     * Getters & Setters
+     */
+    
+    public List<Client> getTokenRing() {
+        return tokenRing;
+    }
+
+    public void setTokenRing(List<Client> tokenRing) {
+        this.tokenRing = tokenRing;
+    }
+    
 }

@@ -28,4 +28,16 @@ public class MessageJoinApproved extends Message
     {
         this.client = client;
     }
+    
+    /**
+     * Getters & Setters
+     */
+    
+    public Client getClient() {
+        return client;
+    }
+
+    public void setClient(Client client) {
+        this.client = client;
+    }
 }
