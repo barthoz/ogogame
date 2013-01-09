@@ -92,13 +92,14 @@ public class Client
                         {
                             // We have the token, create our MessagePlayerActions or MessageLeaveGame message here.
                             
+                            sendMessage = new MessagePassToken();
                         }
                         else
                         {
                             // Update the game from messages
                             if (message instanceof MessageLeaveGame)
                             {
-
+                                
                             }
                             else if (message instanceof MessagePlayerActions)
                             {
@@ -107,6 +108,7 @@ public class Client
                             }
                             
                             // Pass message onto the next neighbour (unchanged)
+                            sendMessage = message;
                         }
                         
                         sendMessage.setFromClientId(id);
