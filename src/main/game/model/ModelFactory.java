@@ -29,7 +29,7 @@ public class ModelFactory
     public static Duck createDuck(AssetManager assetManager, Game game, Cell location)
     {
         // First create the spatial
-        Spatial duckModel = assetManager.loadModel("Models/Duck/duck.mesh.xml");
+        Spatial duckModel = assetManager.loadModel("Models/Land/stilstaand.mesh.xml");
         
         duckModel.setLocalScale(0.1f);
         

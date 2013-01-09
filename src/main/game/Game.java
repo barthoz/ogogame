@@ -135,23 +135,27 @@ public class Game extends SimpleApplication
                             // Show spawn menu
                             nifty.gotoScreen("spawnMenu");
                         }
-                    } else if (modelType.equals(LandCreature.CODE_ID))
+                    }
+                    else if (modelType.equals(LandCreature.CODE_ID))
                     {
                         System.out.println((String) selectedSpatial.getUserData("parentId"));
                         LandCreature creature = (LandCreature) world.findCreatureById((String) selectedSpatial.getUserData("parentId"));
                         selectedObject = creature;
                         creature.getModel().setMaterial(mat);
-                    } else if (modelType.equals(SeaCreature.CODE_ID))
+                    }
+                    else if (modelType.equals(SeaCreature.CODE_ID))
                     {
                         SeaCreature creature = (SeaCreature) world.findCreatureById((String) selectedSpatial.getUserData("parentId"));
                         selectedObject = creature;
                         creature.getModel().setMaterial(mat);
-                    } else if (modelType.equals(AirborneCreature.CODE_ID))
+                    }
+                    else if (modelType.equals(AirborneCreature.CODE_ID))
                     {
                         AirborneCreature creature = (AirborneCreature) world.findCreatureById((String) selectedSpatial.getUserData("parentId"));
                         selectedObject = creature;
                         creature.getModel().setMaterial(mat);
-                    } else if (modelType.equals("Duck"))
+                    }
+                    else if (modelType.equals("Duck"))
                     {
                         world.findDuck().quack(quackAudio);
                     }
