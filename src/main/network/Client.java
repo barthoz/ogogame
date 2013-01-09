@@ -65,23 +65,6 @@ public class Client
         
         this.isListening = true;
         
-        // Pass token on to next user
-        if (beginsWithToken)
-        {
-            try {
-                XStream xstream = new XStream();
-                Message sendMessage = new MessagePassToken();
-                sendMessage.setFromClientId(id);
-                byte[] sendBuffer = xstream.toXML(sendMessage).getBytes();
-                DatagramPacket sendPacket = new DatagramPacket(sendBuffer, sendBuffer.length, InetAddress.getByName(outNeighbour.getAddress()), Client.INGAME_PORT);
-                socket.send(sendPacket);
-            } catch (UnknownHostException ex) {
-                Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (IOException ex) {
-                Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-        
         Thread listening = new Thread(new Runnable()
         {
             public void run()
@@ -90,14 +73,15 @@ public class Client
                 byte[] buffer = new byte[2048];
                 DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
 
-                while (true && isListening)
+                while (true) //&& isListening)
                 {
+                    System.out.println("Loop");
                     try
                     {
                         socket.receive(packet);
                         String strMessage = new String(buffer, 0, packet.getLength());
                         packet.setLength(buffer.length);
-
+                        
                         // Handle message
                         Message message = (Message) xstream.fromXML(strMessage);
                         System.out.println("Client in: " + strMessage);
@@ -153,6 +137,24 @@ public class Client
         });
         
         listening.start();
+        
+        // Pass token on to next user
+        if (beginsWithToken)
+        {
+            try {
+                XStream xstream = new XStream();
+                Message sendMessage = new MessagePassToken();
+                sendMessage.setFromClientId(id);
+                System.out.println(xstream.toXML(sendMessage));
+                byte[] sendBuffer = xstream.toXML(sendMessage).getBytes();
+                DatagramPacket sendPacket = new DatagramPacket(sendBuffer, sendBuffer.length, InetAddress.getByName(outNeighbour.getAddress()), Client.INGAME_PORT);
+                socket.send(sendPacket);
+            } catch (UnknownHostException ex) {
+                Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IOException ex) {
+                Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
     }
     
     public void stopListening()
