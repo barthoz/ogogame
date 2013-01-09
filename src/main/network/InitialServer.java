@@ -20,6 +20,7 @@ import main.game.GameCredentials;
 import main.network.message.Message;
 import main.network.message.MessageJoinRequest;
 import com.thoughtworks.xstream.XStream;
+import java.net.SocketTimeoutException;
 import java.util.HashMap;
 import java.util.Map;
 import main.lobby.Lobby;
@@ -67,6 +68,7 @@ public class InitialServer
             try
             {
                 this.socket = new DatagramSocket(PORT);
+                this.socket.setSoTimeout(500);
             } catch (SocketException ex) {
                 Logger.getLogger(InitialServer.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -229,13 +231,10 @@ public class InitialServer
                 
                 try
                 {
-                    //DatagramSocket socket = new DatagramSocket(Client.PORT);
                     byte[] buffer = new byte[2048];
                     DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
 
                     long count = 0;
-                    
-                    //GameCredentials gameCredentials = null;
                     
                     while (true && count < 3000)
                     {
@@ -256,6 +255,7 @@ public class InitialServer
                         }
                         
                         socket.receive(packet);
+                        
                         String strMessage = new String(buffer, 0, packet.getLength());
                         packet.setLength(buffer.length);
                         
