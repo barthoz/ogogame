@@ -24,7 +24,7 @@ import main.game.model.Duck;
  *
  * @author s116861
  */
-public class DuckControl extends AbstractControl implements Savable, Cloneable, AnimEventListener
+public class DuckControl extends AbstractControl implements Savable, Cloneable
 {
     /**
      * Properties
@@ -32,8 +32,8 @@ public class DuckControl extends AbstractControl implements Savable, Cloneable, 
     
     private Game game;
     private Duck controllee;
-    private AnimChannel channel;
-    private AnimControl control;
+    private static final float TIMELIMIT = 30;
+    private float time = TIMELIMIT;
     
     /**
      * Constructors
@@ -53,10 +53,6 @@ public class DuckControl extends AbstractControl implements Savable, Cloneable, 
       super.setSpatial(spatial);
       this.game = game;
       this.controllee = controllee;
-        control = spatial.getControl(AnimControl.class);
-        control.addListener(this);
-        channel = control.createChannel();
-        channel.setAnim("Stilstaand");
     } 
 
     /**
@@ -79,10 +75,14 @@ public class DuckControl extends AbstractControl implements Savable, Cloneable, 
     @Override
     protected void controlUpdate(float tpf)
     {
-      if(spatial != null)
-      {
-        // spatial.rotate(tpf,tpf,tpf); // example behaviour
-      }
+      //if(spatial != null)
+      //{
+        time += tpf;
+        if(time>TIMELIMIT){
+            controllee.setQuackable(true);
+            time = 0;
+        }
+      //}
     }
 
     @Override
@@ -114,19 +114,4 @@ public class DuckControl extends AbstractControl implements Savable, Cloneable, 
         super.write(ex);
         // ex.getCapsule(this).write(...);
     }    
-    
-     public void onAnimCycleDone(AnimControl control, AnimChannel channel, String animName)
-    {
-        if (animName.equals("Stilstaand"))
-        {
-            channel.setAnim("Stilstaand", 0.50f);
-            channel.setLoopMode(LoopMode.DontLoop);
-            channel.setSpeed(1f);
-        }
-    }
-
-    public void onAnimChange(AnimControl control, AnimChannel channel, String animName)
-    {
-        //throw new UnsupportedOperationException("Not supported yet.");
-    }
 }

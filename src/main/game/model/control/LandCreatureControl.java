@@ -86,8 +86,6 @@ public class LandCreatureControl extends AbstractControl implements Savable, Clo
     @Override
     protected void controlUpdate(float tpf)
     {
-        System.out.println("Y: " + controllee.getModel().getWorldTranslation().y);
-        System.out.println("cell: " + controllee.getLocation().getWorldCoordinates().y);
         if (this.game.isInSetMode())
         {
             /**

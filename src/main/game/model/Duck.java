@@ -24,7 +24,7 @@ public class Duck
     private Spatial model;
     private DuckControl controller;
     private Cell location;
-    private AudioNode quackAudio;
+    private boolean quackable;
 
     /**
      * Constructor
@@ -34,23 +34,22 @@ public class Duck
         this.model = model;
         this.location = location;
         this.controller = new DuckControl(model, game, this);
-        
+
         model.setLocalTranslation(location.getWorldCoordinates());
     }
 
     /**
      * Business Logic
      */
-    
-    public void quack(){
-        /*quackAudio = new AudioNode(assetManager, "Sound/Environment/Ocean Waves.ogg", false);
-        quackAudio.setLooping(false);
-        quackAudio.setPositional(true);
-        quackAudio.move(this.location.getWorldCoordinates());
-        quackAudio.setVolume(5);
-        rootNode.attachChild(quackAudio);*/
+    public void quack(AudioNode audio)
+    {
+        if (quackable)
+        {
+            audio.playInstance();
+            quackable = false;
+        }
     }
-    
+
     /**
      * Getters & Setters
      */
@@ -73,7 +72,7 @@ public class Duck
     {
         this.controller = controller;
     }
-    
+
     public Cell getLocation()
     {
         return location;
@@ -83,4 +82,16 @@ public class Duck
     {
         this.location = location;
     }
+
+    public boolean isQuackable()
+    {
+        return quackable;
+    }
+
+    public void setQuackable(boolean quackable)
+    {
+        this.quackable = quackable;
+    }
+    
+    
 }

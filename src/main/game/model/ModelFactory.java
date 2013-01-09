@@ -29,10 +29,11 @@ public class ModelFactory
     public static Duck createDuck(AssetManager assetManager, Game game, Cell location)
     {
         // First create the spatial
-        Spatial duckModel = assetManager.loadModel("Models/duck/duck.mesh.xml");
-        //duckModel.setLocalScale(0.2f);
+        Spatial duckModel = assetManager.loadModel("Models/Duck/duck.mesh.xml");
         
-        duckModel.setUserData("modelType", "duck");
+        duckModel.setLocalScale(0.1f);
+        
+        duckModel.setUserData("modelType", "Duck");
        // duckModel.setUserData("parentId", id);
         
         Duck duck = new Duck(duckModel, game, location);
@@ -62,7 +63,7 @@ public class ModelFactory
     public static FoodSource createFoodSource(AssetManager assetManager, int id, Game game, Cell location)
     {
         // First create the spatial
-        Spatial fsModel = assetManager.loadModel("Models/Food/banana.mesh.xml");
+        Spatial fsModel = assetManager.loadModel("Models/Land/stilstaand.mesh.xml");
         //creatureModel.setLocalScale(0.2f);
         
         fsModel.setUserData("modelType", "FoodSource");
@@ -88,13 +89,13 @@ public class ModelFactory
         }
         else if (creatureType.equals(SeaCreature.CODE_ID))
         {
-            creatureModel = assetManager.loadModel("Models/Sea/octopus.mesh.xml");
-            //creatureModel.setLocalScale(0.2f);
+            creatureModel = assetManager.loadModel("Models/Sea/move.mesh.xml");
+            creatureModel.setLocalScale(4f);
             creature = new SeaCreature(player, id, creatureModel);
         }
         else if (creatureType.equals(AirborneCreature.CODE_ID))
         {
-            creatureModel = assetManager.loadModel("Models/Air/dragon.mesh.xml");
+            creatureModel = assetManager.loadModel("Models/Air/stilstaand.mesh.xml");
             creature = new AirborneCreature(player, id, creatureModel);
         }
         

@@ -65,8 +65,10 @@ public class World
         this.creatureContainer = new Node("creatureContainer");
         this.baseContainer = new Node("baseContainer");
         this.foodSourceContainer = new Node("foodSourceContainer");
+        this.duckContainer = new Node("duckContainer");
 
         this.worldNode.attachChild(this.selectableObjects);
+        this.selectableObjects.attachChild(this.duckContainer);
         this.selectableObjects.attachChild(this.creatureContainer);
         this.selectableObjects.attachChild(this.baseContainer);
         this.selectableObjects.attachChild(this.foodSourceContainer);

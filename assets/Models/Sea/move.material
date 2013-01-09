@@ -1,0 +1,20 @@
+material 01-Default
+{
+	technique
+	{
+		pass
+		{
+			ambient 0 0 0 1
+			diffuse 0.75 0.75 0.75 1
+			cull_hardware none
+			cull_software none
+
+			texture_unit
+			{
+				texture OctoSkinNewFlat.tga
+			}
+		}
+
+	}
+
+}

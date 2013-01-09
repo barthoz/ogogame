@@ -81,264 +81,249 @@ import main.lobby.Lobby;
  */
 public class Game extends SimpleApplication
 {
+
     /**
      * While running
      */
-    
     private Object selectedObject = null;
-    
     /**
      * Setup
      */
-    
     private boolean isRunning = true;
-    
-    private ActionListener actionListener = new ActionListener() {
-    public void onAction(String name, boolean keyPressed, float tpf)
+    private ActionListener actionListener = new ActionListener()
     {
-      if (name.equals("Pause") && !keyPressed)
-      {
-        isRunning = !isRunning;
-      }
-      
-      /**
-       * [RIGHT-CLICK] Select creature, base
-       */
-      if (!keyPressed && name.equals("RightClick"))
-      {
-          Vector2f click2d = inputManager.getCursorPosition();
-          Vector3f click3d = cam.getWorldCoordinates(new Vector2f(click2d.x, click2d.y), 0f).clone();
-          Vector3f dir = cam.getWorldCoordinates(new Vector2f(click2d.x, click2d.y), 1f).subtractLocal(click3d).normalizeLocal();
-
-          CollisionResults results = new CollisionResults();
-          Ray ray = new Ray(click3d, dir);
-          world.getSelectableObjects().collideWith(ray, results);
-          
-          // Check if something was selected
-          if (results.getClosestCollision() != null)
-          {
-            Spatial selectedSpatial = results.getClosestCollision().getGeometry().getParent();
-            //Geometry selectedGeometry = results.getClosestCollision().getGeometry();
-            String modelType = selectedSpatial.getUserData("modelType");
+        public void onAction(String name, boolean keyPressed, float tpf)
+        {
+            if (name.equals("Pause") && !keyPressed)
+            {
+                isRunning = !isRunning;
+            }
 
             /**
-             * Determine which model has been selected
+             * [RIGHT-CLICK] Select creature, base
              */
-
-            Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-            mat.setColor("Color", ColorRGBA.Orange);
-            
-            if (modelType.equals("Base"))
+            if (!keyPressed && name.equals("RightClick"))
             {
-                Base base = (Base) world.findBaseById((Integer) selectedSpatial.getUserData("parentId"));
-                
-                // You can only select your own base
-                if (base.getPlayer().equals(me))
+                Vector2f click2d = inputManager.getCursorPosition();
+                Vector3f click3d = cam.getWorldCoordinates(new Vector2f(click2d.x, click2d.y), 0f).clone();
+                Vector3f dir = cam.getWorldCoordinates(new Vector2f(click2d.x, click2d.y), 1f).subtractLocal(click3d).normalizeLocal();
+
+                CollisionResults results = new CollisionResults();
+                Ray ray = new Ray(click3d, dir);
+                world.getSelectableObjects().collideWith(ray, results);
+
+                // Check if something was selected
+                if (results.getClosestCollision() != null)
                 {
-                    // Show spawn menu
-                    nifty.gotoScreen("spawnMenu");
+                    Spatial selectedSpatial = results.getClosestCollision().getGeometry().getParent();
+                    //Geometry selectedGeometry = results.getClosestCollision().getGeometry();
+                    String modelType = selectedSpatial.getUserData("modelType");
+
+                    /**
+                     * Determine which model has been selected
+                     */
+                    Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+                    mat.setColor("Color", ColorRGBA.Orange);
+
+                    if (modelType.equals("Base"))
+                    {
+                        Base base = (Base) world.findBaseById((Integer) selectedSpatial.getUserData("parentId"));
+
+                        // You can only select your own base
+                        if (base.getPlayer().equals(me))
+                        {
+                            // Show spawn menu
+                            nifty.gotoScreen("spawnMenu");
+                        }
+                    } else if (modelType.equals(LandCreature.CODE_ID))
+                    {
+                        System.out.println((String) selectedSpatial.getUserData("parentId"));
+                        LandCreature creature = (LandCreature) world.findCreatureById((String) selectedSpatial.getUserData("parentId"));
+                        selectedObject = creature;
+                        creature.getModel().setMaterial(mat);
+                    } else if (modelType.equals(SeaCreature.CODE_ID))
+                    {
+                        SeaCreature creature = (SeaCreature) world.findCreatureById((String) selectedSpatial.getUserData("parentId"));
+                        selectedObject = creature;
+                        creature.getModel().setMaterial(mat);
+                    } else if (modelType.equals(AirborneCreature.CODE_ID))
+                    {
+                        AirborneCreature creature = (AirborneCreature) world.findCreatureById((String) selectedSpatial.getUserData("parentId"));
+                        selectedObject = creature;
+                        creature.getModel().setMaterial(mat);
+                    } else if (modelType.equals("Duck"))
+                    {
+                        world.findDuck().quack(quackAudio);
+                    }
                 }
             }
-            else if (modelType.equals(LandCreature.CODE_ID))
-            {
-                System.out.println((String) selectedSpatial.getUserData("parentId"));
-                LandCreature creature = (LandCreature) world.findCreatureById((String) selectedSpatial.getUserData("parentId"));
-                selectedObject = creature;
-                creature.getModel().setMaterial(mat);
-            }
-            else if (modelType.equals(SeaCreature.CODE_ID))
-            {
-                SeaCreature creature = (SeaCreature) world.findCreatureById((String) selectedSpatial.getUserData("parentId"));
-                selectedObject = creature;
-                creature.getModel().setMaterial(mat);
-            }
-            else if (modelType.equals(AirborneCreature.CODE_ID))
-            {
-                AirborneCreature creature = (AirborneCreature) world.findCreatureById((String) selectedSpatial.getUserData("parentId"));
-                selectedObject = creature;
-                creature.getModel().setMaterial(mat);
-            }
-            else if (modelType.equals("Duck"))
-            {
-                
-            }
-          }
-      }
-      
-      /**
-       * [LEFT-CLICK while nothing selected]
-       */
-      if (!keyPressed && name.equals("Select") && selectedObject == null)
-      {
-          Vector2f click2d = inputManager.getCursorPosition();
-          Vector3f click3d = cam.getWorldCoordinates(new Vector2f(click2d.x, click2d.y), 0f).clone();
-          Vector3f dir = cam.getWorldCoordinates(new Vector2f(click2d.x, click2d.y), 1f).subtractLocal(click3d).normalizeLocal();
 
-          CollisionResults results = new CollisionResults();
-          Ray ray = new Ray(click3d, dir);
-          world.getSelectableObjects().collideWith(ray, results);
-          
-          // Check if something was selected
-          if (results.getClosestCollision() != null)
-          {
-            Geometry selectedGeometry = results.getClosestCollision().getGeometry();
-            String modelType = selectedGeometry.getUserData("modelType");
+            /**
+             * [LEFT-CLICK while nothing selected]
+             */
+            if (!keyPressed && name.equals("Select") && selectedObject == null)
+            {
+                Vector2f click2d = inputManager.getCursorPosition();
+                Vector3f click3d = cam.getWorldCoordinates(new Vector2f(click2d.x, click2d.y), 0f).clone();
+                Vector3f dir = cam.getWorldCoordinates(new Vector2f(click2d.x, click2d.y), 1f).subtractLocal(click3d).normalizeLocal();
 
-            // Determine which model has been selected
-          }
-      }
-      /**
-       * [LEFT-CLICK while something selected] Select terrain, food source
-       */
-      else if (!keyPressed && name.equals("Select") && selectedObject != null)
-      {
-          Vector2f click2d = inputManager.getCursorPosition();
-          Vector3f click3d = cam.getWorldCoordinates(new Vector2f(click2d.x, click2d.y), 0f).clone();
-          Vector3f dir = cam.getWorldCoordinates(new Vector2f(click2d.x, click2d.y), 1f).subtractLocal(click3d).normalizeLocal();
+                CollisionResults results = new CollisionResults();
+                Ray ray = new Ray(click3d, dir);
+                world.getSelectableObjects().collideWith(ray, results);
 
-          CollisionResults terrainResults = new CollisionResults();
-          CollisionResults results = new CollisionResults();
-          Ray ray = new Ray(click3d, dir);
-          
-          terrain.collideWith(ray, terrainResults);
-          world.getSelectableObjects().collideWith(ray, results);
-          // Check if something was selected
-          if (terrainResults.getClosestCollision() != null)
-          {
-              Cell selectedCell = null;
-              
-              // Determine which cell was selected
-              Vector3f contactPoint = terrainResults.getClosestCollision().getContactPoint();
-             
-              if (contactPoint.y < 0)
-              {
-                  // Water cell must be selected
+                // Check if something was selected
+                if (results.getClosestCollision() != null)
+                {
+                    Geometry selectedGeometry = results.getClosestCollision().getGeometry();
+                    String modelType = selectedGeometry.getUserData("modelType");
 
-                  Vector3f inverseDir = dir.negate();
-                  inverseDir = inverseDir.normalize();
-                  inverseDir = inverseDir.mult(0.2f);
-                  Vector3f result = contactPoint.clone();
-                  
-                  while (result.y < 0)
-                  {
-                      result = result.add(inverseDir);
-                  }
-                  
-                  selectedCell = world.getCellFromWorldCoordinates(result);
-              }
-              else
-              {
-                  selectedCell = world.getCellFromWorldCoordinates(contactPoint);
-              }
-              
-              if (selectedObject instanceof Creature)
-              {
-                  if (results.size() > 0)
-                  {
-                    if (results.getClosestCollision().getGeometry().getParent().getUserData("modelType").equals("FoodSource") && !(selectedObject instanceof AirborneCreature))
+                    // Determine which model has been selected
+                }
+            } /**
+             * [LEFT-CLICK while something selected] Select terrain, food source
+             */
+            else if (!keyPressed && name.equals("Select") && selectedObject != null)
+            {
+                Vector2f click2d = inputManager.getCursorPosition();
+                Vector3f click3d = cam.getWorldCoordinates(new Vector2f(click2d.x, click2d.y), 0f).clone();
+                Vector3f dir = cam.getWorldCoordinates(new Vector2f(click2d.x, click2d.y), 1f).subtractLocal(click3d).normalizeLocal();
+
+                CollisionResults terrainResults = new CollisionResults();
+                CollisionResults results = new CollisionResults();
+                Ray ray = new Ray(click3d, dir);
+
+                terrain.collideWith(ray, terrainResults);
+                world.getSelectableObjects().collideWith(ray, results);
+                // Check if something was selected
+                if (terrainResults.getClosestCollision() != null)
+                {
+                    Cell selectedCell = null;
+
+                    // Determine which cell was selected
+                    Vector3f contactPoint = terrainResults.getClosestCollision().getContactPoint();
+
+                    if (contactPoint.y < 0)
                     {
-                        /**
-                         * PickupFoodAction
-                         */
+                        // Water cell must be selected
 
-                        PickupFoodAction act = new PickupFoodAction(me, (Creature) selectedObject, world.findFoodSourceById((Integer) results.getClosestCollision().getGeometry().getParent().getUserData("parentId")));
-                        try {
-                            act.performAction(parent);
-                        } catch (ActionNotEnabledException ex) {
-                            Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
+                        Vector3f inverseDir = dir.negate();
+                        inverseDir = inverseDir.normalize();
+                        inverseDir = inverseDir.mult(0.2f);
+                        Vector3f result = contactPoint.clone();
+
+                        while (result.y < 0)
+                        {
+                            result = result.add(inverseDir);
+                        }
+
+                        selectedCell = world.getCellFromWorldCoordinates(result);
+                    } else
+                    {
+                        selectedCell = world.getCellFromWorldCoordinates(contactPoint);
+                    }
+
+                    if (selectedObject instanceof Creature)
+                    {
+                        if (results.size() > 0)
+                        {
+                            if (results.getClosestCollision().getGeometry().getParent().getUserData("modelType").equals("FoodSource") && !(selectedObject instanceof AirborneCreature))
+                            {
+                                /**
+                                 * PickupFoodAction
+                                 */
+                                PickupFoodAction act = new PickupFoodAction(me, (Creature) selectedObject, world.findFoodSourceById((Integer) results.getClosestCollision().getGeometry().getParent().getUserData("parentId")));
+                                try
+                                {
+                                    act.performAction(parent);
+                                } catch (ActionNotEnabledException ex)
+                                {
+                                    Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
+                                }
+                            }
+                        } else
+                        {
+                            /**
+                             * MoveAction
+                             */
+                            MoveAction act = new MoveAction(me, (Creature) selectedObject, selectedCell);
+
+                            try
+                            {
+                                act.performAction(parent);
+                            } catch (ActionNotEnabledException ex)
+                            {
+                                Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+
+                            // De-select creature
+                            Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+                            mat.setColor("Color", ColorRGBA.White);
+                            ((Creature) selectedObject).getModel().setMaterial(mat);
                         }
                     }
-                  }
-                  else
-                  {
-                      /**
-                       * MoveAction
-                       */
-                        MoveAction act = new MoveAction(me, (Creature) selectedObject, selectedCell);
 
-                        try
-                        {
-                          act.performAction(parent);
-                        }
-                        catch (ActionNotEnabledException ex)
-                        {
-                          Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
-                        }
+                    selectedObject = null;
+                }
+            }
 
-                        // De-select creature
-                        Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-                        mat.setColor("Color", ColorRGBA.White);
-                        ((Creature) selectedObject).getModel().setMaterial(mat);
-                  }
-              }
-              
-              selectedObject = null;
-          }
-      }
-      
-    }
-  };
- 
-  private AnalogListener analogListener = new AnalogListener() {
-    public void onAnalog(String name, float value, float tpf) {
-      if (isRunning)
-      {
-        if (name.equals("Rotate")) {
-          player.rotate(0, value*speed, 0);
         }
-        if (name.equals("Right")) {
-          Vector3f v = player.getLocalTranslation();
-          player.setLocalTranslation(v.x + value*speed, v.y, v.z);
+    };
+    private AnalogListener analogListener = new AnalogListener()
+    {
+        public void onAnalog(String name, float value, float tpf)
+        {
+            if (isRunning)
+            {
+                if (name.equals("Rotate"))
+                {
+                    player.rotate(0, value * speed, 0);
+                }
+                if (name.equals("Right"))
+                {
+                    Vector3f v = player.getLocalTranslation();
+                    player.setLocalTranslation(v.x + value * speed, v.y, v.z);
+                }
+                if (name.equals("Left"))
+                {
+                    Vector3f v = player.getLocalTranslation();
+                    player.setLocalTranslation(v.x - value * speed, v.y, v.z);
+                }
+
+            } else
+            {
+                System.out.println("Press P to unpause.");
+            }
         }
-        if (name.equals("Left")) {
-          Vector3f v = player.getLocalTranslation();
-          player.setLocalTranslation(v.x - value*speed, v.y, v.z);
-        }
-        
-      } else {
-        System.out.println("Press P to unpause.");
-      }
-    }
-  };
-    
+    };
     /**
      * Game identification
      */
-    
     private Game parent = this;
-  
     private GameCredentials gameCredentials;
     private Lobby lobby;
     /**
      * Game constants
      */
-    
     public final static int CONST_CREATURES_LIMIT = 10;
     public final static int CONST_SET_MODE_TIME_LIMIT = 4;
     public final static int CONST_INIT_RANGE_OF_SIGHT = 10;
     public final static int CONST_INIT_START_FOOD = 10;
-    
     /**
      * Game state variables
      */
-    
     private boolean started;
     private boolean inSetMode;
     private int round = 0;
     private int regenTime = 10;
-    
     /**
      * Properties
      */
-    
     private World world;
     private Player me;
     private List<Player> players;
-    
     /**
      * Terrain
      */
-    
     private Vector3f lightDir = new Vector3f(-4.9236743f, -1.27054665f, 5.896916f);
     private WaterFilter water;
     TerrainQuad terrain;
@@ -349,38 +334,34 @@ public class Game extends SimpleApplication
     LowPassFilter underWaterAudioFilter = new LowPassFilter(0.5f, 0.1f);
     LowPassFilter underWaterReverbFilter = new LowPassFilter(0.5f, 0.1f);
     LowPassFilter aboveWaterAudioFilter = new LowPassFilter(1, 1);
-    
     //This part is to emulate tides, slightly varrying the height of the water plane
     private float time = 0.0f;
     private float waterHeight = 0.0f;
     private float initialWaterHeight = 0.8f;
     private boolean underWater = false;
-    
     /**
      * GUI
      */
-    
     NiftyJmeDisplay niftyDisplay;
     Nifty nifty;
-    
+    private AudioNode quackAudio;
+
     /**
      * Constructor
      */
-    
     public Game(Lobby lobby, GameCredentials gameCredentials)
     {
         super();
-        
+
         this.lobby = lobby;
         this.gameCredentials = gameCredentials;
-        
+
         this.players = new ArrayList<Player>();
     }
-    
+
     /**
      * Business logic
      */
-    
     /**
      * Initialize the game.
      */
@@ -390,57 +371,52 @@ public class Game extends SimpleApplication
         /**
          * Initialize mouse
          */
-        
         inputManager.setCursorVisible(true);
-        
+
         /**
          * Initialize camera
          */
-        
         flyCam.setEnabled(false);
         final RtsCam rtsCam = new RtsCam(cam, rootNode);
         rtsCam.registerWithInput(inputManager);
-        rtsCam.setCenter(new Vector3f(20f,50f,20f));
-        
-         /**
+        rtsCam.setCenter(new Vector3f(20f, 50f, 20f));
+
+        /**
          * Initialize GUI setup
          */
-        
         this.niftyDisplay = new NiftyJmeDisplay(assetManager, inputManager, audioRenderer, guiViewPort);
         this.nifty = niftyDisplay.getNifty();
-        
+
         nifty.fromXml("Interface/gui.xml", "hud", new HudController(this), new SpawnMenuController(this));
         guiViewPort.addProcessor(niftyDisplay);
-        
+
         nifty.gotoScreen("hud");
-        
+
         /**
          * Initialize world
          */
-        
         Node worldNode = new Node("worldNode");
         rootNode.attachChild(worldNode);
         this.world = new World(this, worldNode);
-        
+
         Box box = new Box(new Vector3f(0, -4, -5), 15, .2f, 15);
         Geometry floor = new Geometry("the Floor", box);
         Material mat1 = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
         mat1.setColor("Color", ColorRGBA.Gray);
         floor.setMaterial(mat1);
         worldNode.attachChild(floor);
-        
+
         Box b = new Box(Vector3f.ZERO, 1, 1, 1);
         player = new Geometry("blue cube", b);
         Material mat = new Material(assetManager,
-          "Common/MatDefs/Misc/Unshaded.j3md");
+                "Common/MatDefs/Misc/Unshaded.j3md");
         mat.setColor("Color", ColorRGBA.Blue);
         player.setMaterial(mat);
         //rootNode.attachChild(player);
-        
+
         /**
          * Initialize world-terrain
          */
-        
         createTerrain(this.world.getWorldNode());
         createGrid();
         DirectionalLight sun = new DirectionalLight();
@@ -492,39 +468,46 @@ public class Game extends SimpleApplication
         audioRenderer.playSource(waves);
         viewPort.addProcessor(fpp);
         water.setFoamTexture((Texture2D) assetManager.loadTexture("Common/MatDefs/Water/Textures/foam3.jpg"));
-        
+
         /**
          * Initialize me
          */
-        
         Player me = new Player(this, 0, "TestPlayer");
         this.players.add(me);
         this.me = me;
-        
-        
+
+
         Player secondPlayer = new Player(this, 1, "Player2");
         this.players.add(secondPlayer);
-        
+
         /**
          * Initialize world
          */
-        
         this.world.initializeBases();
         this.world.initializeFoodSources();
         this.world.initializeDuck();
-        
+
         initKeys();
         initSetMode();
+
+        //(set audio location
+        quackAudio = new AudioNode(assetManager, "Sounds/Quack.ogg", false);
+        quackAudio.setLooping(false);
+        quackAudio.setPositional(true);
+        quackAudio.move(this.world.findDuck().getLocation().getWorldCoordinates());
+        quackAudio.setVolume(5);
+        rootNode.attachChild(quackAudio);
         
         /**
          * Some testing
          */
-        
         //this.world.addCreature(this.me, Creature.TYPE_LAND, this.world.getCells()[32][32]);
         SpawnAction spawn = new SpawnAction(this.me, LandCreature.CODE_ID);
-        try {
+        try
+        {
             spawn.performAction(this);
-        } catch (ActionNotEnabledException ex) {
+        } catch (ActionNotEnabledException ex)
+        {
             Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -535,41 +518,57 @@ public class Game extends SimpleApplication
     private void initKeys()
     {
         // You can map one or several inputs to one named action
-        inputManager.addMapping("Pause",  new KeyTrigger(KeyInput.KEY_P));
-        inputManager.addMapping("Left",   new KeyTrigger(KeyInput.KEY_J));
-        inputManager.addMapping("Right",  new KeyTrigger(KeyInput.KEY_K));
+        inputManager.addMapping("Pause", new KeyTrigger(KeyInput.KEY_P));
+        inputManager.addMapping("Left", new KeyTrigger(KeyInput.KEY_J));
+        inputManager.addMapping("Right", new KeyTrigger(KeyInput.KEY_K));
         inputManager.addMapping("Rotate", new KeyTrigger(KeyInput.KEY_SPACE));
-                                          //new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
+        //new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
         inputManager.addMapping("Select", new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
         inputManager.addMapping("RightClick", new MouseButtonTrigger(MouseInput.BUTTON_RIGHT));
-        
-        
+
+
         // Add the names to the action listener.
-        inputManager.addListener(actionListener, new String[]{"Pause", "Select", "RightClick"});
-        inputManager.addListener(analogListener, new String[]{"Left", "Right", "Rotate"});
+        inputManager.addListener(actionListener, new String[]
+                {
+                    "Pause", "Select", "RightClick"
+                });
+        inputManager.addListener(analogListener, new String[]
+                {
+                    "Left", "Right", "Rotate"
+                });
     }
-    
+
     /**
      * Perform the update loop.
-     * 
-     * @param tpf 
+     *
+     * @param tpf
      */
     @Override
     public void simpleUpdate(float tpf)
     {
         /**
+         * set your ears at the cam position, so we can hear 3D sounds
+         */
+        listener.setLocation(cam.getLocation());
+        listener.setRotation(cam.getRotation());
+
+        /**
          * Add creature controllers
          */
-        
         for (Creature creature : this.world.getCreatures())
         {
             creature.getController().update(tpf);
         }
+
+        /**
+         * Add duck controller
+         */
+        
+        this.world.findDuck().getController().update(tpf);
         
         /**
          * Terrain
          */
-        
         time += tpf;
         waterHeight = (float) Math.cos(((time * 0.6f) % FastMath.TWO_PI)) * 1.5f;
         water.setWaterHeight(initialWaterHeight + waterHeight);
@@ -592,7 +591,7 @@ public class Game extends SimpleApplication
     {
         //TODO: add render code
     }
-    
+
     /**
      * Start the game.
      */
@@ -602,22 +601,22 @@ public class Game extends SimpleApplication
         this.started = true;
         super.start();
     }
-    
+
     /**
      * End the game.
      */
     public void end()
     {
         super.stop();
-        this.started = false;        
+        this.started = false;
     }
-    
+
     private void initSetMode()
     {
         System.out.println("Begin SET-mode");
-        
+
         Timer timer = new Timer();
-        
+
         timer.schedule(new TimerTask()
         {
             @Override
@@ -626,29 +625,28 @@ public class Game extends SimpleApplication
                 disableActions();
                 lobby.getGameConnector().broadcastSetModeDone();
                 Map<Player, List<Action>> actionMap = lobby.getGameConnector().receiveActions();
-                
+
                 /*for (Player player : players)
-                {
-                    for (Action action : actionMap.get(player))
-                    {
-                        player.addAction(action);
-                    }
-                }*/
-                
+                 {
+                 for (Action action : actionMap.get(player))
+                 {
+                 player.addAction(action);
+                 }
+                 }*/
+
                 initGetMode();
             }
         }, CONST_SET_MODE_TIME_LIMIT * 1000);
-        
+
         enableActions();
     }
-    
+
     private void initGetMode()
     {
         System.out.println("Begin GET-mode");
         /**
          * Perform all actions
          */
-        
         for (Player player : this.players)
         {
             for (Action action : player.getActions())
@@ -656,27 +654,30 @@ public class Game extends SimpleApplication
                 try
                 {
                     action.performAction(this);
-                }
-                catch (ActionNotEnabledException ex) {
+                } catch (ActionNotEnabledException ex)
+                {
                     Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         }
-        
+
         lobby.getGameConnector().broadcastGetModeDone();
         initSetMode();
     }
-    
-    private void disableActions() { }
-    private void enableActions() { }
-    
+
+    private void disableActions()
+    {
+    }
+
+    private void enableActions()
+    {
+    }
+
     private void nextRound()
     {
-        
     }
-    
     protected Geometry player;
-    
+
     private void createTerrain(Node rootNode)
     {
         /**
@@ -791,9 +792,9 @@ public class Game extends SimpleApplication
                 worldCoors = new Vector3f(xCoord, height, yCoord);
                 worldCoors = worldCoors.add(trans);
                 //System.out.println(trans);
-                
-                 Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-                
+
+                Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+
                 /*
                  * use constructor for cell in this way:
                  * new Cell(xCoor, yCoor, worldCoors)
@@ -803,137 +804,157 @@ public class Game extends SimpleApplication
                  */
                 if (height <= 90)
                 {
-                    cells[i][j] = new DeepWaterCell(this.world, i,j, worldCoors);
+                    cells[i][j] = new DeepWaterCell(this.world, i, j, worldCoors);
                     cells[i][j].setWorldCoordinates(new Vector3f(worldCoors.x, 90 - 100, worldCoors.z));
                     mat.setColor("Color", ColorRGBA.Blue);
-                }
-                else if (height > 90 && height <= 105)
+                } else if (height > 90 && height <= 105)
                 {
-                    cells[i][j] = new ShallowWaterCell(this.world, i,j, worldCoors);
+                    cells[i][j] = new ShallowWaterCell(this.world, i, j, worldCoors);
                     mat.setColor("Color", ColorRGBA.Cyan);
-                }
-                else if (height > 105 && height <= 130)
+                } else if (height > 105 && height <= 130)
                 {
-                    cells[i][j] = new LandCell(this.world, i,j, worldCoors);
+                    cells[i][j] = new LandCell(this.world, i, j, worldCoors);
                     mat.setColor("Color", ColorRGBA.Green);
-                }
-                else if (height > 130)
+                } else if (height > 130)
                 {
-                    cells[i][j] = new RockCell(this.world, i,j, worldCoors);
+                    cells[i][j] = new RockCell(this.world, i, j, worldCoors);
                     mat.setColor("Color", ColorRGBA.Gray);
                 }
-                
+
                 /*Box box = new Box(Vector3f.ZERO, 1, 1, 1);
-                Geometry geometry = new Geometry("box_" + i + "_" + j, box);
+                 Geometry geometry = new Geometry("box_" + i + "_" + j, box);
                
-                Material mat2 = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-                geometry.setMaterial(mat);*/
-                
+                 Material mat2 = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+                 geometry.setMaterial(mat);*/
+
                 //this.world.getWorldNode().attachChild(geometry);
                 //geometry.setLocalTranslation(cells[i][j].getWorldCoordinates());/
             }
         }
-        
+
         this.world.setCells(cells);
     }
-    
+
     /**
      * Getters & setters
      */
-    
-    public boolean isIsRunning() {
+    public boolean isIsRunning()
+    {
         return isRunning;
     }
 
-    public void setIsRunning(boolean isRunning) {
+    public void setIsRunning(boolean isRunning)
+    {
         this.isRunning = isRunning;
     }
 
-    public GameCredentials getGameCredentials() {
+    public GameCredentials getGameCredentials()
+    {
         return gameCredentials;
     }
 
-    public void setGameCredentials(GameCredentials gameCredentials) {
+    public void setGameCredentials(GameCredentials gameCredentials)
+    {
         this.gameCredentials = gameCredentials;
     }
 
-    public Lobby getLobby() {
+    public Lobby getLobby()
+    {
         return lobby;
     }
 
-    public void setLobby(Lobby lobby) {
+    public void setLobby(Lobby lobby)
+    {
         this.lobby = lobby;
     }
 
-    public boolean isStarted() {
+    public boolean isStarted()
+    {
         return started;
     }
 
-    public void setStarted(boolean started) {
+    public void setStarted(boolean started)
+    {
         this.started = started;
     }
 
-    public boolean isInSetMode() {
+    public boolean isInSetMode()
+    {
         return inSetMode;
     }
 
-    public void setInSetMode(boolean inSetMode) {
+    public void setInSetMode(boolean inSetMode)
+    {
         this.inSetMode = inSetMode;
     }
 
-    public int getRound() {
+    public int getRound()
+    {
         return round;
     }
 
-    public void setRound(int round) {
+    public void setRound(int round)
+    {
         this.round = round;
     }
 
-    public int getRegenTime() {
+    public int getRegenTime()
+    {
         return regenTime;
     }
 
-    public void setRegenTime(int regenTime) {
+    public void setRegenTime(int regenTime)
+    {
         this.regenTime = regenTime;
     }
 
-    public World getWorld() {
+    public World getWorld()
+    {
         return world;
     }
 
-    public void setWorld(World world) {
+    public void setWorld(World world)
+    {
         this.world = world;
     }
 
-    public Player getMe() {
+    public Player getMe()
+    {
         return me;
     }
 
-    public void setMe(Player me) {
+    public void setMe(Player me)
+    {
         this.me = me;
     }
 
-    public Geometry getPlayer() {
+    public Geometry getPlayer()
+    {
         return player;
     }
 
-    public void setPlayer(Geometry player) {
+    public void setPlayer(Geometry player)
+    {
         this.player = player;
     }
 
-    public TerrainQuad getTerrain() {
+    public TerrainQuad getTerrain()
+    {
         return terrain;
     }
 
-    public void setTerrain(TerrainQuad terrain) {
+    public void setTerrain(TerrainQuad terrain)
+    {
         this.terrain = terrain;
     }
 
-    public List<Player> getPlayers() {
+    public List<Player> getPlayers()
+    {
         return players;
     }
 
-    public void setPlayers(List<Player> players) {
+    public void setPlayers(List<Player> players)
+    {
         this.players = players;
     }
 }
