@@ -257,4 +257,16 @@ public class InitialClient
             Logger.getLogger(InitialClient.class.getName()).log(Level.SEVERE, null, ex);
         }        
     }
+    
+    /**
+     * Getters & Setters
+     */
+    
+    public DatagramSocket getSocket() {
+        return socket;
+    }
+
+    public void setSocket(DatagramSocket socket) {
+        this.socket = socket;
+    }
 }

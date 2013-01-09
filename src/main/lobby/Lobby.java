@@ -136,6 +136,7 @@ public class Lobby
     {
         this.me = me;
         this.tokenRing = tokenRing;
+        this.me.setSocket(this.initialClient.getSocket());
         
         me.startListening();
     }
