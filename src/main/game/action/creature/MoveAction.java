@@ -11,7 +11,8 @@ import com.jme3.cinematic.MotionPathListener;
 import com.jme3.cinematic.events.CinematicEvent;
 import com.jme3.cinematic.events.CinematicEventListener;
 import com.jme3.cinematic.events.MotionEvent;
-import com.jme3.cinematic.events.MotionTrack;
+import com.jme3.math.FastMath;
+import com.jme3.math.Quaternion;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import java.util.logging.Level;
@@ -86,8 +87,13 @@ public class MoveAction extends CreatureAction
                 final MotionPath path = PathFinding.createMotionPath(game.getTerrain(), game.getWorld().getCells(), this.subject.getLocation(), this.destination, this.subject);
                 
                 final Cinematic cinematic = new Cinematic(game.getWorld().getWorldNode(), 20);
-                MotionTrack track = new MotionTrack(this.subject.getModel(), path);
-                track.setDirectionType(MotionEvent.Direction.Path);
+                final MotionEvent track = new MotionEvent(this.subject.getModel(), path);
+                
+                /**
+                 * Not sure how to fix this
+                 */
+                
+                //track.setDirectionType(MotionEvent.Direction.Path);
                 cinematic.addCinematicEvent(0, track);
                 cinematic.fitDuration();
                 game.getStateManager().attach(cinematic);
