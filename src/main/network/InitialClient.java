@@ -34,9 +34,12 @@ public class InitialClient
      * Properties
      */
     
+    public final static int PORT_BROADCASTLISTEN = 13340;
+    
     private XStream xstream = new XStream();
     private Lobby lobby;
     
+    private DatagramSocket broadcastSocket = null;
     private DatagramSocket socket = null;
     private Client me;
     private boolean joiningServer = false;
@@ -76,7 +79,7 @@ public class InitialClient
             {
                 try
                 {
-                    //DatagramSocket socket = new DatagramSocket(Client.PORT);
+                    DatagramSocket broadcastSocket = new DatagramSocket(PORT_BROADCASTLISTEN);
                     byte[] buffer = new byte[2048];
                     DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
 
@@ -100,14 +103,14 @@ public class InitialClient
                         //socket.setSoTimeout(5000);
                         try
                         {
-                            socket.receive(packet);
+                            broadcastSocket.receive(packet);
                             
                             String strMessage = new String(buffer, 0, packet.getLength());
                             packet.setLength(buffer.length);
 
                             // Handle message
                             Message message = (Message) xstream.fromXML(strMessage);
-                            System.out.println("Client in: " + strMessage);
+                            System.out.println("(Listening to broadcasts) Client in: " + strMessage);
 
                             if (message instanceof MessageGameCredentials)
                             {
@@ -134,6 +137,8 @@ public class InitialClient
                             Logger.getLogger(InitialServer.class.getName()).log(Level.SEVERE, null, ex);
                         }
                     }
+                    
+                    broadcastSocket.close();
                     
                     //lobby.getLobbyFrame().updateAvailableGames(lobby.getAvailableGames());
                     
@@ -217,7 +222,7 @@ public class InitialClient
 
                                 // Add new server to lobbyframe if it is new
                                 Message message = (Message) xstream.fromXML(strMessage);
-                                System.out.println("Client in: " + strMessage);
+                                System.out.println("(Polling) Client in: " + strMessage);
 
                                 if (message instanceof MessageJoinApproved)
                                 {
@@ -262,7 +267,7 @@ public class InitialClient
 
                                 // Add new server to lobbyframe if it is new
                                 Message message = (Message) xstream.fromXML(strMessage);
-                                System.out.println("Client in: " + strMessage);
+                                System.out.println("(joining server) Client in: " + strMessage);
 
                                 if (message instanceof MessagePlayerJoined)
                                 {

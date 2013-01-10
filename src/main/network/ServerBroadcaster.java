@@ -82,7 +82,7 @@ public class ServerBroadcaster implements Runnable
                         ip = beginIp + i;
                         
                         address = InetAddress.getByName(ip.toString());
-                        packet = new DatagramPacket(message, message.length, address, Client.PORT);
+                        packet = new DatagramPacket(message, message.length, address, InitialClient.PORT_BROADCASTLISTEN);
 
                         socket.send(packet);
                     }

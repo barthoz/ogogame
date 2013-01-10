@@ -104,8 +104,11 @@ public class Lobby
     
     public void addPlayer(String username)
     {
+        System.out.println("Player username added to lobby: " + username);
+        
         if (!this.playersInGame.contains(username))
         {
+            System.out.println("Succes!");
             this.playersInGame.add(username);
             this.intermediateClientJFrame.updatePlayers();
             this.intermediateServerJFrame.updatePlayers();
