@@ -64,7 +64,7 @@ public class ServerBroadcaster implements Runnable
 
             String beginIp = subnet[0] + "." + subnet[1] + "." + subnet[2] + ".";
             
-            while (true && this.started)
+            while (this.started)
             {
                 try
                 {
@@ -74,13 +74,15 @@ public class ServerBroadcaster implements Runnable
                     System.out.println("Server out (" + msgGameCredentials.getGameCredentials().getInitialHostIp() + "): " + strMsg);
                     
                     byte[] message = strMsg.getBytes();
-
+                    DatagramPacket packet;
+                    InetAddress address;
+                    
                     for (int i = 1; i <= 255; i++)
                     {
                         ip = beginIp + i;
                         
-                        InetAddress address = InetAddress.getByName(ip.toString());
-                        DatagramPacket packet = new DatagramPacket(message, message.length, address, Client.PORT);
+                        address = InetAddress.getByName(ip.toString());
+                        packet = new DatagramPacket(message, message.length, address, Client.PORT);
 
                         socket.send(packet);
                     }

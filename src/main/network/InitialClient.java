@@ -12,8 +12,11 @@ import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
+import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import main.game.GameCredentials;
@@ -50,7 +53,7 @@ public class InitialClient
         try {
             this.lobby = lobby;
             this.socket = new DatagramSocket(Client.PORT);
-            this.socket.setSoTimeout(5000);
+            this.socket.setSoTimeout(500);
         } catch (SocketException ex) {
             Logger.getLogger(InitialClient.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -64,9 +67,11 @@ public class InitialClient
      * Listen to server(s) for 10 seconds.
      */
     public void listenToServers()
-    {
+    {    
         Thread listening = new Thread(new Runnable()
         {
+            private boolean polling = true;
+            
             public void run()
             {
                 try
@@ -75,36 +80,56 @@ public class InitialClient
                     byte[] buffer = new byte[2048];
                     DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
 
-                    long count = 0;
+                    //long count = 0;
                     
                     //GameCredentials gameCredentials = null;
                     
-                    while (true && count < 5000)
+                    // Poll server for 5 seconds
+                    Timer timer = new Timer();
+                    timer.schedule(new TimerTask()
                     {
-                        socket.receive(packet);
-                        String strMessage = new String(buffer, 0, packet.getLength());
-                        packet.setLength(buffer.length);
-                        
-                        // Handle message
-                        Message message = (Message) xstream.fromXML(strMessage);
-                        System.out.println("Client in: " + strMessage);
-                        
-                        if (message instanceof MessageGameCredentials)
+                        @Override
+                        public void run()
                         {
-                            MessageGameCredentials messageGameCredentials = (MessageGameCredentials) message;
+                            polling = false;
+                        }
+                    }, 5000);
+                    
+                    while (polling)
+                    {
+                        //socket.setSoTimeout(5000);
+                        try
+                        {
+                            socket.receive(packet);
                             
-                            // Add new server to lobbyframe if it is new
-                            //System.out.println("Found!");
-                            //System.out.println(strMessage);
+                            String strMessage = new String(buffer, 0, packet.getLength());
+                            packet.setLength(buffer.length);
+
+                            // Handle message
+                            Message message = (Message) xstream.fromXML(strMessage);
+                            System.out.println("Client in: " + strMessage);
+
+                            if (message instanceof MessageGameCredentials)
+                            {
+                                MessageGameCredentials messageGameCredentials = (MessageGameCredentials) message;
+
+                                // Add new server to lobbyframe if it is new
+                                //System.out.println("Found!");
+                                //System.out.println(strMessage);
+
+                                //gameCredentials = messageGameCredentials.getGameCredentials();
+                                lobby.addGameCredentials(messageGameCredentials.getGameCredentials());
+                                //break;
+                            }
+                        }
+                        catch (SocketTimeoutException ex)
+                        {
                             
-                            //gameCredentials = messageGameCredentials.getGameCredentials();
-                            lobby.addGameCredentials(messageGameCredentials.getGameCredentials());
-                            break;
                         }
                         
                         try {
-                            count += 100;
-                            Thread.sleep(100);
+                            //count += 100;
+                            Thread.sleep(10);
                         } catch (InterruptedException ex) {
                             Logger.getLogger(InitialServer.class.getName()).log(Level.SEVERE, null, ex);
                         }
@@ -158,6 +183,8 @@ public class InitialClient
                         
             Thread thread = new Thread(new Runnable()
             {
+                private boolean polling;
+                
                 public void run()
                 {
                     try
@@ -166,91 +193,118 @@ public class InitialClient
                         byte[] buffer = new byte[2048];
                         DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
 
-                        long count = 0;
+                        //long count = 0;
                         
-                        while (true && count < 5000)
+                        // Poll server for 5 seconds
+                        Timer timer = new Timer();
+                        timer.schedule(new TimerTask()
                         {
-                            socket.receive(packet);
-                            String strMessage = new String(buffer, 0, packet.getLength());
-                            packet.setLength(buffer.length);
-                            
-                            // Add new server to lobbyframe if it is new
-                            Message message = (Message) xstream.fromXML(strMessage);
-                            System.out.println("Client in: " + strMessage);
-                            
-                            if (message instanceof MessageJoinApproved)
+                            @Override
+                            public void run()
                             {
-                                MessageJoinApproved msgJoinApproved = (MessageJoinApproved) message;
-                                
-                                // Add new server to lobbyframe if it is new
-                                me = msgJoinApproved.getClient();
-                                System.out.println("Approved!");
-                                joiningServer = true;
-                                break;
+                                polling = false;
                             }
-                            else if (message instanceof MessageJoinDisapproved)
+                        }, 5000);
+                        
+                        while (polling)
+                        {                            
+                            try
                             {
-                                MessageJoinDisapproved msgJoinDisapproved = (MessageJoinDisapproved) message;
+                                socket.receive(packet);
                                 
-                                System.out.println("Disapproved! Reason: " + msgJoinDisapproved.getReason());
-                                joiningServer = false;
-                                break;
+                                String strMessage = new String(buffer, 0, packet.getLength());
+                                packet.setLength(buffer.length);
+
+                                // Add new server to lobbyframe if it is new
+                                Message message = (Message) xstream.fromXML(strMessage);
+                                System.out.println("Client in: " + strMessage);
+
+                                if (message instanceof MessageJoinApproved)
+                                {
+                                    MessageJoinApproved msgJoinApproved = (MessageJoinApproved) message;
+
+                                    // Add new server to lobbyframe if it is new
+                                    me = msgJoinApproved.getClient();
+                                    System.out.println("Approved!");
+                                    joiningServer = true;
+                                    //break;
+                                }
+                                else if (message instanceof MessageJoinDisapproved)
+                                {
+                                    MessageJoinDisapproved msgJoinDisapproved = (MessageJoinDisapproved) message;
+
+                                    System.out.println("Disapproved! Reason: " + msgJoinDisapproved.getReason());
+                                    joiningServer = false;
+                                    //break;
+                                }
+                            }
+                            catch (SocketTimeoutException ex)
+                            {
+                                System.out.println("Timeout. No response.");
                             }
                             
                             try {
-                                count += 10;
+                                //count += 10;
                                 Thread.sleep(10);
                             } catch (InterruptedException ex) {
                                 Logger.getLogger(InitialClient.class.getName()).log(Level.SEVERE, null, ex);
                             }
                         }
                         
-                        while (true && joiningServer)
+                        while (joiningServer)
                         {
-                            socket.receive(packet);
-                            String strMessage = new String(buffer, 0, packet.getLength());
-                            packet.setLength(buffer.length);
-                            
-                            // Add new server to lobbyframe if it is new
-                            Message message = (Message) xstream.fromXML(strMessage);
-                            System.out.println("Client in: " + strMessage);
-                            
-                            if (message instanceof MessagePlayerJoined)
+                            try
                             {
-                                MessagePlayerJoined msgPlayerJoined = (MessagePlayerJoined) message;
-                                lobby.addPlayer(msgPlayerJoined.getUsername());
-                                System.out.println("Player joined: " + msgPlayerJoined.getUsername());
-                            }
-                            else if (message instanceof MessagePing)
-                            {
-                                byte[] sendMsg = xstream.toXML(new MessagePong()).getBytes();
-                                DatagramPacket sendPacket = new DatagramPacket(sendMsg, sendMsg.length, packet.getAddress(), InitialServer.PORT);
-                                socket.send(sendPacket);
-                            }
-                            else if (message instanceof MessageStartGame)
-                            {
-                                MessageStartGame msgStartGame = (MessageStartGame) message;
+                                socket.receive(packet);
                                 
-                                // Find me in token ring
-                                // (new instance of me since it has been sent over the network with the message)
-                                Client newMe = null;
-                                for (Client client : msgStartGame.getTokenRing())
+                                String strMessage = new String(buffer, 0, packet.getLength());
+                                packet.setLength(buffer.length);
+
+                                // Add new server to lobbyframe if it is new
+                                Message message = (Message) xstream.fromXML(strMessage);
+                                System.out.println("Client in: " + strMessage);
+
+                                if (message instanceof MessagePlayerJoined)
                                 {
-                                    if (client.getId() == me.getId())
-                                    {
-                                        newMe = client;
-                                    }
+                                    MessagePlayerJoined msgPlayerJoined = (MessagePlayerJoined) message;
+                                    lobby.addPlayer(msgPlayerJoined.getUsername());
+                                    System.out.println("Player joined: " + msgPlayerJoined.getUsername());
                                 }
+                                else if (message instanceof MessagePing)
+                                {
+                                    byte[] sendMsg = xstream.toXML(new MessagePong()).getBytes();
+                                    DatagramPacket sendPacket = new DatagramPacket(sendMsg, sendMsg.length, packet.getAddress(), InitialServer.PORT);
+                                    socket.send(sendPacket);
+                                }
+                                else if (message instanceof MessageStartGame)
+                                {
+                                    MessageStartGame msgStartGame = (MessageStartGame) message;
+
+                                    // Find me in token ring
+                                    // (new instance of me since it has been sent over the network with the message)
+                                    Client newMe = null;
+                                    for (Client client : msgStartGame.getTokenRing())
+                                    {
+                                        if (client.getId() == me.getId())
+                                        {
+                                            newMe = client;
+                                        }
+                                    }
+
+                                    me = newMe;
+                                    tokenRing = msgStartGame.getTokenRing();
+                                    serverStarted = true;
+
+                                    joiningServer = false;
+
+                                    lobby.startGame(me, tokenRing);
+
+                                    break;
+                                }
+                            }
+                            catch (SocketTimeoutException ex)
+                            {
                                 
-                                me = newMe;
-                                tokenRing = msgStartGame.getTokenRing();
-                                serverStarted = true;
-                                
-                                joiningServer = false;
-                                
-                                lobby.startGame(me, tokenRing);
-                                
-                                break;
                             }
                             
                             try
