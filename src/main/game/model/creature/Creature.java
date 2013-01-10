@@ -155,4 +155,44 @@ public abstract class Creature
     public void setLocation(Cell location) {
         this.location = location;
     }
+
+    public boolean isInFight()
+    {
+        return inFight;
+    }
+
+    public void setInFight(boolean inFight)
+    {
+        this.inFight = inFight;
+    }
+
+    public int getHealth()
+    {
+        return health;
+    }
+
+    public void setHealth(int health)
+    {
+        this.health = health;
+    }
+
+    public int getLevel()
+    {
+        return level;
+    }
+
+    public void setLevel(int level)
+    {
+        this.level = level;
+    }
+
+    public boolean isIsAlive()
+    {
+        return isAlive;
+    }
+
+    public void setIsAlive(boolean isAlive)
+    {
+        this.isAlive = isAlive;
+    }
 }

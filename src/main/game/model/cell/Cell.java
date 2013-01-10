@@ -29,8 +29,8 @@ public abstract class Cell
     private int xCoor;
     private int yCoor;
     private Vector3f worldCoordinates;
-    private List<Creature> occupant = null;
-    private List<Creature> airborneOccupant = null;
+    private List<Creature> occupants = null;
+    private List<Creature> airborneOccupants = null;
 
     /**
      * Constructor
@@ -157,24 +157,24 @@ public abstract class Cell
         this.yCoor = yCoor;
     }
 
-    public List<Creature> getOccupant()
+    public List<Creature> getOccupants()
     {
-        return occupant;
+        return occupants;
     }
 
-    public void setOccupant(List<Creature> occupant)
+    public void setOccupants(List<Creature> occupant)
     {
-        this.occupant = occupant;
+        this.occupants = occupant;
     }
 
-    public List<Creature> getAirborneOccupant()
+    public List<Creature> getAirborneOccupants()
     {
-        return airborneOccupant;
+        return airborneOccupants;
     }
 
-    public void setAirborneOccupant(List<Creature> airborneOccupant)
+    public void setAirborneOccupants(List<Creature> airborneOccupant)
     {
-        this.airborneOccupant = airborneOccupant;
+        this.airborneOccupants = airborneOccupant;
     }
 
     public int getxCoor() {

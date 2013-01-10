@@ -10,7 +10,6 @@ import com.jme3.cinematic.MotionPathListener;
 import com.jme3.cinematic.events.CinematicEvent;
 import com.jme3.cinematic.events.CinematicEventListener;
 import com.jme3.cinematic.events.MotionEvent;
-import com.jme3.cinematic.events.MotionTrack;
 import com.jme3.math.Vector3f;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -77,7 +76,7 @@ public class PickupFoodAction extends CreatureAction
                 final MotionPath path = PathFinding.createMotionPath(game.getTerrain(), game.getWorld().getCells(), this.subject.getLocation(), this.foodSource.getLocation(), this.subject);
                 
                 final Cinematic cinematic = new Cinematic(game.getWorld().getWorldNode(), 20);
-                MotionTrack track = new MotionTrack(this.subject.getModel(), path);
+                MotionEvent track = new MotionEvent(this.subject.getModel(), path);
                 cinematic.addCinematicEvent(0, track);
                 cinematic.fitDuration();
                 game.getStateManager().attach(cinematic);
