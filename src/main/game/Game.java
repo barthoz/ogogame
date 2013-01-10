@@ -476,13 +476,16 @@ public class Game extends SimpleApplication
         /**
          * Initialize me
          */
-        Player me = new Player(this, 0, "TestPlayer");
-        this.players.add(me);
-        this.me = me;
+        if (this.me == null || this.players == null)
+        {
+            Player me = new Player(this, 0, "TestPlayer");
+            this.players.add(me);
+            this.me = me;
 
 
-        Player secondPlayer = new Player(this, 1, "Player2");
-        this.players.add(secondPlayer);
+            Player secondPlayer = new Player(this, 1, "Player2");
+            this.players.add(secondPlayer);
+        }
 
         /**
          * Initialize world
@@ -506,14 +509,14 @@ public class Game extends SimpleApplication
          * Some testing
          */
         //this.world.addCreature(this.me, Creature.TYPE_LAND, this.world.getCells()[32][32]);
-        SpawnAction spawn = new SpawnAction(this.me, LandCreature.CODE_ID);
+        /*SpawnAction spawn = new SpawnAction(this.me, LandCreature.CODE_ID);
         try
         {
             spawn.performAction(this);
         } catch (ActionNotEnabledException ex)
         {
             Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        }*/
     }
 
     /**

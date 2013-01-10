@@ -72,7 +72,7 @@ public class InitialServer
             try
             {
                 this.socket = new DatagramSocket(PORT);
-                this.socket.setSoTimeout(500);
+                this.socket.setSoTimeout(10);
             } catch (SocketException ex) {
                 Logger.getLogger(InitialServer.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -109,7 +109,7 @@ public class InitialServer
     {
         this.serverBroadcaster.stopBroadcasting();
     }
-        
+    
     public void listenToClients()
     {
         this.started = true;
@@ -236,156 +236,175 @@ public class InitialServer
             private boolean polling = true;
             
             public void run()
-            {
-                Map<Client, Boolean> responded = new HashMap<Client, Boolean>();
-                
-                for (Client client : clients)
+            {                    
+                final Thread pinging = new Thread(new Runnable()
                 {
-                    responded.put(client, false);
-                }
-                
-                try
-                {
-                    byte[] buffer = new byte[2048];
-                    DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
-
-                    //long count = 0;
-                    
-                    // Poll clients for 3 seconds
-                    Timer timer = new Timer();
-                    timer.schedule(new TimerTask()
+                    public void run()
                     {
-                        @Override
-                        public void run()
-                        {
-                            polling = false;
-                        }
-                    }, 3000);
-                    
-                    Thread pinging = new Thread(new Runnable()
-                    {
-                        public void run()
-                        {
-                            byte[] sendMsg = xstream.toXML(new MessagePing()).getBytes();
-                            DatagramPacket packetPing;
-
-                            for (Client client : clients)
-                            {
-                                try
-                                {
-                                    packetPing = new DatagramPacket(sendMsg, sendMsg.length, InetAddress.getByName(client.getAddress()), Client.PORT);
-                                    socket.send(packetPing);
-                                } catch (UnknownHostException ex) {
-                                    Logger.getLogger(InitialServer.class.getName()).log(Level.SEVERE, null, ex);
-                                } catch (IOException ex) {
-                                    Logger.getLogger(InitialServer.class.getName()).log(Level.SEVERE, null, ex);
-                                }
-                            } 
-                        }
-                    });
-                    
-                    pinging.start();
-                    
-                    while (polling)
-                    {                    
-                        try
-                        {
-                            socket.receive(packet);
-                            
-                            String strMessage = new String(buffer, 0, packet.getLength());
-                            packet.setLength(buffer.length);
-
-                            // Handle message
-                            Message message = (Message) xstream.fromXML(strMessage);
-                            System.out.println("(Start-game polling) Server in: " + strMessage);
-
-                            if (message instanceof MessagePong)
-                            {
-                                responded.put(getClientByAddress(packet.getAddress()), true);
-                            }
-                        }
-                        catch (SocketTimeoutException ex)
-                        {
-                            
-                        }
-                        
-                        try {
-                            //count += 10;
-                            Thread.sleep(10);
-                        } catch (InterruptedException ex) {
-                            Logger.getLogger(InitialServer.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-                    }
-                    
-                    for (Client client : responded.keySet())
-                    {
-                        if (responded.get(client).equals(false))
-                        {
-                            clients.remove(client);
-                        }
-                    }
-                    
-                    // Check whether number of new clients are between 2 and 6
-                    if (clients.size() >= 2 && clients.size() <= 6)
-                    {
-                        //stopListening();
-                        stopBroadcasting();
-                        buildTokenRing();
-
-                        MessageStartGame message = new MessageStartGame(clients);
-                        String strMessage = xstream.toXML(message);
-                        byte[] sendBuffer = strMessage.getBytes();
+                        System.out.println("Server out (pinging): " + xstream.toXML(new MessagePing()));
+                        byte[] sendMsg = xstream.toXML(new MessagePing()).getBytes();
+                        DatagramPacket packetPing;
 
                         for (Client client : clients)
                         {
-                            if (client != me)
+                            try
                             {
-                                try {
-                                    DatagramPacket sendPacket = new DatagramPacket(sendBuffer, sendBuffer.length, InetAddress.getByName(client.getAddress()), Client.PORT);
-                                    socket.send(sendPacket);
-                                } catch (UnknownHostException ex) {
-                                    Logger.getLogger(InitialServer.class.getName()).log(Level.SEVERE, null, ex);
-                                } catch (IOException ex) {
-                                    Logger.getLogger(InitialServer.class.getName()).log(Level.SEVERE, null, ex);
+                                packetPing = new DatagramPacket(sendMsg, sendMsg.length, InetAddress.getByName(client.getAddress()), Client.PORT);
+                                socket.send(packetPing);
+                            }
+                            catch (UnknownHostException ex)
+                            {
+                                Logger.getLogger(InitialServer.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                            catch (IOException ex)
+                            {
+                                Logger.getLogger(InitialServer.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                        } 
+                    }
+                });
+
+                Thread polling = new Thread(new Runnable()
+                {
+                    private boolean isPolling = true;
+
+                    public void run() 
+                    {
+                        Map<Client, Boolean> responded = new HashMap<Client, Boolean>();
+
+                        for (Client client : clients)
+                        {
+                            responded.put(client, false);
+                        }
+
+                        responded.put(me, true);
+
+                        // Poll clients for 3 seconds
+                        Timer timer = new Timer();
+                        timer.schedule(new TimerTask()
+                        {
+                            @Override
+                            public void run()
+                            {
+                                isPolling = false;
+                                System.out.println("Polling finished.");
+                            }
+                        }, 3000);
+
+                        byte[] buffer = new byte[2048];
+                        DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
+
+                        pinging.start();
+                        
+                        while (isPolling)
+                        {
+                            try
+                            {
+                                socket.receive(packet);
+
+                                String strMessage = new String(buffer, 0, packet.getLength());
+                                packet.setLength(buffer.length);
+
+                                // Handle message
+                                Message message = (Message) xstream.fromXML(strMessage);
+                                System.out.println("(Start-game polling) Server in: " + strMessage);
+
+                                if (message instanceof MessagePong)
+                                {
+                                    System.out.println(getClientById(message.getFromClientId()));
+                                    responded.put(getClientById(message.getFromClientId()), true);
                                 }
+                            }
+                            catch (SocketTimeoutException ex)
+                            {
+                                System.out.println("Polling");
+                            }
+                            catch (IOException ex)
+                            {
+                                Logger.getLogger(InitialServer.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+
+                            try
+                            {
+                                Thread.sleep(10);
+                            }
+                            catch (InterruptedException ex)
+                            {
+                                Logger.getLogger(InitialServer.class.getName()).log(Level.SEVERE, null, ex);
                             }
                         }
 
-                        MessagePassToken msgInitialToken = new MessagePassToken();
-                        msgInitialToken.setFromClientId(me.getId());
+                        for (Client client : responded.keySet())
+                        {
+                            System.out.println("Client id: " + client.getId() + " - addr: " + client.getAddress() + " - responded: " + responded.get(client));
 
-                        sendBuffer = xstream.toXML(msgInitialToken).getBytes();
-
-                        try {
-                            DatagramPacket sendPacket = new DatagramPacket(sendBuffer, sendBuffer.length, InetAddress.getByName(me.getOutNeighbour().getAddress()), Client.PORT);
-                            socket.send(sendPacket);
-                        } catch (UnknownHostException ex) {
-                            Logger.getLogger(InitialServer.class.getName()).log(Level.SEVERE, null, ex);
-                        } catch (IOException ex) {
-                            Logger.getLogger(InitialServer.class.getName()).log(Level.SEVERE, null, ex);
+                            if (responded.get(client).equals(false))
+                            {
+                                clients.remove(client);
+                            }
                         }
 
-                        lobby.startGame(me, clients);
+                        // Check whether number of new clients are between 2 and 6
+                        if (clients.size() >= 2 && clients.size() <= 6)
+                        {
+                            //stopListening();
+                            stopBroadcasting();
+                            buildTokenRing();
+
+                            MessageStartGame message = new MessageStartGame(clients, serverBroadcaster.getGameCredentials());
+                            String strMessage = xstream.toXML(message);
+                            byte[] sendBuffer = strMessage.getBytes();
+
+                            for (Client client : clients)
+                            {
+                                if (client != me)
+                                {
+                                    try {
+                                        DatagramPacket sendPacket = new DatagramPacket(sendBuffer, sendBuffer.length, InetAddress.getByName(client.getAddress()), Client.PORT);
+                                        socket.send(sendPacket);
+                                    } catch (UnknownHostException ex) {
+                                        Logger.getLogger(InitialServer.class.getName()).log(Level.SEVERE, null, ex);
+                                    } catch (IOException ex) {
+                                        Logger.getLogger(InitialServer.class.getName()).log(Level.SEVERE, null, ex);
+                                    }
+                                }
+                            }
+
+                            MessagePassToken msgInitialToken = new MessagePassToken();
+                            msgInitialToken.setFromClientId(me.getId());
+
+                            sendBuffer = xstream.toXML(msgInitialToken).getBytes();
+
+                            try {
+                                DatagramPacket sendPacket = new DatagramPacket(sendBuffer, sendBuffer.length, InetAddress.getByName(me.getOutNeighbour().getAddress()), Client.PORT);
+                                socket.send(sendPacket);
+                            } catch (UnknownHostException ex) {
+                                Logger.getLogger(InitialServer.class.getName()).log(Level.SEVERE, null, ex);
+                            } catch (IOException ex) {
+                                Logger.getLogger(InitialServer.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+
+                            lobby.startGame(me, clients, serverBroadcaster.getGameCredentials());
+                        }
+                        else
+                        {
+                            System.out.println("Cannot start game.");
+                        }
                     }
-                    else
-                    {
-                        System.out.println("Cannot start game.");
-                    }
-                    
-                } catch (IOException ex) {
-                    Logger.getLogger(InitialServer.class.getName()).log(Level.SEVERE, null, ex);
-                }
+                });
+
+                polling.start();
             }
         });
         
         listening.start();
     }
     
-    private Client getClientByAddress(InetAddress address)
+    private Client getClientById(int id)
     {
         for (Client client : this.clients)
         {
-            if (client.getAddress().equals(address.getHostAddress()))
+            if (client.getId() == id)
             {
                 return client;
             }

@@ -5,6 +5,7 @@
 package main.network.message;
 
 import java.util.List;
+import main.game.GameCredentials;
 import main.network.Client;
 
 /**
@@ -17,7 +18,9 @@ public class MessageStartGame extends Message
      * Properties
      */
     
-    List<Client> tokenRing;
+    private List<Client> tokenRing;
+    private GameCredentials gameCredentials;
+    
     
     /**
      * Constructor
@@ -25,9 +28,10 @@ public class MessageStartGame extends Message
     
     public MessageStartGame() { }
     
-    public MessageStartGame(List<Client> tokenRing)
+    public MessageStartGame(List<Client> tokenRing, GameCredentials gameCredentials)
     {
         this.tokenRing = tokenRing;
+        this.gameCredentials = gameCredentials;
     }
 
     /**
@@ -40,6 +44,14 @@ public class MessageStartGame extends Message
 
     public void setTokenRing(List<Client> tokenRing) {
         this.tokenRing = tokenRing;
+    }
+
+    public GameCredentials getGameCredentials() {
+        return gameCredentials;
+    }
+
+    public void setGameCredentials(GameCredentials gameCredentials) {
+        this.gameCredentials = gameCredentials;
     }
     
 }

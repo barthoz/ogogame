@@ -13,6 +13,7 @@ import main.network.message.Message;
 import com.thoughtworks.xstream.XStream;
 import java.net.InetAddress;
 import java.net.SocketException;
+import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import main.game.Player;
 import main.network.message.*;
@@ -67,7 +68,7 @@ public class Client
                 byte[] buffer = new byte[2048];
                 DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
 
-                while (true) //&& isListening)
+                while (isListening)
                 {
                     System.out.println("Loop");
                     try
@@ -125,7 +126,13 @@ public class Client
                         } catch (InterruptedException ex) {
                             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
                         }
-                    } catch (IOException ex) {
+                    }
+                    catch (SocketTimeoutException ex)
+                    {
+                        
+                    }
+                    catch (IOException ex)
+                    {
                         Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
@@ -231,5 +238,13 @@ public class Client
 
     public void setSocket(DatagramSocket socket) {
         this.socket = socket;
+    }
+
+    public Player getPlayer() {
+        return player;
+    }
+
+    public void setPlayer(Player player) {
+        this.player = player;
     }
 }

@@ -105,4 +105,16 @@ public class ServerBroadcaster implements Runnable
             Logger.getLogger(InitialServer.class.getName()).log(Level.SEVERE, null, ex);
         }   
     }
+    
+    /**
+     * Getters & Setters
+     */
+    
+    public GameCredentials getGameCredentials() {
+        return gameCredentials;
+    }
+
+    public void setGameCredentials(GameCredentials gameCredentials) {
+        this.gameCredentials = gameCredentials;
+    }
 }

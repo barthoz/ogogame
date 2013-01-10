@@ -228,7 +228,7 @@ public class InitialClient
                                 }
                             }
                             
-                            lobby.startGame(me, msgStartGame.getTokenRing());
+                            lobby.startGame(me, msgStartGame.getTokenRing(), msgStartGame.getGameCredentials());
                             this.stopListening();
                         }
                         
@@ -420,7 +420,7 @@ public class InitialClient
 
                                         joiningServer = false;
 
-                                        lobby.startGame(me, tokenRing);
+                                        lobby.startGame(me, tokenRing, msgStartGame.getGameCredentials());
 
                                         break;
                                     }

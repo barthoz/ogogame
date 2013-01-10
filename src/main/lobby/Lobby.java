@@ -16,6 +16,7 @@ import java.util.logging.Logger;
 import main.Main;
 import main.game.Game;
 import main.game.GameCredentials;
+import main.game.Player;
 import main.network.Client;
 import main.network.GameConnector;
 import main.network.InitialClient;
@@ -49,6 +50,7 @@ public class Lobby
     
     private List<Client> tokenRing;
     private Client me;
+    private Game currentGame = null;
     
     /**
      * Constructor
@@ -136,13 +138,39 @@ public class Lobby
         }
     }
     
-    public void startGame(Client me, List<Client> tokenRing)
+    public void startGame(Client me, List<Client> tokenRing, GameCredentials gameCredentials)
     {
         System.out.println("Server started!");
         this.me = me;
         this.tokenRing = tokenRing;
         me.setSocket(this.initialClient.getSocket());
         me.startListening();
+        Game game = buildGame(me, tokenRing, gameCredentials);
+        game.start();
+    }
+    
+    private Game buildGame(Client me, List<Client> tokenRing, GameCredentials gameCredentials)
+    {
+        Game game = new Game(this, gameCredentials);
+        
+        // Build players
+        List<Player> players = new ArrayList<Player>();
+        
+        for (Client client : tokenRing)
+        {
+            Player newPlayer = new Player(game, client.getId(), client.getUsername());
+            client.setPlayer(newPlayer);
+            players.add(newPlayer);
+            
+            if (client.equals(me))
+            {
+                game.setMe(newPlayer);
+            }
+        }
+        
+        game.setPlayers(players);
+        
+        return game;
     }
     
     /**
