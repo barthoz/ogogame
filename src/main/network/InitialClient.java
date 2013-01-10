@@ -13,6 +13,7 @@ import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
@@ -80,6 +81,7 @@ public class InitialClient
                 try
                 {
                     DatagramSocket broadcastSocket = new DatagramSocket(PORT_BROADCASTLISTEN);
+                    broadcastSocket.setSoTimeout(500);
                     byte[] buffer = new byte[2048];
                     DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
 
@@ -94,6 +96,7 @@ public class InitialClient
                         @Override
                         public void run()
                         {
+                            System.out.println("No servers found");
                             polling = false;
                         }
                     }, 5000);
@@ -127,7 +130,7 @@ public class InitialClient
                         }
                         catch (SocketTimeoutException ex)
                         {
-                            
+                            System.out.println("Still no servers found");
                         }
                         
                         try {
@@ -139,6 +142,8 @@ public class InitialClient
                     }
                     
                     broadcastSocket.close();
+                    
+                    System.out.println("Done");
                     
                     //lobby.getLobbyFrame().updateAvailableGames(lobby.getAvailableGames());
                     
@@ -163,182 +168,307 @@ public class InitialClient
      */
     public void joinGame(GameCredentials gameCredentials, String username)
     {
-        //try
-        //{
-            // Open socket
-            //DatagramSocket socket = new DatagramSocket();
-            final GameCredentials finalGc = gameCredentials;
-            final String finalUsername = username;
+        /**
+         * Open thread that listens to incoming messages
+         */
+        
+        Thread listener = new Thread(new Runnable()
+        {
+            private boolean listening = true;
             
-            /**
-             * Listen to server for response (for 10 seconds, then continue if approved)
-             */
-                        
-            Thread thread = new Thread(new Runnable()
+            public void run()
             {
-                private boolean polling;
+                byte[] buffer = new byte[2048];
+                DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
                 
-                public void run()
+                Client me = null;
+                
+                while (this.listening)
                 {
-                    System.out.println("Start thread");
                     try
                     {
-                        //DatagramSocket socket = new DatagramSocket(Client.PORT);
-                        byte[] buffer = new byte[2048];
-                        DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
-
-                        //long count = 0;
+                        socket.receive(packet);
+                        String strMessage = new String(buffer, 0, packet.getLength());
+                        Message message = (Message) xstream.fromXML(strMessage);
                         
-                        // Poll server for 5 seconds
-                        Timer timer = new Timer();
-                        timer.schedule(new TimerTask()
+                        System.out.println("Client listener: " + strMessage);
+                   
+                        if (message instanceof MessagePing)
                         {
-                            @Override
-                            public void run()
+                            MessagePong msgPong = new MessagePong();
+                            msgPong.setFromClientId(me.getId());
+                            byte[] sendMsg = xstream.toXML(msgPong).getBytes();
+                            DatagramPacket sendPacket = new DatagramPacket(sendMsg, sendMsg.length, packet.getAddress(), InitialServer.PORT);
+                            socket.send(sendPacket);
+                        }
+                        if (message instanceof MessageJoinApproved)
+                        {
+                            me = ((MessageJoinApproved) message).getClient();
+                        }
+                        else if (message instanceof MessageJoinDisapproved)
+                        {
+                            System.out.println("Join disapproved: " + ((MessageJoinDisapproved) message).getReason());
+                            this.stopListening();
+                        }
+                        else if (message instanceof MessagePlayerJoined)
+                        {
+                            lobby.addPlayer(((MessagePlayerJoined) message).getUsername());
+                        }
+                        else if (message instanceof MessageStartGame)
+                        {
+                            MessageStartGame msgStartGame = (MessageStartGame) message;
+
+                            // Find me in token ring
+                            // (new instance of me since it has been sent over the network with the message)
+                            for (Client client : msgStartGame.getTokenRing())
                             {
-                                polling = false;
-                                System.out.println("Stop polling");
-                            }
-                        }, 5000);
-                        
-                        System.out.println("Start polling");
-                        
-                        /**
-                         * Send join request
-                         */
-                       
-                        InetAddress address = InetAddress.getByName(finalGc.getInitialHostIp());
-
-                       MessageJoinRequest msgJoinReq = new MessageJoinRequest(finalUsername);
-                       String reqstrMsg = xstream.toXML(msgJoinReq);
-                       byte[] reqMessage = reqstrMsg.getBytes();
-
-                       System.out.println("Client out: " + reqstrMsg);
-
-                       DatagramPacket reqPacket = new DatagramPacket(reqMessage, reqMessage.length, address, InitialServer.PORT);
-                       socket.send(reqPacket);
-                        
-                        while (polling)
-                        { 
-                            try
-                            {
-                                socket.receive(packet);
-                                
-                                String strMessage = new String(buffer, 0, packet.getLength());
-                                packet.setLength(buffer.length);
-
-                                // Add new server to lobbyframe if it is new
-                                Message message = (Message) xstream.fromXML(strMessage);
-                                System.out.println("(Polling) Client in: " + strMessage);
-
-                                if (message instanceof MessageJoinApproved)
+                                if (client.getId() == me.getId())
                                 {
-                                    MessageJoinApproved msgJoinApproved = (MessageJoinApproved) message;
-
-                                    // Add new server to lobbyframe if it is new
-                                    me = msgJoinApproved.getClient();
-                                    System.out.println("Approved!");
-                                    joiningServer = true;
-                                    //break;
+                                    me = client;
                                 }
-                                else if (message instanceof MessageJoinDisapproved)
-                                {
-                                    MessageJoinDisapproved msgJoinDisapproved = (MessageJoinDisapproved) message;
-
-                                    System.out.println("Disapproved! Reason: " + msgJoinDisapproved.getReason());
-                                    joiningServer = false;
-                                    //break;
-                                }
-                            }
-                            catch (SocketTimeoutException ex)
-                            {
-                                System.out.println("Timeout. No response.");
                             }
                             
-                            try {
-                                //count += 10;
-                                Thread.sleep(10);
-                            } catch (InterruptedException ex) {
-                                Logger.getLogger(InitialClient.class.getName()).log(Level.SEVERE, null, ex);
-                            }
+                            lobby.startGame(me, msgStartGame.getTokenRing());
+                            this.stopListening();
                         }
                         
-                        while (joiningServer)
-                        {
-                            try
-                            {
-                                socket.receive(packet);
-                                
-                                String strMessage = new String(buffer, 0, packet.getLength());
-                                packet.setLength(buffer.length);
-
-                                // Add new server to lobbyframe if it is new
-                                Message message = (Message) xstream.fromXML(strMessage);
-                                System.out.println("(joining server) Client in: " + strMessage);
-
-                                if (message instanceof MessagePlayerJoined)
-                                {
-                                    MessagePlayerJoined msgPlayerJoined = (MessagePlayerJoined) message;
-                                    lobby.addPlayer(msgPlayerJoined.getUsername());
-                                    System.out.println("Player joined: " + msgPlayerJoined.getUsername());
-                                }
-                                else if (message instanceof MessagePing)
-                                {
-                                    byte[] sendMsg = xstream.toXML(new MessagePong()).getBytes();
-                                    DatagramPacket sendPacket = new DatagramPacket(sendMsg, sendMsg.length, packet.getAddress(), InitialServer.PORT);
-                                    socket.send(sendPacket);
-                                }
-                                else if (message instanceof MessageStartGame)
-                                {
-                                    MessageStartGame msgStartGame = (MessageStartGame) message;
-
-                                    // Find me in token ring
-                                    // (new instance of me since it has been sent over the network with the message)
-                                    Client newMe = null;
-                                    for (Client client : msgStartGame.getTokenRing())
-                                    {
-                                        if (client.getId() == me.getId())
-                                        {
-                                            newMe = client;
-                                        }
-                                    }
-
-                                    me = newMe;
-                                    tokenRing = msgStartGame.getTokenRing();
-                                    serverStarted = true;
-
-                                    joiningServer = false;
-
-                                    lobby.startGame(me, tokenRing);
-
-                                    break;
-                                }
-                            }
-                            catch (SocketTimeoutException ex)
-                            {
-                                
-                            }
-                            
-                            try
-                            {
-                                Thread.sleep(10);
-                            } catch (InterruptedException ex) {
-                                Logger.getLogger(InitialClient.class.getName()).log(Level.SEVERE, null, ex);
-                            }
-                        }
-                    } catch (SocketException ex) {
+                        packet.setLength(buffer.length);
+                    }                    
+                    catch (SocketTimeoutException ex)
+                    {
+                        System.out.println("Listening...");
+                    }
+                    catch (IOException ex)
+                    {
                         Logger.getLogger(InitialClient.class.getName()).log(Level.SEVERE, null, ex);
-                    } catch (IOException ex) {
+                    }
+                    
+                    try
+                    {
+                        Thread.sleep(10);
+                    }
+                    catch (InterruptedException ex)
+                    {
                         Logger.getLogger(InitialClient.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
-            });
+            }
             
-            thread.start();
-            
-            // Close socket
-            //socket.close();
-        //}       
+            private void stopListening()
+            {
+                this.listening = false;
+            }
+        });
+        
+        listener.start();
+        
+        /**
+         * Send join request
+         */
+        
+        try
+        {
+            InetAddress address = InetAddress.getByName(gameCredentials.getInitialHostIp());
+            MessageJoinRequest msgJoinReq = new MessageJoinRequest(username);
+            String reqstrMsg = xstream.toXML(msgJoinReq);
+            byte[] reqMessage = reqstrMsg.getBytes();
+
+            System.out.println("Client out: " + reqstrMsg);
+            DatagramPacket reqPacket = new DatagramPacket(reqMessage, reqMessage.length, address, InitialServer.PORT);
+            socket.send(reqPacket);
+        }   
+        catch (UnknownHostException ex)
+        {
+            Logger.getLogger(InitialClient.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        catch (IOException ex)
+        {
+            Logger.getLogger(InitialClient.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+        
+        
+        
+    public void oldJoinGame(GameCredentials gameCredentials, String username)
+    {   
+        try {
+            //try
+            //{
+                // Open socket
+                
+                /**
+                 * Listen to server for response (for 10 seconds, then continue if approved)
+                 */
+                            
+                Thread thread = new Thread(new Runnable()
+                {
+                    private boolean polling;
+                    public void run()
+                    {
+                        System.out.println("Start thread");
+                        try
+                        {
+                            //DatagramSocket socket = new DatagramSocket(Client.PORT);
+                            byte[] buffer = new byte[2048];
+                            DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
+
+                            //long count = 0;
+                            
+                            // Poll server for 5 seconds
+                            Timer timer = new Timer();
+                            timer.schedule(new TimerTask()
+                            {
+                                @Override
+                                public void run()
+                                {
+                                    polling = false;
+                                    System.out.println("Stop polling");
+                                }
+                            }, 5000);
+                            
+                            System.out.println("Start polling");
+                            
+                           socket.setSoTimeout(500);
+                           
+                            while (polling)
+                            { 
+                                try
+                                {
+                                    socket.receive(packet);
+                                    
+                                    String strMessage = new String(buffer, 0, packet.getLength());
+                                    packet.setLength(buffer.length);
+
+                                    // Add new server to lobbyframe if it is new
+                                    Message message = (Message) xstream.fromXML(strMessage);
+                                    System.out.println("(Polling) Client in: " + strMessage);
+
+                                    if (message instanceof MessageJoinApproved)
+                                    {
+                                        MessageJoinApproved msgJoinApproved = (MessageJoinApproved) message;
+
+                                        // Add new server to lobbyframe if it is new
+                                        me = msgJoinApproved.getClient();
+                                        System.out.println("Approved!");
+                                        joiningServer = true;
+                                        //break;
+                                    }
+                                    else if (message instanceof MessageJoinDisapproved)
+                                    {
+                                        MessageJoinDisapproved msgJoinDisapproved = (MessageJoinDisapproved) message;
+
+                                        System.out.println("Disapproved! Reason: " + msgJoinDisapproved.getReason());
+                                        joiningServer = false;
+                                        //break;
+                                    }
+                                }
+                                catch (SocketTimeoutException ex)
+                                {
+                                    System.out.println("Timeout. No response yet.");
+                                }
+                                
+                                try {
+                                    //count += 10;
+                                    Thread.sleep(10);
+                                } catch (InterruptedException ex) {
+                                    Logger.getLogger(InitialClient.class.getName()).log(Level.SEVERE, null, ex);
+                                }
+                            }
+                            
+                            while (joiningServer)
+                            {
+                                try
+                                {
+                                    socket.receive(packet);
+                                    
+                                    String strMessage = new String(buffer, 0, packet.getLength());
+                                    packet.setLength(buffer.length);
+
+                                    // Add new server to lobbyframe if it is new
+                                    Message message = (Message) xstream.fromXML(strMessage);
+                                    System.out.println("(joining server) Client in: " + strMessage);
+                                    if (message instanceof MessagePlayerJoined)
+                                    {
+                                        MessagePlayerJoined msgPlayerJoined = (MessagePlayerJoined) message;
+                                        lobby.addPlayer(msgPlayerJoined.getUsername());
+                                        System.out.println("Player joined: " + msgPlayerJoined.getUsername());
+                                    }
+                                    else if (message instanceof MessagePing)
+                                    {
+                                        byte[] sendMsg = xstream.toXML(new MessagePong()).getBytes();
+                                        DatagramPacket sendPacket = new DatagramPacket(sendMsg, sendMsg.length, packet.getAddress(), InitialServer.PORT);
+                                        socket.send(sendPacket);
+                                    }
+                                    else if (message instanceof MessageStartGame)
+                                    {
+                                        MessageStartGame msgStartGame = (MessageStartGame) message;
+
+                                        // Find me in token ring
+                                        // (new instance of me since it has been sent over the network with the message)
+                                        Client newMe = null;
+                                        for (Client client : msgStartGame.getTokenRing())
+                                        {
+                                            if (client.getId() == me.getId())
+                                            {
+                                                newMe = client;
+                                            }
+                                        }
+
+                                        me = newMe;
+                                        tokenRing = msgStartGame.getTokenRing();
+                                        serverStarted = true;
+
+                                        joiningServer = false;
+
+                                        lobby.startGame(me, tokenRing);
+
+                                        break;
+                                    }
+                                }
+                                catch (SocketTimeoutException ex)
+                                {
+                                }
+                                
+                                try
+                                {
+                                    Thread.sleep(10);
+                                } catch (InterruptedException ex) {
+                                    Logger.getLogger(InitialClient.class.getName()).log(Level.SEVERE, null, ex);
+                                }
+                            }
+                        } catch (SocketException ex) {
+                            Logger.getLogger(InitialClient.class.getName()).log(Level.SEVERE, null, ex);
+                        } catch (IOException ex) {
+                            Logger.getLogger(InitialClient.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+                });
+                
+                thread.start();
+                
+                /**
+                * Send join request
+                */
+
+               InetAddress address = InetAddress.getByName(gameCredentials.getInitialHostIp());
+
+              MessageJoinRequest msgJoinReq = new MessageJoinRequest(username);
+              String reqstrMsg = xstream.toXML(msgJoinReq);
+              byte[] reqMessage = reqstrMsg.getBytes();
+
+              System.out.println("Client out: " + reqstrMsg);
+
+              DatagramPacket reqPacket = new DatagramPacket(reqMessage, reqMessage.length, address, InitialServer.PORT);
+              socket.send(reqPacket);
+                
+                // Close socket
+                //socket.close();
+            //}       
+            } catch (UnknownHostException ex) {
+          Logger.getLogger(InitialClient.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(InitialClient.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
     /**

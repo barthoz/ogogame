@@ -297,7 +297,7 @@ public class InitialServer
 
                             // Handle message
                             Message message = (Message) xstream.fromXML(strMessage);
-                            System.out.println("Server in: " + strMessage);
+                            System.out.println("(Start-game polling) Server in: " + strMessage);
 
                             if (message instanceof MessagePong)
                             {
