@@ -163,24 +163,12 @@ public class InitialClient
      */
     public void joinGame(GameCredentials gameCredentials, String username)
     {
-        try
-        {
+        //try
+        //{
             // Open socket
             //DatagramSocket socket = new DatagramSocket();
-            InetAddress address = InetAddress.getByName(gameCredentials.getInitialHostIp());
-            
-            /**
-             * Send join request
-             */
-            
-            MessageJoinRequest msgJoinReq = new MessageJoinRequest(username);
-            String strMsg = xstream.toXML(msgJoinReq);
-            byte[] message = strMsg.getBytes();
-
-            System.out.println("Client out: " + strMsg);
-            
-            DatagramPacket packet = new DatagramPacket(message, message.length, address, InitialServer.PORT);
-            socket.send(packet);
+            final GameCredentials finalGc = gameCredentials;
+            final String finalUsername = username;
             
             /**
              * Listen to server for response (for 10 seconds, then continue if approved)
@@ -192,6 +180,7 @@ public class InitialClient
                 
                 public void run()
                 {
+                    System.out.println("Start thread");
                     try
                     {
                         //DatagramSocket socket = new DatagramSocket(Client.PORT);
@@ -208,11 +197,29 @@ public class InitialClient
                             public void run()
                             {
                                 polling = false;
+                                System.out.println("Stop polling");
                             }
                         }, 5000);
                         
+                        System.out.println("Start polling");
+                        
+                        /**
+                         * Send join request
+                         */
+                       
+                        InetAddress address = InetAddress.getByName(finalGc.getInitialHostIp());
+
+                       MessageJoinRequest msgJoinReq = new MessageJoinRequest(finalUsername);
+                       String reqstrMsg = xstream.toXML(msgJoinReq);
+                       byte[] reqMessage = reqstrMsg.getBytes();
+
+                       System.out.println("Client out: " + reqstrMsg);
+
+                       DatagramPacket reqPacket = new DatagramPacket(reqMessage, reqMessage.length, address, InitialServer.PORT);
+                       socket.send(reqPacket);
+                        
                         while (polling)
-                        {                            
+                        { 
                             try
                             {
                                 socket.receive(packet);
@@ -331,12 +338,7 @@ public class InitialClient
             
             // Close socket
             //socket.close();
-        }
-        catch (SocketException ex) {        
-            Logger.getLogger(InitialClient.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
-            Logger.getLogger(InitialClient.class.getName()).log(Level.SEVERE, null, ex);
-        }        
+        //}       
     }
     
     /**
