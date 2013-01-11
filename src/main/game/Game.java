@@ -571,7 +571,7 @@ public class Game extends SimpleApplication
     @Override
     public void simpleUpdate(float tpf)
     {
-        //System.out.println(this.countSetMode + " - " + tpf + " - " + this.countGetMode);
+        System.out.println(this.countSetMode + " - " + tpf + " - " + this.countGetMode);
         
         if (!setModeDone)
         {

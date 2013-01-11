@@ -16,9 +16,11 @@ import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import main.game.Game;
 import main.game.Player;
+import main.game.action.Action;
 import main.network.message.*;
 
 /**
@@ -82,7 +84,6 @@ public class Client
 
                 while (isListening)
                 {
-                    //System.out.println("Loop");
                     try
                     {
                         socket.receive(packet);
@@ -94,10 +95,10 @@ public class Client
                         
                         if (message instanceof MessagePassToken || message instanceof MessageSetModeDone || message instanceof MessageLeaveGame || message instanceof MessagePlayerActions)
                         {
-                            if (!(message instanceof MessagePassToken))
-                            {
+                            //if (!(message instanceof MessagePassToken))
+                            //{
                                 System.out.println("Client in: " + strMessage);
-                            }
+                            //}
 
                             byte[] sendBuffer;
                             DatagramPacket sendPacket;
@@ -136,7 +137,14 @@ public class Client
                                 {
                                     setModeDoneMap.put(message.getFromClientId(), true);
                                     
-                                    game.getPlayerById(message.getFromClientId()).setActions(((MessageSetModeDone) message).getActions());
+                                    List<Action> actions = ((MessageSetModeDone) message).getActions();
+                                    
+                                    for (Action action : actions)
+                                    {
+                                        action.deserialize(game);
+                                    }
+                                    
+                                    game.getPlayerById(message.getFromClientId()).setActions(actions);
 
                                     boolean allDone = true;
 

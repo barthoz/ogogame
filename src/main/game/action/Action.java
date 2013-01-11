@@ -37,6 +37,11 @@ public abstract class Action implements Serializable
         this.playerId = this.player.getId();
     }
     
+    public void deserialize(Game game)
+    {
+        this.player = game.getPlayerById(this.playerId);
+    }
+    
     public abstract boolean isEnabled(Game game);
     
     public abstract void performAction(Game game) throws ActionNotEnabledException;
