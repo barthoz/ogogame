@@ -58,7 +58,7 @@ public class FleeAction extends CreatureAction
     @Override
     public boolean isEnabled(Game game)
     {
-        return true;
+        return subject.isInFight();
     }
 
     @Override

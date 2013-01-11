@@ -70,7 +70,12 @@ public class MoveAction extends CreatureAction
     @Override
     public boolean isEnabled(Game game)
     {
+        if(destination.creatureAllowed(subject) && !subject.isInFight()){
         return true;
+        }
+        else{
+            return false;
+        }
     }
 
     @Override
