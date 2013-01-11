@@ -144,8 +144,9 @@ public class Lobby
         this.me = me;
         this.tokenRing = tokenRing;
         me.setSocket(this.initialClient.getSocket());
-        me.startListening();
         Game game = buildGame(me, tokenRing, gameCredentials);
+        me.setGame(game);
+        me.startListening();
         game.start();
     }
     

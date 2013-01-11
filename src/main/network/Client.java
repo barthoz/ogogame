@@ -17,6 +17,7 @@ import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.Map;
+import main.game.Game;
 import main.game.Player;
 import main.network.message.*;
 
@@ -42,6 +43,7 @@ public class Client
     private transient DatagramSocket socket;
     private transient boolean isListening = false;
     private transient Player player;
+    private transient Game game;
     
     /**
      * Constructor
@@ -69,7 +71,7 @@ public class Client
             public void run()
             {
                 // Initialize set turns
-                for (Player p : player.getGame().getPlayers())
+                for (Player p : game.getPlayers())
                 {
                     setModeDoneMap.put(p.getId(), false);
                 }
@@ -105,10 +107,10 @@ public class Client
                             // We have the token, create our MessagePlayerActions or MessageLeaveGame message here.
                             
                             // Check whether our set mode is done
-                            if (player.getGame().setModeDone && !player.getGame().setModeSent)
+                            if (game.setModeDone && !game.setModeSent)
                             {
                                 // Send message to all players that our set mode is done
-                                player.getGame().setModeSent = true;
+                                game.setModeSent = true;
                                 setModeDoneMap.put(id, true);
                                 
                                 sendMessage = new MessageSetModeDone();                                
@@ -136,7 +138,7 @@ public class Client
                                 
                                 if (allDone)
                                 {
-                                    player.getGame().blocked = false;
+                                    game.blocked = false;
                                 }
                             }
                             else if (message instanceof MessageLeaveGame)
@@ -286,5 +288,13 @@ public class Client
 
     public void setPlayer(Player player) {
         this.player = player;
+    }
+
+    public Game getGame() {
+        return game;
+    }
+
+    public void setGame(Game game) {
+        this.game = game;
     }
 }
