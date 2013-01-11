@@ -63,7 +63,7 @@ public class LandCreatureControl extends AbstractControl implements Savable, Clo
     public LandCreatureControl(Node spatial, Game game, LandCreature controllee)
     {
         super.setSpatial(spatial.getChild("Stand"));
-        this.spatial = spatial;
+        //this.spatial = spatial;
         this.stand = spatial.getChild("Stand");
         this.move = spatial.getChild("Move");
         this.game = game;

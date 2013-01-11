@@ -118,10 +118,14 @@ public class ModelFactory
            creatureStand = assetManager.loadModel("Models/Land/stilstaand.mesh.xml");
            creatureStand.setLocalScale(0.2f);
            creatureStand.setName("Stand");
+           creatureStand.setUserData("parentId", id);
+           creatureStand.setUserData("modelType", creatureType);
            
            creatureMove = assetManager.loadModel("Models/Land/move.mesh.xml");
            creatureMove.setLocalScale(0.2f);
            creatureMove.setName("Move");
+           creatureMove.setUserData("parentId", id);
+           creatureMove.setUserData("modelType", creatureType);
            
            creatureModel.attachChild(creatureStand);
            creatureModel.attachChild(creatureMove);
