@@ -16,6 +16,7 @@ import com.jme3.scene.shape.Box;
 import main.game.Game;
 import main.game.model.cell.Cell;
 import main.game.model.cell.DeepWaterCell;
+import main.game.model.cell.LandCell;
 import main.game.model.cell.ShallowWaterCell;
 import main.game.model.creature.*;
 
@@ -76,11 +77,20 @@ public class ModelFactory
         }
         else{
             // First create the spatial
-            fsModel = assetManager.loadModel("Models/Food/Land/banana.mesh.xml"); 
-            fsModel.setLocalScale(0.05f);
+            Node fsModels = new Node("fs");
+            Spatial fsTree = assetManager.loadModel("Models/Food/Land/tree.mesh.xml"); 
+            fsTree.setLocalScale(20f);
+            Spatial fsBanana = assetManager.loadModel("Models/Food/Land/banana.mesh.xml"); 
+            fsBanana.setLocalScale(0.003f);
+            fsModels.attachChild(fsTree);
+            fsModels.attachChild(fsBanana);
+            fsModels.setUserData("modelType", "FoodSource");
+            fsModels.setUserData("parentId", id);
+            FoodSource foodSource = new FoodSource(id, fsModels, game, location);
+            return foodSource;
+        
         }
         //creatureModel.setLocalScale(0.2f);
-        
         fsModel.setUserData("modelType", "FoodSource");
         fsModel.setUserData("parentId", id);
         
