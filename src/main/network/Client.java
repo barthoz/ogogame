@@ -92,90 +92,94 @@ public class Client
                         // Handle message
                         Message message = (Message) xstream.fromXML(strMessage);
                         
-                        if (!(message instanceof MessagePassToken))
+                        if (message instanceof MessagePassToken || message instanceof MessageSetModeDone || message instanceof MessageLeaveGame || message instanceof MessagePlayerActions)
                         {
-                            System.out.println("Client in: " + strMessage);
-                        }
-
-                        byte[] sendBuffer;
-                        DatagramPacket sendPacket;
-                        Message sendMessage = null;
-                        
-                        if (message.getFromClientId() == id)
-                        {
-                            // Pass token onto next neighbour
-                            sendMessage = new MessagePassToken();
-                        }
-                        else if (message instanceof MessagePassToken)
-                        {
-                            // We have the token, create our MessagePlayerActions or MessageLeaveGame message here.
-                            
-                            // Check whether our set mode is done
-                            if (game.setModeDone && !game.setModeSent)
+                            if (!(message instanceof MessagePassToken))
                             {
-                                // Send message to all players that our set mode is done
-                                game.setModeSent = true;
-                                setModeDoneMap.put(id, true);
-                                
-                                sendMessage = new MessageSetModeDone();                                
+                                System.out.println("Client in: " + strMessage);
+                            }
+
+                            byte[] sendBuffer;
+                            DatagramPacket sendPacket;
+                            Message sendMessage = null;
+
+                            if (message.getFromClientId() == id)
+                            {
+                                // Pass token onto next neighbour
+                                sendMessage = new MessagePassToken();
+                            }
+                            else if (message instanceof MessagePassToken)
+                            {
+                                // We have the token, create our MessagePlayerActions or MessageLeaveGame message here.
+
+                                // Check whether our set mode is done
+                                if (game.setModeDone && !game.setModeSent)
+                                {
+                                    // Send message to all players that our set mode is done
+                                    game.setModeSent = true;
+                                    setModeDoneMap.put(id, true);
+
+                                    sendMessage = new MessageSetModeDone();                                
+                                }
+                                else
+                                {
+                                    sendMessage = new MessagePassToken();   
+                                }
                             }
                             else
                             {
-                                sendMessage = new MessagePassToken();   
-                            }
-                        }
-                        else
-                        {
-                            // Update the game from messages
-                            if (message instanceof MessageSetModeDone)
-                            {
-                                setModeDoneMap.put(message.getFromClientId(), true);
-                                
-                                boolean allDone = true;
-                                
-                                for (Integer id : setModeDoneMap.keySet())
+                                // Update the game from messages
+                                if (message instanceof MessageSetModeDone)
                                 {
-                                    if (setModeDoneMap.get(id))
-                                    {
-                                        allDone = false;
-                                        break;
-                                    }
-                                }
-                                
-                                if (allDone)
-                                {
+                                    setModeDoneMap.put(message.getFromClientId(), true);
+
+                                    boolean allDone = true;
+
                                     for (Integer id : setModeDoneMap.keySet())
                                     {
-                                        setModeDoneMap.put(id, false);
+                                        if (setModeDoneMap.get(id))
+                                        {
+                                            allDone = false;
+                                            break;
+                                        }
                                     }
-                                    
-                                    game.getModeBlocked = false;
-                                }
-                            }
-                            else if (message instanceof MessageLeaveGame)
-                            {
-                                
-                            }
-                            else if (message instanceof MessagePlayerActions)
-                            {
-                                // We have received actions from a player
 
+                                    if (allDone)
+                                    {
+                                        for (Integer id : setModeDoneMap.keySet())
+                                        {
+                                            setModeDoneMap.put(id, false);
+                                        }
+
+                                        game.getModeBlocked = false;
+                                        game.setModeSent = false;
+                                    }
+                                }
+                                else if (message instanceof MessageLeaveGame)
+                                {
+
+                                }
+                                else if (message instanceof MessagePlayerActions)
+                                {
+                                    // We have received actions from a player
+
+                                }
+
+                                // Pass message onto the next neighbour (unchanged)
+                                sendMessage = message;
                             }
-                            
-                            // Pass message onto the next neighbour (unchanged)
-                            sendMessage = message;
+
+                            //sendMessage = new MessagePassToken();
+                            sendMessage.setFromClientId(id);
+                            sendBuffer = xstream.toXML(sendMessage).getBytes();
+
+                            if (!(sendMessage instanceof MessagePassToken))
+                            {
+                                System.out.println("Client out: " + xstream.toXML(sendMessage));
+                            }
+                            sendPacket = new DatagramPacket(sendBuffer, sendBuffer.length, InetAddress.getByName(outNeighbour.getAddress()), Client.PORT);
+                            socket.send(sendPacket);
                         }
-                        
-                        //sendMessage = new MessagePassToken();
-                        sendMessage.setFromClientId(id);
-                        sendBuffer = xstream.toXML(sendMessage).getBytes();
-                        
-                        if (!(sendMessage instanceof MessagePassToken))
-                        {
-                            System.out.println("Client out: " + xstream.toXML(sendMessage));
-                        }
-                        sendPacket = new DatagramPacket(sendBuffer, sendBuffer.length, InetAddress.getByName(outNeighbour.getAddress()), Client.PORT);
-                        socket.send(sendPacket);
                             
                         try
                         {
