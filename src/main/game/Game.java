@@ -508,7 +508,6 @@ public class Game extends SimpleApplication
         this.world.initializeDuck();
 
         initKeys();
-        initSetMode();
 
         //(set audio location
         quackAudio = new AudioNode(assetManager, "Sounds/Quack.ogg", false);
@@ -702,63 +701,6 @@ public class Game extends SimpleApplication
     {
         super.stop();
         this.started = false;
-    }
-
-    private void initSetMode()
-    {
-        this.setModeDone = false;
-        this.setModeSent = false;
-        
-        System.out.println("Begin SET-mode");
-
-        Timer timer = new Timer();
-
-        timer.schedule(new TimerTask()
-        {
-            @Override
-            public void run()
-            {
-                disableActions();
-                setModeDone = true;
-                //lobby.getGameConnector().broadcastSetModeDone();
-                //Map<Player, List<Action>> actionMap = lobby.getGameConnector().receiveActions();
-                /*for (Player player : players)
-                 {
-                    for (Action action : actionMap.get(player))
-                    {
-                        player.addAction(action);
-                     }
-                 }*/
-
-                //setModeDone = true;
-                
-                /*for (Player player : players)
-                {
-                    for (Action action : player.getActions())
-                    {
-                        try {
-                            action.performAction(parent);
-                        } catch (ActionNotEnabledException ex) {
-                            Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-                    }
-                    
-                    player.getActions().clear();
-                    
-                    initGetMode();
-                }*/
-            }
-        }, CONST_SET_MODE_TIME_LIMIT * 1000);
-
-        enableActions();
-    }
-    
-    private void initGetMode()
-    {
-        System.out.println("Begin GET-mode");
-        
-        lobby.getGameConnector().broadcastGetModeDone();
-        initSetMode();
     }
 
     private void disableActions()

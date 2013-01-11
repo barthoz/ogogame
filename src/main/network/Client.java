@@ -82,7 +82,7 @@ public class Client
 
                 while (isListening)
                 {
-                    System.out.println("Loop");
+                    //System.out.println("Loop");
                     try
                     {
                         socket.receive(packet);
