@@ -4,6 +4,7 @@
  */
 package main.game.action.creature;
 
+import main.game.Game;
 import main.game.action.Action;
 import main.game.model.creature.Creature;
 
@@ -35,6 +36,14 @@ public abstract class CreatureAction extends Action
         super.prepareForSerialization();
         
         this.subjectId = this.subject.getId();
+    }
+    
+    @Override
+    public void deserialize(Game game)
+    {
+        super.deserialize(game);
+        
+        this.subject = game.getWorld().findCreatureById(subjectId);
     }
     
     /**
