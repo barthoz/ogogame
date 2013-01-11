@@ -581,6 +581,7 @@ public class Game extends SimpleApplication
             {
                 System.out.println("Set mode done");
                 this.inSetMode = false;
+                this.setModeDone = true;
                 this.countSetMode = 0;
             }
         }
