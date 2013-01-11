@@ -24,7 +24,7 @@ import main.game.model.Base;
  *
  * @author s116861
  */
-public class BaseControl extends AbstractControl implements Savable, Cloneable, AnimEventListener
+public class BaseControl extends AbstractControl implements Savable, Cloneable
 {
     /**
      * Properties
@@ -32,8 +32,6 @@ public class BaseControl extends AbstractControl implements Savable, Cloneable, 
     
     private Game game;
     private Base controllee;
-    private AnimChannel channel;
-    private AnimControl control;
     
     /**
      * Constructors
@@ -53,10 +51,6 @@ public class BaseControl extends AbstractControl implements Savable, Cloneable, 
       super.setSpatial(spatial);
       this.game = game;
       this.controllee = controllee;
-        control = spatial.getControl(AnimControl.class);
-        control.addListener(this);
-        channel = control.createChannel();
-        channel.setAnim("Stilstaand");
     } 
 
     /**
@@ -114,19 +108,4 @@ public class BaseControl extends AbstractControl implements Savable, Cloneable, 
         super.write(ex);
         // ex.getCapsule(this).write(...);
     }    
-
-    public void onAnimCycleDone(AnimControl control, AnimChannel channel, String animName)
-    {
-        if (animName.equals("Stilstaand"))
-        {
-            channel.setAnim("Stilstaand", 0.50f);
-            channel.setLoopMode(LoopMode.DontLoop);
-            channel.setSpeed(1f);
-        }
-    }
-
-    public void onAnimChange(AnimControl control, AnimChannel channel, String animName)
-    {
-        //throw new UnsupportedOperationException("Not supported yet.");
-    }
 }

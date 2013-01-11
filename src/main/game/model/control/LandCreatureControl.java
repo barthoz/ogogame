@@ -13,6 +13,7 @@ import com.jme3.export.JmeImporter;
 import com.jme3.export.Savable;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
+import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
 import com.jme3.scene.control.Control;
@@ -34,11 +35,16 @@ public class LandCreatureControl extends AbstractControl implements Savable, Clo
     /**
      * Properties
      */
+    private Node spatial;
+    private Spatial stand;
+    private Spatial move;
     private Game game;
     private LandCreature controllee;
     private Action openAction;
-    private AnimChannel channel;
-    private AnimControl control;
+    private AnimChannel channelStand;
+    private AnimControl controlStand;
+    private AnimChannel channelMove;
+    private AnimControl controlMove;
 
     /**
      * Constructors
@@ -54,15 +60,23 @@ public class LandCreatureControl extends AbstractControl implements Savable, Clo
      * Optional custom constructor with arguments that can init custom fields.
      * Note: you cannot modify the spatial here yet!
      */
-    public LandCreatureControl(Spatial spatial, Game game, LandCreature controllee)
+    public LandCreatureControl(Node spatial, Game game, LandCreature controllee)
     {
-        super.setSpatial(spatial);
+        super.setSpatial(spatial.getChild("Stand"));
+        this.spatial = spatial;
+        this.stand = spatial.getChild("Stand");
+        this.move = spatial.getChild("Move");
         this.game = game;
         this.controllee = controllee;
-        control = spatial.getControl(AnimControl.class);
-        control.addListener(this);
-        channel = control.createChannel();
-        channel.setAnim("Stilstaand");
+        controlStand = stand.getControl(AnimControl.class);
+        controlStand.addListener(this);
+        channelStand = controlStand.createChannel();
+        channelStand.setAnim("Stilstaand");
+        
+        controlMove = move.getControl(AnimControl.class);
+        controlMove.addListener(this);
+        channelMove = controlMove.createChannel();
+        channelMove.setAnim("Move");
     }
 
     /**
@@ -159,10 +173,36 @@ public class LandCreatureControl extends AbstractControl implements Savable, Clo
             channel.setLoopMode(LoopMode.DontLoop);
             channel.setSpeed(1f);
         }
+        else if(animName.equals("Move"))
+        {
+            channel.setAnim("Move", 0.50f);
+            channel.setLoopMode(LoopMode.DontLoop);
+            channel.setSpeed(1f);   
+        }
     }
 
     public void onAnimChange(AnimControl control, AnimChannel channel, String animName)
     {
         //throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public Spatial getStand()
+    {
+        return stand;
+    }
+
+    public void setStand(Spatial stand)
+    {
+        this.stand = stand;
+    }
+
+    public Spatial getMove()
+    {
+        return move;
+    }
+
+    public void setMove(Spatial move)
+    {
+        this.move = move;
     }
 }

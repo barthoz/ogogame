@@ -4,6 +4,7 @@
  */
 package main.game.model.creature;
 
+import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import main.game.Player;
 import main.game.model.control.LandCreatureControl;
@@ -24,7 +25,7 @@ public class LandCreature extends Creature
      * Constructor
      */
     
-    public LandCreature(Player player, String id, Spatial model)
+    public LandCreature(Player player, String id, Node model)
     {
         super(player, id, model);
         this.controller = new LandCreatureControl(model, player.getGame(), this);

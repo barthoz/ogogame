@@ -24,8 +24,10 @@ import main.game.Player;
 import main.game.World;
 import main.game.algorithm.PathFinding;
 import main.game.model.cell.Cell;
+import main.game.model.control.LandCreatureControl;
 import main.game.model.creature.AirborneCreature;
 import main.game.model.creature.Creature;
+import main.game.model.creature.LandCreature;
 
 /**
  *
@@ -89,6 +91,12 @@ public class MoveAction extends CreatureAction
         {            
             try
             {
+                if(subject instanceof LandCreature)
+                {
+                    LandCreatureControl c= (LandCreatureControl)this.subject.getController();
+                    c.setSpatial(c.getMove());
+                }
+                
                 final MotionPath path = PathFinding.createMotionPath(game.getTerrain(), game.getWorld().getCells(), this.subject.getLocation(), this.destination, this.subject);
                 
                 final Cinematic cinematic = new Cinematic(game.getWorld().getWorldNode(), 20);
@@ -146,6 +154,11 @@ public class MoveAction extends CreatureAction
                     
                 });
                 cinematic.play();
+                if(subject instanceof LandCreature)
+                {
+                    LandCreatureControl c= (LandCreatureControl)this.subject.getController();
+                    c.setSpatial(c.getStand());
+                }
             } catch (NoReachablePathException ex) {
                 Logger.getLogger(MoveAction.class.getName()).log(Level.SEVERE, null, ex);
             }            

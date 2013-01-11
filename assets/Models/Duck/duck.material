@@ -1,12 +1,12 @@
-material Material#25
+material CoatedCeramic
 {
 	technique
 	{
 		pass
 		{
-			ambient 0 0 0 1
-			diffuse 0 0 0 1
-			specular 0.9 0.9 0.9 1 70
+			ambient 1 0.282353 0 1
+			diffuse 1 0.282353 0 1
+			specular 1 1 1 1 95
 		}
 
 	}
@@ -15,13 +15,15 @@ material Material#25
 
 
 
-material Material#25
+material Arch_056_053_12
 {
 	technique
 	{
 		pass
 		{
-			specular 0.9 0.9 0.9 1 70
+			ambient 0.0117647 0.0117647 0.0117647 1
+			diffuse 0.0117647 0.0117647 0.0117647 1
+			specular 0.054902 0.054902 0.054902 1 90
 		}
 
 	}
@@ -30,15 +32,15 @@ material Material#25
 
 
 
-material Material#25
+material Arch_056_053_13
 {
 	technique
 	{
 		pass
 		{
-			ambient 0.827451 0.501961 0 1
-			diffuse 0.827451 0.501961 0 1
-			specular 0.36 0.36 0.36 1 1
+			ambient 0.843137 0.843137 0.843137 1
+			diffuse 0.843137 0.843137 0.843137 1
+			specular 0.054902 0.054902 0.054902 1 90
 		}
 
 	}
@@ -47,33 +49,15 @@ material Material#25
 
 
 
-material Material#37
+material 01-Default
 {
 	technique
 	{
 		pass
 		{
-			ambient 0.588235 0.588235 1 1
-			diffuse 0.588235 0.588235 1 1
+			ambient 1 0.917647 0 1
+			diffuse 1 0.917647 0 1
 			specular 0 0 0 1 10
-		}
-
-	}
-
-}
-
-
-
-material Material#25
-{
-	technique
-	{
-		pass
-		{
-			ambient 0.815686 0.827451 0 1
-			diffuse 0.815686 0.827451 0 1
-			specular 0.36 0.36 0.36 1 1
-			emissive 0.1 0.1 0.1 1
 		}
 
 	}

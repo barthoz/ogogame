@@ -10,6 +10,7 @@ import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
+import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Box;
 import main.game.Game;
@@ -32,7 +33,7 @@ public class ModelFactory
     {
         // First create the spatial
         Spatial duckModel = assetManager.loadModel("Models/Duck/duck.mesh.xml");
-        duckModel.scale(0.1f);
+        duckModel.scale(10f);
         
         
         duckModel.setUserData("modelType", "Duck");
@@ -46,15 +47,12 @@ public class ModelFactory
     public static Base createBase(AssetManager assetManager, int id, Player player, Cell location)
     {
         // First create the spatial
-        Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-        mat.setColor("Color", ColorRGBA.Red);
-        
-        Spatial baseModel = assetManager.loadModel("Models/Land/stilstaand.mesh.xml");
-        //baseModel.setLocalScale(0.2f);
+        Spatial baseModel = assetManager.loadModel("Models/Base/base.mesh.xml");
+        baseModel.setLocalScale(0.2f,0.2f,0.15f);
         baseModel.setUserData("modelType", "Base");
         baseModel.setUserData("parentId", id);
         //Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-        baseModel.setMaterial(mat);
+        //baseModel.setMaterial(mat);
         
         // Create the base object
         Base base = new Base(id, baseModel, player, location);
@@ -79,7 +77,7 @@ public class ModelFactory
         else{
             // First create the spatial
             fsModel = assetManager.loadModel("Models/Food/Land/banana.mesh.xml"); 
-            fsModel.setLocalScale(0.005f);
+            fsModel.setLocalScale(0.05f);
         }
         //creatureModel.setLocalScale(0.2f);
         
@@ -93,18 +91,34 @@ public class ModelFactory
     
     public static Creature createCreature(AssetManager assetManager, String id, Player player, String creatureType)
     {
-        Spatial creatureModel = null;
+        Node creatureModel = null;
+        Spatial creatureMove = null;
+        Spatial creatureStand = null;
+        
         Creature creature = null;
         
         //Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
         
         if (creatureType.equals(LandCreature.CODE_ID))
         {
-            creatureModel = assetManager.loadModel("Models/Land/stilstaand.mesh.xml");
-            creatureModel.setLocalScale(0.2f);
+           creatureModel = new Node("LandCreature");
+            // creatureModel = assetManager.loadModel("Models/Land/stilstaand.mesh.xml");
+           // creatureModel.setLocalScale(0.2f);
+           
+           creatureStand = assetManager.loadModel("Models/Land/stilstaand.mesh.xml");
+           creatureStand.setLocalScale(0.2f);
+           creatureStand.setName("Stand");
+           
+           creatureMove = assetManager.loadModel("Models/Land/move.mesh.xml");
+           creatureMove.setLocalScale(0.2f);
+           creatureMove.setName("Move");
+           
+           creatureModel.attachChild(creatureStand);
+           creatureModel.attachChild(creatureMove);
+           
             creature = new LandCreature(player, id, creatureModel);
         }
-        else if (creatureType.equals(SeaCreature.CODE_ID))
+        /*else if (creatureType.equals(SeaCreature.CODE_ID))
         {
             creatureModel = assetManager.loadModel("Models/Sea/move.mesh.xml");
             creatureModel.setLocalScale(4f);
@@ -115,7 +129,7 @@ public class ModelFactory
             creatureModel = assetManager.loadModel("Models/Air/stilstaand.mesh.xml");
             creatureModel.setLocalScale(0.5f);
             creature = new AirborneCreature(player, id, creatureModel);
-        }
+        }*/
         
         creatureModel.setUserData("parentId", id);
         creatureModel.setUserData("modelType", creatureType);
