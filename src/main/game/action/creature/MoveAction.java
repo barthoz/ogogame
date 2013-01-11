@@ -70,6 +70,14 @@ public class MoveAction extends CreatureAction
     }
     
     @Override
+    public void deserialize(Game game)
+    {
+        super.deserialize(game);
+        
+        this.destination = game.getWorld().getCells()[destinationX][destinationY];
+    }
+    
+    @Override
     public boolean isEnabled(Game game)
     {
         if(destination.creatureAllowed(subject) && !subject.isInFight()){
