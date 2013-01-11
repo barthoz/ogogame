@@ -15,6 +15,8 @@ import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
+import java.util.HashMap;
+import java.util.Map;
 import main.game.Player;
 import main.network.message.*;
 
@@ -62,8 +64,16 @@ public class Client
         
         Thread listening = new Thread(new Runnable()
         {
+            private Map<Integer, Boolean> setModeDoneMap = new HashMap<Integer, Boolean>();
+            
             public void run()
             {
+                // Initialize set turns
+                for (Player p : player.getGame().getPlayers())
+                {
+                    setModeDoneMap.put(p.getId(), false);
+                }
+                
                 XStream xstream = new XStream();
                 byte[] buffer = new byte[2048];
                 DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
@@ -94,12 +104,42 @@ public class Client
                         {
                             // We have the token, create our MessagePlayerActions or MessageLeaveGame message here.
                             
+                            // Check whether our set mode is done
+                            if (player.getGame().setModeDone && !player.getGame().setModeSent)
+                            {
+                                // Send message to all players that our set mode is done
+                                player.getGame().setModeSent = true;
+                                setModeDoneMap.put(id, true);
+                                
+                                sendMessage = new MessageSetModeDone();                                
+                            }
+                            
                             sendMessage = new MessagePassToken();
                         }
                         else
                         {
                             // Update the game from messages
-                            if (message instanceof MessageLeaveGame)
+                            if (message instanceof MessageSetModeDone)
+                            {
+                                setModeDoneMap.put(message.getFromClientId(), true);
+                                
+                                boolean allDone = true;
+                                
+                                for (Integer id : setModeDoneMap.keySet())
+                                {
+                                    if (setModeDoneMap.get(id))
+                                    {
+                                        allDone = false;
+                                        break;
+                                    }
+                                }
+                                
+                                if (allDone)
+                                {
+                                    player.getGame().blocked = false;
+                                }
+                            }
+                            else if (message instanceof MessageLeaveGame)
                             {
                                 
                             }

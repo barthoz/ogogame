@@ -319,7 +319,7 @@ public class Game extends SimpleApplication
      * Game state variables
      */
     private boolean started;
-    private boolean inSetMode;
+    private boolean inSetMode = true;
     private int round = 0;
     private int regenTime = 10;
     /**
@@ -359,6 +359,7 @@ public class Game extends SimpleApplication
      * Networking
      */
     
+    public boolean getModeDone = false;
     public boolean setModeDone = false;
     public boolean setModeSent = false;
     
@@ -557,6 +558,11 @@ public class Game extends SimpleApplication
                 });
     }
 
+    private long countSetMode = 0;
+    private long countGetMode = 0;
+    //private boolean inSetMode = true;
+    public boolean blocked = true;
+    
     /**
      * Perform the update loop.
      *
@@ -565,6 +571,59 @@ public class Game extends SimpleApplication
     @Override
     public void simpleUpdate(float tpf)
     {
+        System.out.println(this.countSetMode + " - " + tpf + " - " + this.countGetMode);
+        
+        if (this.inSetMode)
+        {
+            this.countSetMode += tpf * 1000;
+
+            if (countSetMode > CONST_SET_MODE_TIME_LIMIT * 1000)
+            {
+                System.out.println("Set mode done");
+                this.inSetMode = false;
+                this.countSetMode = 0;
+            }
+        }
+        else
+        {
+            if (!blocked)
+            {
+                System.out.println("Begin get mode");
+                blocked = true;
+                this.countGetMode = 0;
+                
+                /**
+                 * Perform actions
+                 */
+
+                for (Player player : players)
+                {
+                    for (Action action : player.getActions())
+                    {
+                        try {
+                            action.performAction(parent);
+                        } catch (ActionNotEnabledException ex) {
+                            Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+
+                    player.getActions().clear();
+                }
+            }
+            
+            this.countGetMode += tpf * 1000;
+            
+            if (this.countGetMode > 10000)
+            {
+                /**
+                 * Get mode done
+                 */
+                System.out.println("End get mode");
+                this.inSetMode = true;
+                blocked = false;
+            }
+        }
+        
         /**
          * set your ears at the cam position, so we can hear 3D sounds
          */
@@ -659,39 +718,39 @@ public class Game extends SimpleApplication
                 //Map<Player, List<Action>> actionMap = lobby.getGameConnector().receiveActions();
                 /*for (Player player : players)
                  {
-                 for (Action action : actionMap.get(player))
-                 {
-                 player.addAction(action);
-                 }
+                    for (Action action : actionMap.get(player))
+                    {
+                        player.addAction(action);
+                     }
                  }*/
 
-                initGetMode();
+                //setModeDone = true;
+                
+                /*for (Player player : players)
+                {
+                    for (Action action : player.getActions())
+                    {
+                        try {
+                            action.performAction(parent);
+                        } catch (ActionNotEnabledException ex) {
+                            Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+                    
+                    player.getActions().clear();
+                    
+                    initGetMode();
+                }*/
             }
         }, CONST_SET_MODE_TIME_LIMIT * 1000);
 
         enableActions();
     }
-
+    
     private void initGetMode()
     {
         System.out.println("Begin GET-mode");
-        /**
-         * Perform all actions
-         */
-        for (Player player : this.players)
-        {
-            for (Action action : player.getActions())
-            {
-                try
-                {
-                    action.performAction(this);
-                } catch (ActionNotEnabledException ex)
-                {
-                    Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-        }
-
+        
         lobby.getGameConnector().broadcastGetModeDone();
         initSetMode();
     }
