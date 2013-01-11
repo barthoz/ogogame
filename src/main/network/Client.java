@@ -140,10 +140,11 @@ public class Client
 
                                     boolean allDone = true;
 
-                                    for (Integer id : setModeDoneMap.keySet())
+                                    for (Integer tempId : setModeDoneMap.keySet())
                                     {
-                                        if (setModeDoneMap.get(id))
+                                        if (!setModeDoneMap.get(tempId))
                                         {
+                                            System.out.println("SETMODEDONE - Client: " + tempId + " - Done: " + setModeDoneMap.get(tempId));
                                             allDone = false;
                                             break;
                                         }

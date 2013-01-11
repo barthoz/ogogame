@@ -1,26 +1,11 @@
 package main;
 
 import main.lobby.Lobby;
-import com.jme3.app.SimpleApplication;
-import com.jme3.material.Material;
-import com.jme3.math.ColorRGBA;
-import com.jme3.math.Vector3f;
-import com.jme3.renderer.RenderManager;
-import com.jme3.scene.Geometry;
-import com.jme3.scene.Spatial;
-import com.jme3.scene.shape.Box;
-import main.game.Game;
-import main.game.GameCredentials;
-import main.network.InitialServer;
 import com.thoughtworks.xstream.XStream;
-import java.net.Inet4Address;
-import java.net.InetAddress;
-import java.net.NetworkInterface;
-import java.net.SocketException;
-import java.net.UnknownHostException;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import main.network.InitialClient;
 
 /**
  * This is where the magic all begins.
@@ -51,7 +36,9 @@ public class Main
         } catch (UnknownHostException ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }*/
-        
+        Logger.getLogger("NiftyInputEventHandlingLog").setLevel(Level.OFF);
+        Logger.getLogger("NiftyEventBusLog").setLevel(Level.OFF);
+        Logger.getLogger("NiftyImageManager").setLevel(Level.OFF);
         Lobby lobby = new Lobby();
     }
 }
