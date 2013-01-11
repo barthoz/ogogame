@@ -52,12 +52,11 @@ public class PickupFoodAction extends CreatureAction
     @Override
     public boolean isEnabled(Game game)
     {
-        if (this.foodSource.hasFood())
-        {
+        if(foodSource.getLocation().creatureAllowed(subject) 
+                && !subject.isInFight() && this.foodSource.hasFood()){
             return true;
         }
-        else
-        {
+        else{
             return false;
         }
     }

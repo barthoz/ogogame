@@ -12,6 +12,7 @@ import com.jme3.cinematic.events.CinematicEventListener;
 import com.jme3.cinematic.events.MotionEvent;
 import com.jme3.math.Vector3f;
 import java.util.List;
+import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import main.exception.ActionNotEnabledException;
@@ -37,6 +38,7 @@ public class AttackAction extends CreatureAction
     private Creature opponent;
     private int destinationX;
     private int destinationY;
+    private int randomKey;
 
     /**
      * Constructors
@@ -47,6 +49,7 @@ public class AttackAction extends CreatureAction
         this.subject = subject;
         this.opponent = opponent;
         this.destination = destination;
+        randomKey = new Random().nextInt(1000);
     }
 
     /**
@@ -64,7 +67,11 @@ public class AttackAction extends CreatureAction
     @Override
     public boolean isEnabled(Game game)
     {
-        return true;
+        if(destination.creatureAllowed(subject)){
+            return true;
+        }
+        return false;
+        
     }
 
     @Override
@@ -166,6 +173,10 @@ public class AttackAction extends CreatureAction
 
         // define some algorithm to find the winner and the quantity of damage
 
+        int hp = (int)Math.sqrt((double)subject.getLevel()/(double)opponent.getLevel());
+        hp *= 0.02*randomKey;
+        opponent.decreaseHealth(hp);
+        
         if (subject.getHealth() <= 0)
         {
             subject.setHealth(0);
