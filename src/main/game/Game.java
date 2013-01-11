@@ -684,6 +684,19 @@ public class Game extends SimpleApplication
         //TODO: add render code
     }
 
+    public Player getPlayerById(int id)
+    {
+        for (Player player : this.players)
+        {
+            if (player.getId() == id)
+            {
+                return player;
+            }
+        }
+        
+        return null;
+    }
+    
     /**
      * Start the game.
      */

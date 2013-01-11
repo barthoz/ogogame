@@ -119,7 +119,7 @@ public class Client
                                     game.setModeSent = true;
                                     setModeDoneMap.put(id, true);
 
-                                    sendMessage = new MessageSetModeDone();                                
+                                    sendMessage = new MessageSetModeDone(player.getActions());
                                 }
                                 else
                                 {
@@ -132,6 +132,8 @@ public class Client
                                 if (message instanceof MessageSetModeDone)
                                 {
                                     setModeDoneMap.put(message.getFromClientId(), true);
+                                    
+                                    game.getPlayerById(message.getFromClientId()).setActions(((MessageSetModeDone) message).getActions());
 
                                     boolean allDone = true;
 
@@ -173,10 +175,10 @@ public class Client
                             sendMessage.setFromClientId(id);
                             sendBuffer = xstream.toXML(sendMessage).getBytes();
 
-                            if (!(sendMessage instanceof MessagePassToken))
-                            {
-                                System.out.println("Client out: " + xstream.toXML(sendMessage));
-                            }
+                            //if (!(sendMessage instanceof MessagePassToken))
+                            //{
+                            System.out.println("Client out: " + xstream.toXML(sendMessage));
+                            //}
                             sendPacket = new DatagramPacket(sendBuffer, sendBuffer.length, InetAddress.getByName(outNeighbour.getAddress()), Client.PORT);
                             socket.send(sendPacket);
                         }
