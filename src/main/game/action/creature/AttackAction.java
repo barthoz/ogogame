@@ -192,6 +192,7 @@ public class AttackAction extends CreatureAction
             opponent.setInFight(false);
         }
     }
+    
     /**
      * Getters & Setters
      */
