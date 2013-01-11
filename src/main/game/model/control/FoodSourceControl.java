@@ -24,7 +24,7 @@ import main.game.model.FoodSource;
  *
  * @author s116861
  */
-public class FoodSourceControl extends AbstractControl implements Savable, Cloneable, AnimEventListener
+public class FoodSourceControl extends AbstractControl implements Savable, Cloneable
 {
 
     /**
@@ -32,8 +32,6 @@ public class FoodSourceControl extends AbstractControl implements Savable, Clone
      */
     private Game game;
     private FoodSource controllee;
-    private AnimChannel channel;
-    private AnimControl control;
 
     /**
      * Constructors
@@ -54,10 +52,6 @@ public class FoodSourceControl extends AbstractControl implements Savable, Clone
         super.setSpatial(spatial);
         this.game = game;
         this.controllee = controllee;
-        control = spatial.getControl(AnimControl.class);
-        control.addListener(this);
-        channel = control.createChannel();
-        channel.setAnim("Stilstaand");
     }
 
     /**
@@ -115,20 +109,5 @@ public class FoodSourceControl extends AbstractControl implements Savable, Clone
     {
         super.write(ex);
         // ex.getCapsule(this).write(...);
-    }
-
-    public void onAnimCycleDone(AnimControl control, AnimChannel channel, String animName)
-    {
-        if (animName.equals("Stilstaand"))
-        {
-            channel.setAnim("Stilstaand", 0.50f);
-            channel.setLoopMode(LoopMode.DontLoop);
-            channel.setSpeed(1f);
-        }
-    }
-
-    public void onAnimChange(AnimControl control, AnimChannel channel, String animName)
-    {
-        //throw new UnsupportedOperationException("Not supported yet.");
     }
 }

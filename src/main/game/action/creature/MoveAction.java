@@ -93,7 +93,7 @@ public class MoveAction extends CreatureAction
                  * Not sure how to fix this
                  */
                 
-                //track.setDirectionType(MotionEvent.Direction.Path);
+                track.setDirectionType(MotionEvent.Direction.Path);
                 cinematic.addCinematicEvent(0, track);
                 cinematic.fitDuration();
                 game.getStateManager().attach(cinematic);
@@ -104,6 +104,7 @@ public class MoveAction extends CreatureAction
                     {
                         if (path.getNbWayPoints() == wayPointIndex + 1)
                         {
+                            
                             //control.getSpatial().setLocalTranslation(destination.getWorldCoordinates().subtract(control.getSpatial().getWorldTranslation()));
                             cinematic.stop();
                         }

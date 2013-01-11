@@ -1,0 +1,29 @@
+material Map#7
+{
+	technique
+	{
+		pass
+		{
+		}
+
+	}
+
+}
+
+
+
+material orig_01-Default
+{
+	technique
+	{
+		pass
+		{
+		texture_unit
+			{
+				texture BANANA.jpg
+			}
+		}
+
+	}
+
+}

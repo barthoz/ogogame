@@ -14,6 +14,8 @@ import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Box;
 import main.game.Game;
 import main.game.model.cell.Cell;
+import main.game.model.cell.DeepWaterCell;
+import main.game.model.cell.ShallowWaterCell;
 import main.game.model.creature.*;
 
 /**
@@ -29,9 +31,9 @@ public class ModelFactory
     public static Duck createDuck(AssetManager assetManager, Game game, Cell location)
     {
         // First create the spatial
-        Spatial duckModel = assetManager.loadModel("Models/Land/stilstaand.mesh.xml");
+        Spatial duckModel = assetManager.loadModel("Models/Duck/duck.mesh.xml");
+        duckModel.scale(0.1f);
         
-        duckModel.setLocalScale(0.1f);
         
         duckModel.setUserData("modelType", "Duck");
        // duckModel.setUserData("parentId", id);
@@ -62,8 +64,23 @@ public class ModelFactory
     
     public static FoodSource createFoodSource(AssetManager assetManager, int id, Game game, Cell location)
     {
-        // First create the spatial
-        Spatial fsModel = assetManager.loadModel("Models/Land/stilstaand.mesh.xml");
+        Spatial fsModel;
+        
+        if(location instanceof DeepWaterCell){
+            // First create the spatial
+            fsModel = assetManager.loadModel("Models/Food/Sea/seafood.mesh.xml");
+            fsModel.setLocalScale(0.015f, 0.05f, 0.015f);
+        }
+        else if(location instanceof ShallowWaterCell){
+            // First create the spatial
+            fsModel = assetManager.loadModel("Models/Food/Sea/seafood.mesh.xml");
+            fsModel.setLocalScale(0.015f, 0.03f, 0.015f);
+        }
+        else{
+            // First create the spatial
+            fsModel = assetManager.loadModel("Models/Food/Land/banana.mesh.xml"); 
+            fsModel.setLocalScale(0.005f);
+        }
         //creatureModel.setLocalScale(0.2f);
         
         fsModel.setUserData("modelType", "FoodSource");
@@ -84,7 +101,7 @@ public class ModelFactory
         if (creatureType.equals(LandCreature.CODE_ID))
         {
             creatureModel = assetManager.loadModel("Models/Land/stilstaand.mesh.xml");
-            //creatureModel.setLocalScale(0.2f);
+            creatureModel.setLocalScale(0.2f);
             creature = new LandCreature(player, id, creatureModel);
         }
         else if (creatureType.equals(SeaCreature.CODE_ID))
@@ -96,6 +113,7 @@ public class ModelFactory
         else if (creatureType.equals(AirborneCreature.CODE_ID))
         {
             creatureModel = assetManager.loadModel("Models/Air/stilstaand.mesh.xml");
+            creatureModel.setLocalScale(0.5f);
             creature = new AirborneCreature(player, id, creatureModel);
         }
         
