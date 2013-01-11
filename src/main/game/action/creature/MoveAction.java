@@ -102,7 +102,7 @@ public class MoveAction extends CreatureAction
                 if(subject instanceof LandCreature)
                 {
                     LandCreatureControl c= (LandCreatureControl)this.subject.getController();
-                    c.setSpatial(c.getMove());
+                    //c.setSpatial(c.getMove());
                 }
                 
                 final MotionPath path = PathFinding.createMotionPath(game.getTerrain(), game.getWorld().getCells(), this.subject.getLocation(), this.destination, this.subject);
@@ -165,7 +165,7 @@ public class MoveAction extends CreatureAction
                 if(subject instanceof LandCreature)
                 {
                     LandCreatureControl c= (LandCreatureControl)this.subject.getController();
-                    c.setSpatial(c.getStand());
+                    //c.setSpatial(c.getStand());
                 }
             } catch (NoReachablePathException ex) {
                 Logger.getLogger(MoveAction.class.getName()).log(Level.SEVERE, null, ex);
