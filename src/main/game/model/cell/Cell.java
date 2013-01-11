@@ -8,6 +8,7 @@ import com.jme3.math.Vector3f;
 import java.util.List;
 import main.game.model.creature.Creature;
 import static java.lang.Math.*;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 import main.game.World;
@@ -73,10 +74,10 @@ public abstract class Cell
      * 
      * @return 
      */
-    public Set<Cell> retrieveNeighbouringCells()
+    public List<Cell> retrieveNeighbouringCells()
     {
         Cell[][] cells = this.world.getCells();
-        Set<Cell> neighbours = new HashSet<Cell>();
+        List<Cell> neighbours = new ArrayList<Cell>();
         
         int x = this.xCoor;
         int y = this.yCoor;
