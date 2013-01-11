@@ -354,14 +354,6 @@ public class Game extends SimpleApplication
     NiftyJmeDisplay niftyDisplay;
     Nifty nifty;
     private AudioNode quackAudio;
-
-    /**
-     * Networking
-     */
-    
-    public boolean getModeDone = false;
-    public boolean setModeDone = false;
-    public boolean setModeSent = false;
     
     /**
      * Constructor
@@ -557,10 +549,18 @@ public class Game extends SimpleApplication
                 });
     }
 
+    /**
+     * Networking
+     */
+    
+    public boolean getModeDone = false;
+    public boolean setModeDone = false;
+    public boolean setModeSent = false;
+    
     private long countSetMode = 0;
     private long countGetMode = 0;
     //private boolean inSetMode = true;
-    private boolean blocked = true;
+    private boolean blocked = false;
     public boolean getModeBlocked = true;
     
     /**

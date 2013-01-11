@@ -177,10 +177,10 @@ public class Client
                             //sendMessage = new MessagePassToken();
                             sendBuffer = xstream.toXML(sendMessage).getBytes();
 
-                            //if (!(sendMessage instanceof MessagePassToken))
-                            //{
-                            System.out.println("Client out: " + xstream.toXML(sendMessage));
-                            //}
+                            if (!(sendMessage instanceof MessagePassToken))
+                            {
+                                System.out.println("Client out: " + xstream.toXML(sendMessage));
+                            }
                             sendPacket = new DatagramPacket(sendBuffer, sendBuffer.length, InetAddress.getByName(outNeighbour.getAddress()), Client.PORT);
                             socket.send(sendPacket);
                         }
