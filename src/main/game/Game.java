@@ -573,7 +573,7 @@ public class Game extends SimpleApplication
     {
         //System.out.println(this.countSetMode + " - " + tpf + " - " + this.countGetMode);
         
-        if (this.inSetMode)
+        if (!setModeDone)
         {
             this.countSetMode += tpf * 1000;
 
@@ -581,7 +581,7 @@ public class Game extends SimpleApplication
             {
                 System.out.println("Set mode done");
                 this.getModeBlocked = true;
-                this.inSetMode = false;
+                //this.inSetMode = false;
                 this.setModeDone = true;
                 this.countSetMode = 0;
             }
@@ -625,6 +625,7 @@ public class Game extends SimpleApplication
                     System.out.println("End get mode");
                     System.out.println("Begin set mode");
                     this.inSetMode = true;
+                    this.setModeDone = false;
                     blocked = false;
                 }
             }
