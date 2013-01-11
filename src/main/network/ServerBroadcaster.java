@@ -60,33 +60,27 @@ public class ServerBroadcaster implements Runnable
 
             InetAddress localHost = Inet4Address.getLocalHost();
             NetworkInterface networkInterface = NetworkInterface.getByInetAddress(localHost);
-            String[] subnet = networkInterface.getInterfaceAddresses().get(0).getAddress().toString().replaceFirst("/", "").split("\\.");
-
-            String beginIp = subnet[0] + "." + subnet[1] + "." + subnet[2] + ".";
+            InetAddress broadcastAddress = networkInterface.getInterfaceAddresses().get(0).getBroadcast();
             
-            while (this.started)
+            MessageGameCredentials msgGameCredentials = new MessageGameCredentials(this.gameCredentials);
+            String strMsg = xstream.toXML(msgGameCredentials);
+
+            System.out.println("Server out (" + msgGameCredentials.getGameCredentials().getInitialHostIp() + "): " + strMsg);
+
+            byte[] message = strMsg.getBytes();
+            
+            DatagramPacket packet;
+            
+            //String[] subnet = networkInterface.getInterfaceAddresses().get(0).getAddress().toString().replaceFirst("/", "").split("\\.");
+            //String beginIp = subnet[0] + "." + subnet[1] + "." + subnet[2] + ".";
+            
+            while (this.started && broadcastAddress != null)
             {
                 try
                 {
-                    MessageGameCredentials msgGameCredentials = new MessageGameCredentials(this.gameCredentials);
-                    String strMsg = xstream.toXML(msgGameCredentials);
-
-                    System.out.println("Server out (" + msgGameCredentials.getGameCredentials().getInitialHostIp() + "): " + strMsg);
+                    packet = new DatagramPacket(message, message.length, broadcastAddress, InitialClient.PORT_BROADCASTLISTEN);
+                    socket.send(packet);
                     
-                    byte[] message = strMsg.getBytes();
-                    DatagramPacket packet;
-                    InetAddress address;
-                    
-                    for (int i = 1; i <= 255; i++)
-                    {
-                        ip = beginIp + i;
-                        
-                        address = InetAddress.getByName(ip.toString());
-                        packet = new DatagramPacket(message, message.length, address, InitialClient.PORT_BROADCASTLISTEN);
-
-                        socket.send(packet);
-                    }
-
                     try
                     {
                         Thread.sleep(1000);

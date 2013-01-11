@@ -63,6 +63,7 @@ import main.game.action.creature.PickupFoodAction;
 import main.game.gui.HudController;
 import main.game.gui.SpawnMenuController;
 import main.game.model.Base;
+import main.game.model.FoodSource;
 import main.game.model.cell.Cell;
 import main.game.model.cell.DeepWaterCell;
 import main.game.model.cell.LandCell;
@@ -236,13 +237,15 @@ public class Game extends SimpleApplication
                                  * PickupFoodAction
                                  */
                                 PickupFoodAction act = new PickupFoodAction(me, (Creature) selectedObject, world.findFoodSourceById((Integer) results.getClosestCollision().getGeometry().getParent().getUserData("parentId")));
-                                try
+                                me.registerAction(act);
+                                
+                                /*try
                                 {
                                     act.performAction(parent);
                                 } catch (ActionNotEnabledException ex)
                                 {
                                     Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
-                                }
+                                }*/
                             }
                         } else
                         {
@@ -250,14 +253,14 @@ public class Game extends SimpleApplication
                              * MoveAction
                              */
                             MoveAction act = new MoveAction(me, (Creature) selectedObject, selectedCell);
-
-                            try
+                            me.registerAction(act);
+                            /*try
                             {
                                 act.performAction(parent);
                             } catch (ActionNotEnabledException ex)
                             {
                                 Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
-                            }
+                            }*/
 
                             // De-select creature
                             Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
@@ -343,13 +346,22 @@ public class Game extends SimpleApplication
     private float waterHeight = 0.0f;
     private float initialWaterHeight = 0.8f;
     private boolean underWater = false;
+    
     /**
      * GUI
      */
+    
     NiftyJmeDisplay niftyDisplay;
     Nifty nifty;
     private AudioNode quackAudio;
 
+    /**
+     * Networking
+     */
+    
+    public boolean setModeDone = false;
+    public boolean setModeSent = false;
+    
     /**
      * Constructor
      */
@@ -568,6 +580,15 @@ public class Game extends SimpleApplication
         }
 
         /**
+         * Add food source controllers
+         */
+        
+        for (FoodSource foodSource : this.world.getFoodSources())
+        {
+            foodSource.getController().update(tpf);
+        }
+        
+        /**
          * Add duck controller
          */
         
@@ -620,6 +641,9 @@ public class Game extends SimpleApplication
 
     private void initSetMode()
     {
+        this.setModeDone = false;
+        this.setModeSent = false;
+        
         System.out.println("Begin SET-mode");
 
         Timer timer = new Timer();
@@ -630,9 +654,9 @@ public class Game extends SimpleApplication
             public void run()
             {
                 disableActions();
-                lobby.getGameConnector().broadcastSetModeDone();
-                Map<Player, List<Action>> actionMap = lobby.getGameConnector().receiveActions();
-
+                setModeDone = true;
+                //lobby.getGameConnector().broadcastSetModeDone();
+                //Map<Player, List<Action>> actionMap = lobby.getGameConnector().receiveActions();
                 /*for (Player player : players)
                  {
                  for (Action action : actionMap.get(player))

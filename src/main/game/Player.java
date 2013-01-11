@@ -74,11 +74,6 @@ public class Player
         this.creatures.remove(creature);
     }
     
-    public void addAction(Action action)
-    {
-        this.actions.add(action);
-    }
-    
     public List<CreatureAction> getCreatureActions(Creature subject)
     {
         List<CreatureAction> creatureActions = new ArrayList<CreatureAction>();

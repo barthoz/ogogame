@@ -33,15 +33,15 @@ public class SpawnMenuController  extends AbstractAppState implements ScreenCont
   public void spawnCreature(String creatureType)
   {
     SpawnAction action = new SpawnAction(this.game.getMe(), creatureType);
-    
-    try
+    game.getMe().registerAction(action);
+    /*try
     {
         action.performAction(this.game);
     }
     catch (ActionNotEnabledException ex)
     {
         Logger.getLogger(SpawnMenuController.class.getName()).log(Level.SEVERE, null, ex);
-    }
+    }*/
   }
   
   public void cancel()
