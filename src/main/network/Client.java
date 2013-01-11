@@ -91,7 +91,11 @@ public class Client
                         
                         // Handle message
                         Message message = (Message) xstream.fromXML(strMessage);
-                        System.out.println("Client in: " + strMessage);
+                        
+                        if (!(message instanceof MessagePassToken))
+                        {
+                            System.out.println("Client in: " + strMessage);
+                        }
 
                         byte[] sendBuffer;
                         DatagramPacket sendPacket;
@@ -138,7 +142,12 @@ public class Client
                                 
                                 if (allDone)
                                 {
-                                    game.blocked = false;
+                                    for (Integer id : setModeDoneMap.keySet())
+                                    {
+                                        setModeDoneMap.put(id, false);
+                                    }
+                                    
+                                    game.getModeBlocked = false;
                                 }
                             }
                             else if (message instanceof MessageLeaveGame)
@@ -158,7 +167,11 @@ public class Client
                         sendMessage = new MessagePassToken();
                         sendMessage.setFromClientId(id);
                         sendBuffer = xstream.toXML(sendMessage).getBytes();
-                        System.out.println("Client out: " + xstream.toXML(sendMessage));
+                        
+                        if (!(sendMessage instanceof MessagePassToken))
+                        {
+                            System.out.println("Client out: " + xstream.toXML(sendMessage));
+                        }
                         sendPacket = new DatagramPacket(sendBuffer, sendBuffer.length, InetAddress.getByName(outNeighbour.getAddress()), Client.PORT);
                         socket.send(sendPacket);
                             

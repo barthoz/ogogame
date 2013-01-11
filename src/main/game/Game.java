@@ -561,7 +561,8 @@ public class Game extends SimpleApplication
     private long countSetMode = 0;
     private long countGetMode = 0;
     //private boolean inSetMode = true;
-    public boolean blocked = true;
+    private boolean blocked = true;
+    public boolean getModeBlocked = true;
     
     /**
      * Perform the update loop.
@@ -580,6 +581,7 @@ public class Game extends SimpleApplication
             if (countSetMode > CONST_SET_MODE_TIME_LIMIT * 1000)
             {
                 System.out.println("Set mode done");
+                this.getModeBlocked = true;
                 this.inSetMode = false;
                 this.setModeDone = true;
                 this.countSetMode = 0;
@@ -587,41 +589,44 @@ public class Game extends SimpleApplication
         }
         else
         {
-            if (!blocked)
+            if (!getModeBlocked)
             {
-                System.out.println("Begin get mode");
-                blocked = true;
-                this.countGetMode = 0;
-                
-                /**
-                 * Perform actions
-                 */
-
-                for (Player player : players)
+                if (!blocked)
                 {
-                    for (Action action : player.getActions())
-                    {
-                        try {
-                            action.performAction(parent);
-                        } catch (ActionNotEnabledException ex) {
-                            Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-                    }
+                    System.out.println("Begin get mode");
+                    blocked = true;
+                    this.countGetMode = 0;
 
-                    player.getActions().clear();
+                    /**
+                     * Perform actions
+                     */
+
+                    for (Player player : players)
+                    {
+                        for (Action action : player.getActions())
+                        {
+                            try {
+                                action.performAction(parent);
+                            } catch (ActionNotEnabledException ex) {
+                                Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                        }
+
+                        player.getActions().clear();
+                    }
                 }
-            }
-            
-            this.countGetMode += tpf * 1000;
-            
-            if (this.countGetMode > 10000)
-            {
-                /**
-                 * Get mode done
-                 */
-                System.out.println("End get mode");
-                this.inSetMode = true;
-                blocked = false;
+
+                this.countGetMode += tpf * 1000;
+
+                if (this.countGetMode > 10000)
+                {
+                    /**
+                     * Get mode done
+                     */
+                    System.out.println("End get mode");
+                    this.inSetMode = true;
+                    blocked = false;
+                }
             }
         }
         
