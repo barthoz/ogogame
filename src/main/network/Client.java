@@ -107,6 +107,7 @@ public class Client
                             {
                                 // Pass token onto next neighbour
                                 sendMessage = new MessagePassToken();
+                                sendMessage.setFromClientId(id);
                             }
                             else if (message instanceof MessagePassToken)
                             {
@@ -120,10 +121,12 @@ public class Client
                                     setModeDoneMap.put(id, true);
 
                                     sendMessage = new MessageSetModeDone(player.getActions());
+                                    sendMessage.setFromClientId(id);
                                 }
                                 else
                                 {
-                                    sendMessage = new MessagePassToken();   
+                                    sendMessage = new MessagePassToken();
+                                    sendMessage.setFromClientId(id);
                                 }
                             }
                             else
@@ -172,7 +175,6 @@ public class Client
                             }
 
                             //sendMessage = new MessagePassToken();
-                            sendMessage.setFromClientId(id);
                             sendBuffer = xstream.toXML(sendMessage).getBytes();
 
                             //if (!(sendMessage instanceof MessagePassToken))

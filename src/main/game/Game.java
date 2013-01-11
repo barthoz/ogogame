@@ -592,8 +592,8 @@ public class Game extends SimpleApplication
             {
                 if (!blocked)
                 {
-                    System.out.println("Begin get mode");
                     blocked = true;
+                    System.out.println("Begin get mode");
                     this.countGetMode = 0;
 
                     /**
@@ -623,6 +623,7 @@ public class Game extends SimpleApplication
                      * Get mode done
                      */
                     System.out.println("End get mode");
+                    System.out.println("Begin set mode");
                     this.inSetMode = true;
                     blocked = false;
                 }
