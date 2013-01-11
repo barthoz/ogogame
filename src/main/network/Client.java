@@ -119,8 +119,10 @@ public class Client
                                 
                                 sendMessage = new MessageSetModeDone();                                
                             }
-                            
-                            sendMessage = new MessagePassToken();
+                            else
+                            {
+                                sendMessage = new MessagePassToken();   
+                            }
                         }
                         else
                         {
@@ -164,7 +166,7 @@ public class Client
                             sendMessage = message;
                         }
                         
-                        sendMessage = new MessagePassToken();
+                        //sendMessage = new MessagePassToken();
                         sendMessage.setFromClientId(id);
                         sendBuffer = xstream.toXML(sendMessage).getBytes();
                         
