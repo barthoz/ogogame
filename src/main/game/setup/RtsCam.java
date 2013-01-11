@@ -66,7 +66,7 @@ setMaxSpeed(Degree.SIDE,60f,0.4f);
 setMaxSpeed(Degree.FWD,100f,0.4f);
 setMaxSpeed(Degree.ROTATE,5f,0.4f);
 setMaxSpeed(Degree.TILT,5f,0.4f);
-setMaxSpeed(Degree.DISTANCE,50f,0.4f);
+setMaxSpeed(Degree.DISTANCE,100f,0.4f);
 target.addControl(this);
 }
 
