@@ -13,6 +13,7 @@ import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.bullet.util.CollisionShapeFactory;
 import com.jme3.collision.CollisionResults;
+import com.jme3.font.BitmapFont;
 import com.jme3.input.KeyInput;
 import com.jme3.input.MouseInput;
 import com.jme3.input.controls.ActionListener;
@@ -23,9 +24,11 @@ import com.jme3.light.DirectionalLight;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
+import com.jme3.math.Matrix4f;
 import com.jme3.math.Ray;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
+import com.jme3.math.Vector4f;
 import com.jme3.niftygui.NiftyJmeDisplay;
 import com.jme3.post.FilterPostProcessor;
 import com.jme3.post.filters.BloomFilter;
@@ -83,7 +86,6 @@ import main.lobby.Lobby;
  */
 public class Game extends SimpleApplication
 {
-
     /**
      * While running
      */
@@ -736,6 +738,23 @@ public class Game extends SimpleApplication
             waves.setDryFilter(new LowPassFilter(1, 1f));
 
         }
+        
+        /**
+         * Creature headers (health bar)
+         */
+        
+        Matrix4f viewProjectionMatrix = this.viewPort.getCamera().getProjectionMatrix().mult(this.viewPort.getCamera().getViewMatrix());
+        Vector3f point3D;
+        int winX, winY;
+        
+        for (Creature creature : this.world.getCreatures())
+        {
+            point3D = viewProjectionMatrix.mult(creature.getModel().getLocalTranslation());
+            winX = (int) Math.round(((point3D.x + 1) / 2f) * settings.getWidth());
+            winY = (int) Math.round(((1 - point3D.y) / 2f) * settings.getHeight());
+            
+            creature.getCreatureHeader().setLocalTranslation(winX, winY - 10, 0);
+        }
     }
 
     @Override
@@ -1067,5 +1086,10 @@ public class Game extends SimpleApplication
     public void setPlayers(List<Player> players)
     {
         this.players = players;
+    }
+    
+    public BitmapFont getGuiFont()
+    {
+        return this.guiFont;
     }
 }

@@ -6,6 +6,7 @@ package main.game.model;
 
 import main.game.Player;
 import com.jme3.asset.AssetManager;
+import com.jme3.font.BitmapText;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
@@ -99,8 +100,10 @@ public class ModelFactory
         return foodSource;
     }
     
-    public static Creature createCreature(AssetManager assetManager, String id, Player player, String creatureType)
+    public static Creature createCreature(Game game, String id, Player player, String creatureType)
     {
+        AssetManager assetManager = game.getAssetManager();
+        
         Node creatureModel = null;
         Spatial creatureMove = null;
         Spatial creatureStand = null;
@@ -130,7 +133,18 @@ public class ModelFactory
            creatureModel.attachChild(creatureStand);
            creatureModel.attachChild(creatureMove);
            
-            creature = new LandCreature(player, id, creatureModel);
+           /**
+            * Health bar (above creature)
+            */
+           
+           BitmapText text = new BitmapText(game.getGuiFont(), false);
+           text.setSize(game.getGuiFont().getCharSet().getRenderedSize());
+           text.setColor(ColorRGBA.Orange);
+           text.setText("");
+           game.getGuiNode().attachChild(text);
+           
+           creature = new LandCreature(player, id, creatureModel);
+           creature.setCreatureHeader(text);
         }
         /*else if (creatureType.equals(SeaCreature.CODE_ID))
         {

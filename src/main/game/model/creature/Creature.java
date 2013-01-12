@@ -4,6 +4,7 @@
  */
 package main.game.model.creature;
 
+import com.jme3.font.BitmapText;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
 import main.game.Game;
@@ -46,6 +47,8 @@ public abstract class Creature
     private int extraActionRadius = 2;
     private int extraHealth = 20;
 
+    private BitmapText creatureHeader;
+    
     /**
      * Constructors
      */
@@ -218,5 +221,13 @@ public abstract class Creature
 
     public void setActionRadius(int actionRadius) {
         this.actionRadius = actionRadius;
+    }
+
+    public BitmapText getCreatureHeader() {
+        return creatureHeader;
+    }
+
+    public void setCreatureHeader(BitmapText creatureHeader) {
+        this.creatureHeader = creatureHeader;
     }
 }

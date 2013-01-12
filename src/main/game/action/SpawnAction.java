@@ -52,7 +52,7 @@ public class SpawnAction extends Action
         else
         {
             String id = this.player.getId() + "_" + this.player.retrieveAllocatedCreatureId();
-            Creature creature = ModelFactory.createCreature(game.getAssetManager(), id, this.player, this.creatureType);
+            Creature creature = ModelFactory.createCreature(game, id, this.player, this.creatureType);
             this.player.addCreature(creature);
             game.getWorld().addCreature(creature);
             game.getWorld().getSelectableObjects().attachChild(creature.getModel());
