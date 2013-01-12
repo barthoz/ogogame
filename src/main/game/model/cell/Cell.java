@@ -182,7 +182,7 @@ public abstract class Cell
     {
         if (occupants.size() == 1)
         {
-            occupants.get(0).getModel().move(this.worldCoordinates);
+            occupants.get(0).getModel().setLocalTranslation(this.worldCoordinates);
         } 
         else
         {
@@ -201,11 +201,12 @@ public abstract class Cell
                 Vector3f diff = this.worldCoordinates.subtract(neighbour.getWorldCoordinates());
                 diff.setY(0);
                 diff = diff.divide(2);
-                occupants.get(0).getModel().move(this.worldCoordinates.add(diff));
-                occupants.get(1).getModel().move(this.worldCoordinates.subtract(diff));
+                occupants.get(0).getModel().setLocalTranslation(this.worldCoordinates.add(diff));
+                occupants.get(1).getModel().setLocalTranslation(this.worldCoordinates.subtract(diff));
             } 
             else
             {
+                System.out.println("this is 3+ : " + occupants.size());
                 if (neighbours.get(0).distance(this) <= neighbours.get(1).distance(this))
                 {
                     neighbour = neighbours.get(0);
@@ -217,12 +218,13 @@ public abstract class Cell
                 Vector3f diff = this.worldCoordinates.subtract(neighbour.getWorldCoordinates());
                 diff.setY(0);
                 diff = diff.divide(2);
-                Vector3f auxDiff = diff;
+                float radius = FastMath.sqrt(FastMath.pow(diff.x, 2) + FastMath.pow(diff.z, 2));
+                
                 for (int i = 0; i < occupants.size(); i++)
                 {
-                    auxDiff.setX(diff.getX() * FastMath.cos(i * FastMath.TWO_PI / occupants.size()));
-                    auxDiff.setY(diff.getY() * FastMath.sin(i * FastMath.TWO_PI / occupants.size()));
-                    occupants.get(i).getModel().move(this.worldCoordinates.add(auxDiff));
+                    diff.setX(radius * FastMath.cos(i * FastMath.TWO_PI / occupants.size()));
+                    diff.setZ(radius * FastMath.sin(i * FastMath.TWO_PI / occupants.size()));
+                    occupants.get(i).getModel().setLocalTranslation(this.worldCoordinates.add(diff));
                 }
             }
         }
