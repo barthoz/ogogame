@@ -32,7 +32,8 @@ public class PickupFoodAction extends CreatureAction
      * Properties
      */
     
-    private FoodSource foodSource;
+    private transient FoodSource foodSource;
+    private int foodSourceId;
     
     /**
      * Constructor
@@ -43,6 +44,7 @@ public class PickupFoodAction extends CreatureAction
         this.player = player;
         this.subject = subject;
         this.foodSource = foodSource;
+        this.foodSourceId = foodSource.getId();
     }
 
     /**
@@ -50,13 +52,24 @@ public class PickupFoodAction extends CreatureAction
      */
     
     @Override
+    public void deserialize(Game game)
+    {
+        super.deserialize(game);
+        
+        this.foodSource = game.getWorld().findFoodSourceById(this.foodSourceId);
+    }
+    
+    @Override
     public boolean isEnabled(Game game)
     {
-        if(foodSource.getLocation().creatureAllowed(subject) 
-                && !subject.isInFight() && this.foodSource.hasFood()){
+        if (foodSource.getLocation().creatureAllowed(subject) 
+            && !subject.isInFight()
+            && this.foodSource.hasFood())
+        {
             return true;
         }
-        else{
+        else
+        {
             return false;
         }
     }
@@ -127,6 +140,7 @@ public class PickupFoodAction extends CreatureAction
             }
             
             // When succeeded, perform some action
+            foodSource.eat();
             this.player.increaseFood(1);
         }
     }

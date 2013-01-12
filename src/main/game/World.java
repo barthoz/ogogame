@@ -120,7 +120,7 @@ public class World
      */
     public void initializeFoodSources()
     {
-        List<Cell> spawnCells = new ArrayList<Cell>();
+        /*List<Cell> spawnCells = new ArrayList<Cell>();
 
         for (int i = 0; i < this.cells.length; i++)
         {
@@ -139,12 +139,48 @@ public class World
         {
             int foodSourceLocationPos = (int) Math.round(Math.random() * (spawnCells.size() - 1));
 
-            FoodSource foodSource = ModelFactory.createFoodSource(this.game.getAssetManager(), i, this.game, spawnCells.get(foodSourceLocationPos));
+            FoodSource foodSource = ModelFactory.createFoodSource(this.game, i, spawnCells.get(foodSourceLocationPos));
             this.foodSources.add(foodSource);
             this.foodSourceContainer.attachChild(foodSource.getModel());
             foodSource.getModel().setLocalTranslation(foodSource.getLocation().getWorldCoordinates());
             spawnCells.remove(foodSourceLocationPos);
         }
+        
+        for (FoodSource foodSource : this.foodSources)
+        {
+            System.out.println("this.foodSources.add(ModelFactory.createFoodSource(this.game, " + foodSource.getId() + ", cells[" + foodSource.getLocation().getXCoor() + "][" + foodSource.getLocation().getYCoor() + "]));");
+        }*/
+        
+        this.foodSources.add(ModelFactory.createFoodSource(this.game, 0, cells[52][36]));
+        this.foodSources.add(ModelFactory.createFoodSource(this.game, 1, cells[24][0]));
+        this.foodSources.add(ModelFactory.createFoodSource(this.game, 2, cells[23][41]));
+        this.foodSources.add(ModelFactory.createFoodSource(this.game, 3, cells[23][29]));
+        this.foodSources.add(ModelFactory.createFoodSource(this.game, 4, cells[63][41]));
+        this.foodSources.add(ModelFactory.createFoodSource(this.game, 5, cells[47][38]));
+        this.foodSources.add(ModelFactory.createFoodSource(this.game, 6, cells[22][19]));
+        this.foodSources.add(ModelFactory.createFoodSource(this.game, 7, cells[45][37]));
+        this.foodSources.add(ModelFactory.createFoodSource(this.game, 8, cells[63][63]));
+        this.foodSources.add(ModelFactory.createFoodSource(this.game, 9, cells[48][30]));
+        this.foodSources.add(ModelFactory.createFoodSource(this.game, 10, cells[20][22]));
+        this.foodSources.add(ModelFactory.createFoodSource(this.game, 11, cells[35][18]));
+        this.foodSources.add(ModelFactory.createFoodSource(this.game, 12, cells[56][35]));
+        this.foodSources.add(ModelFactory.createFoodSource(this.game, 13, cells[45][1]));
+        this.foodSources.add(ModelFactory.createFoodSource(this.game, 14, cells[60][47]));
+        this.foodSources.add(ModelFactory.createFoodSource(this.game, 15, cells[51][26]));
+        this.foodSources.add(ModelFactory.createFoodSource(this.game, 16, cells[25][1]));
+        this.foodSources.add(ModelFactory.createFoodSource(this.game, 17, cells[61][25]));
+        this.foodSources.add(ModelFactory.createFoodSource(this.game, 18, cells[23][23]));
+        this.foodSources.add(ModelFactory.createFoodSource(this.game, 19, cells[55][3]));
+        this.foodSources.add(ModelFactory.createFoodSource(this.game, 20, cells[58][51]));
+        this.foodSources.add(ModelFactory.createFoodSource(this.game, 21, cells[33][52]));
+        this.foodSources.add(ModelFactory.createFoodSource(this.game, 22, cells[3][44]));
+        this.foodSources.add(ModelFactory.createFoodSource(this.game, 23, cells[42][6]));
+        this.foodSources.add(ModelFactory.createFoodSource(this.game, 24, cells[1][22]));
+        this.foodSources.add(ModelFactory.createFoodSource(this.game, 25, cells[13][42]));
+        this.foodSources.add(ModelFactory.createFoodSource(this.game, 26, cells[36][0]));
+        this.foodSources.add(ModelFactory.createFoodSource(this.game, 27, cells[33][35]));
+        this.foodSources.add(ModelFactory.createFoodSource(this.game, 28, cells[7][49]));
+        this.foodSources.add(ModelFactory.createFoodSource(this.game, 29, cells[20][55]));
     }
 
     /**

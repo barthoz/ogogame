@@ -35,7 +35,8 @@ public class AttackAction extends CreatureAction
      * Properties
      */
     private transient Cell destination;
-    private Creature opponent;
+    private transient Creature opponent;
+    private String opponentId;
     private int destinationX;
     private int destinationY;
     private int randomKey;
@@ -48,8 +49,11 @@ public class AttackAction extends CreatureAction
         this.player = player;
         this.subject = subject;
         this.opponent = opponent;
+        this.opponentId = opponent.getId();
         this.destination = destination;
-        randomKey = new Random().nextInt(1000);
+        this.destinationX = destination.getXCoor();
+        this.destinationY = destination.getYCoor();
+        this.randomKey = new Random().nextInt(1000);
     }
 
     /**
@@ -59,9 +63,15 @@ public class AttackAction extends CreatureAction
     public void prepareForSerialization()
     {
         super.prepareForSerialization();
-
-        this.destinationX = this.destination.getXCoor();
-        this.destinationY = this.destination.getYCoor();
+    }
+    
+    @Override
+    public void deserialize(Game game)
+    {
+        super.deserialize(game);
+        
+        this.destination = game.getWorld().getCells()[this.destinationX][this.destinationY];
+        this.opponent = game.getWorld().findCreatureById(this.opponentId);
     }
 
     @Override
@@ -80,7 +90,8 @@ public class AttackAction extends CreatureAction
         if (!isEnabled(game))
         {
             throw new ActionNotEnabledException();
-        } else
+        }
+        else
         {
             try
             {

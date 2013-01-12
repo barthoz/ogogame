@@ -62,6 +62,9 @@ import main.common.Circle;
 import main.exception.ActionNotEnabledException;
 import main.game.action.Action;
 import main.game.action.SpawnAction;
+import main.game.action.creature.AttackAction;
+import main.game.action.creature.EatAction;
+import main.game.action.creature.FleeAction;
 import main.game.action.creature.MoveAction;
 import main.game.action.creature.PickupFoodAction;
 import main.game.gui.HudController;
@@ -658,8 +661,83 @@ public class Game extends SimpleApplication
                     /**
                      * Perform actions
                      */
-
+                    
+                    List<Action> actions = new ArrayList<Action>();
+                    
                     for (Player player : players)
+                    {
+                        for (Action action : player.getActions())
+                        {
+                            actions.add(action);
+                        }
+                        
+                        player.getActions().clear();
+                    }
+                    
+                    // First perform all flee actions
+                    for (Action action : actions)
+                    {
+                        if (action instanceof FleeAction)
+                        {
+                            try
+                            {
+                                action.performAction(this);
+                            }
+                            catch (ActionNotEnabledException ex)
+                            {
+                                System.out.println("Flee action no longer available.");
+                            }
+                        }
+                    }
+                    
+                    // Secondly, perform all attack actions
+                    for (Action action : actions)
+                    {
+                        if (action instanceof AttackAction)
+                        {
+                            try
+                            {
+                                action.performAction(this);
+                            }
+                            catch (ActionNotEnabledException ex)
+                            {
+                                System.out.println("Attack action no longer available.");
+                            }
+                        }
+                    }
+                    
+                    // Thirdly, perform all eat actions
+                    for (Action action : actions)
+                    {
+                        if (action instanceof EatAction)
+                        {
+                            try
+                            {
+                                action.performAction(this);
+                            }
+                            catch (ActionNotEnabledException ex)
+                            {
+                                System.out.println("Attack action no longer available.");
+                            }
+                        }
+                    }
+                    
+                    // Fourthly, perform all other actions
+                    for (Action action : actions)
+                    {
+                        if (!(action instanceof FleeAction) && !(action instanceof AttackAction) && !(action instanceof EatAction))
+                        {
+                            try
+                            {
+                                action.performAction(this);
+                            }
+                            catch (ActionNotEnabledException ex)
+                            {
+                                System.out.println("Attack action no longer available.");
+                            }
+                        }
+                    }
+                    /*for (Player player : players)
                     {
                         for (Action action : player.getActions())
                         {
@@ -671,7 +749,7 @@ public class Game extends SimpleApplication
                         }
 
                         player.getActions().clear();
-                    }
+                    }*/
                 }
 
                 this.countGetMode += tpf * 1000;
@@ -723,6 +801,7 @@ public class Game extends SimpleApplication
         /**
          * Terrain
          */
+        
         time += tpf;
         waterHeight = (float) Math.cos(((time * 0.6f) % FastMath.TWO_PI)) * 1.5f;
         water.setWaterHeight(initialWaterHeight + waterHeight);
@@ -740,14 +819,13 @@ public class Game extends SimpleApplication
         }
         
         /**
-         * Creature headers (health bar)
+         * Update creature headers (health bar)
          */
         
         for (Creature creature : this.world.getCreatures())
         {
-            
             creature.getCreatureHeader().setText("Health: " + creature.getHealth() + "%");
-            creature.getCreatureHeader().setLocalTranslation(cam.getScreenCoordinates(creature.getModel().getWorldTranslation().add(new Vector3f(-1 * creature.getCreatureHeader().getLineWidth() / 2f, 30, 0))));
+            creature.getCreatureHeader().setLocalTranslation(cam.getScreenCoordinates(creature.getModel().getWorldTranslation().add(0, 20f, 0)).add(-1 * creature.getCreatureHeader().getLineWidth() / 2f, 0f, 0f));
         }
     }
 

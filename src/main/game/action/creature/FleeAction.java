@@ -41,19 +41,13 @@ public class FleeAction extends CreatureAction
         this.player = player;
         this.subject = subject;
         this.destination = destination;
+        this.destinationX = destination.getXCoor();
+        this.destinationY = destination.getYCoor();
     }
 
     /**
      * Business Logic
      */
-    @Override
-    public void prepareForSerialization()
-    {
-        super.prepareForSerialization();
-
-        this.destinationX = this.destination.getXCoor();
-        this.destinationY = this.destination.getYCoor();
-    }
 
     @Override
     public boolean isEnabled(Game game)

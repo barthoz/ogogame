@@ -62,8 +62,10 @@ public class ModelFactory
         return base;
     }
     
-    public static FoodSource createFoodSource(AssetManager assetManager, int id, Game game, Cell location)
+    public static FoodSource createFoodSource(Game game, int id, Cell location)
     {
+        AssetManager assetManager = game.getAssetManager();
+        
         Spatial fsModel;
         
         if(location instanceof DeepWaterCell){
