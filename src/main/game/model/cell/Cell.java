@@ -4,6 +4,7 @@
  */
 package main.game.model.cell;
 
+import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
 import java.util.List;
 import main.game.model.creature.Creature;
@@ -133,6 +134,62 @@ public abstract class Cell
         }
         
         return neighbours;
+    }
+    
+    /**
+     * Repositions creatures on the cell. in case there 
+     * are multiple creatures or there were
+     * multiple creatures and now only one.
+     */
+    public void repositionCreatures()
+    {
+        if (occupants.size() == 1)
+        {
+            occupants.get(0).getModel().move(this.worldCoordinates);
+        } 
+        else
+        {
+            List<Cell> neighbours = this.retrieveNeighbouringCells();
+            if (occupants.size() == 2)
+            {
+                Cell neighbour;
+                if (neighbours.get(0).distance(this) > neighbours.get(1).distance(this))
+                {
+                    neighbour = neighbours.get(0);
+                } 
+                else
+                {
+                    neighbour = neighbours.get(1);
+                }
+                Vector3f diff = this.worldCoordinates.add(neighbour.getWorldCoordinates());
+                diff.y = 0;
+                diff = diff.divide(2);
+                occupants.get(0).getModel().move(this.worldCoordinates.add(diff));
+                occupants.get(1).getModel().move(this.worldCoordinates.subtract(diff));
+            } 
+            else
+            {
+                Cell neighbour;
+                if (neighbours.get(0).distance(this) <= neighbours.get(1).distance(this))
+                {
+                    neighbour = neighbours.get(0);
+                } 
+                else
+                {
+                    neighbour = neighbours.get(1);
+                }
+                Vector3f diff = this.worldCoordinates.add(neighbour.getWorldCoordinates());
+                diff.setZ(0);
+                diff = diff.divide(2);
+                Vector3f auxDiff = diff;
+                for (int i = 0; i < occupants.size(); i++)
+                {
+                    auxDiff.setX(diff.getX() * FastMath.cos(i * FastMath.TWO_PI / occupants.size()));
+                    auxDiff.setY(diff.getY() * FastMath.sin(i * FastMath.TWO_PI / occupants.size()));
+                    occupants.get(i).getModel().move(auxDiff);
+                }
+            }
+        }
     }
     
     /**
