@@ -88,7 +88,7 @@ public class Client
                 {
                     try
                     {
-                        // Check whether the number of timeouts exceed 10 and we are the host
+                        // Check whether the number of timeouts exceed 15 and we are the first in the token ring
                         if (numTimeouts > 15 && id == 0)
                         {
                             MessagePassToken restartMessage = new MessagePassToken();

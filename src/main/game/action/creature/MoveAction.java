@@ -167,6 +167,35 @@ public class MoveAction extends CreatureAction
                     LandCreatureControl c= (LandCreatureControl)this.subject.getController();
                     //c.setSpatial(c.getStand());
                 }
+                
+                /**
+                 * Update locations
+                 */
+                
+                // Update old location
+                if (this.subject instanceof AirborneCreature)
+                {
+                    this.subject.getLocation().removeCreature(this.subject, ((AirborneCreature) this.subject).isAirborne());
+                }
+                else
+                {
+                    this.subject.getLocation().removeCreature(this.subject, false);
+                }
+                
+                // Update new location
+                if (this.subject instanceof AirborneCreature)
+                {
+                    ((AirborneCreature) this.subject).setAirborne(true);
+                    this.destination.addCreature(this.subject, true);
+                }
+                else
+                {
+                    this.destination.addCreature(this.subject, false);
+                }
+                
+                // Reposition creatures
+                this.destination.repositionCreatures();
+                
             } catch (NoReachablePathException ex) {
                 Logger.getLogger(MoveAction.class.getName()).log(Level.SEVERE, null, ex);
             }            

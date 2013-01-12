@@ -149,8 +149,9 @@ public class Game extends SimpleApplication
                             creature.getModel().setMaterial(mat);
                         }
                         
-                        Circle circle = new Circle(selectedSpatial.getLocalTranslation(), creature.getActionRadius() * 32, 100);
+                        Circle circle = new Circle(creature.getActionRadius() * 32, 100);
                         Geometry circleGeo = new Geometry("radiusCircle", circle);
+                        circleGeo.setLocalTranslation(creature.getLocation().getWorldCoordinates());
                         circleGeo.setMaterial(mat);
                         rootNode.attachChild(circleGeo);
                     }
@@ -164,8 +165,9 @@ public class Game extends SimpleApplication
                             creature.getModel().setMaterial(mat);
                         }
                         
-                        Circle circle = new Circle(selectedSpatial.getLocalTranslation(), creature.getActionRadius() * 32, 100);
+                        Circle circle = new Circle(creature.getActionRadius() * 32, 100);
                         Geometry circleGeo = new Geometry("radiusCircle", circle);
+                        circleGeo.setLocalTranslation(creature.getLocation().getWorldCoordinates());
                         circleGeo.setMaterial(mat);
                         rootNode.attachChild(circleGeo);
                     }
@@ -179,8 +181,9 @@ public class Game extends SimpleApplication
                             creature.getModel().setMaterial(mat);
                         }
                         
-                        Circle circle = new Circle(selectedSpatial.getLocalTranslation(), creature.getActionRadius() * 32, 100);
+                        Circle circle = new Circle(creature.getActionRadius() * 32, 100);
                         Geometry circleGeo = new Geometry("radiusCircle", circle);
+                        circleGeo.setLocalTranslation(creature.getLocation().getWorldCoordinates());
                         circleGeo.setMaterial(mat);
                         rootNode.attachChild(circleGeo);
                     }

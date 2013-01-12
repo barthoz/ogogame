@@ -48,6 +48,43 @@ public abstract class Cell
     /**
      * Business logic
      */
+    
+    /**
+     * Add occupant.
+     * 
+     * @param creature
+     * @param airborne 
+     */
+    public void addCreature(Creature creature, boolean airborne)
+    {
+        if (airborne)
+        {
+            this.airborneOccupants.add(creature);
+        }
+        else
+        {
+            this.occupants.add(creature);
+        }
+    }
+    
+    /**
+     * Remove occupant.
+     * 
+     * @param creature
+     * @param airborne 
+     */
+    public void removeCreature(Creature creature, boolean airborne)
+    {
+        if (airborne)
+        {
+            this.airborneOccupants.remove(creature);
+        }
+        else
+        {
+            this.occupants.remove(creature);
+        }
+    }
+    
     /**
      * Calculates the distance between this cell and otherCell
      *

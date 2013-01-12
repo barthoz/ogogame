@@ -56,7 +56,7 @@ public class SpawnAction extends Action
             this.player.addCreature(creature);
             game.getWorld().addCreature(creature);
             game.getWorld().getSelectableObjects().attachChild(creature.getModel());
-            
+            creature.getLocation().repositionCreatures();
             System.out.println(id);
         }
     }
