@@ -82,11 +82,29 @@ public class Client
                 byte[] buffer = new byte[2048];
                 DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
 
+                long numTimeouts = 0;
+                
                 while (isListening)
                 {
                     try
                     {
-                        socket.receive(packet);
+                        // Check whether the number of timeouts exceed 10 and we are the host
+                        if (numTimeouts > 15 && id == 0)
+                        {
+                            MessagePassToken restartMessage = new MessagePassToken();
+                            restartMessage.setFromClientId(id);
+                            byte[] restartBuffer = xstream.toXML(restartMessage).getBytes();
+
+                            System.out.println("(Restart token-ring) Client out: " + xstream.toXML(restartMessage));
+                            DatagramPacket restartPacket = new DatagramPacket(restartBuffer, restartBuffer.length, InetAddress.getByName(outNeighbour.getAddress()), Client.PORT);
+                            socket.send(restartPacket);
+                            
+                            numTimeouts = 0; // restart the timeout count
+                        }
+                        
+                        socket.receive(packet);                        
+                        numTimeouts = 0; // restart timeout count
+                        
                         String strMessage = new String(buffer, 0, packet.getLength());
                         packet.setLength(buffer.length);
                         
@@ -205,7 +223,8 @@ public class Client
                     }
                     catch (SocketTimeoutException ex)
                     {
-                        System.out.println("Client time-out");
+                        numTimeouts++; // increase the number of timeouts by 1
+                        System.out.println("Client time-out - " + numTimeouts);
                     }
                     catch (IOException ex)
                     {
