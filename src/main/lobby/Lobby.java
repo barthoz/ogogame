@@ -4,6 +4,8 @@
  */
 package main.lobby;
 
+import com.jme3.system.AppSettings;
+import java.awt.Toolkit;
 import java.net.DatagramSocket;
 import java.net.Inet4Address;
 import java.net.NetworkInterface;
@@ -145,6 +147,12 @@ public class Lobby
         this.tokenRing = tokenRing;
         me.setSocket(this.initialClient.getSocket());
         Game game = buildGame(me, tokenRing, gameCredentials);
+        game.setShowSettings(false);
+        AppSettings settings = new AppSettings(true);
+        settings.setFullscreen(false);
+        settings.setResolution(1024, 768);
+        settings.setBitsPerPixel(16);
+        game.setSettings(settings);
         me.setGame(game);
         me.startListening();
         game.start();

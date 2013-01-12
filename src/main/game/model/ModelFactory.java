@@ -139,8 +139,14 @@ public class ModelFactory
            
            BitmapText text = new BitmapText(game.getGuiFont(), false);
            text.setSize(game.getGuiFont().getCharSet().getRenderedSize());
-           text.setColor(ColorRGBA.Orange);
-           text.setText("");
+           if (game.getMe().equals(player))
+           {
+               text.setColor(ColorRGBA.Blue);
+           }
+           else
+           {
+               text.setColor(ColorRGBA.Red);
+           }
            game.getGuiNode().attachChild(text);
            
            creature = new LandCreature(player, id, creatureModel);

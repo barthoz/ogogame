@@ -7,7 +7,7 @@
   <useStyles filename="nifty-default-styles.xml" />
     
     <screen id="hud" controller="main.game.gui.HudController">
-        <layer id="layer1" backgroundColor="#0000" childLayout="center">
+        <!--<layer id="layer1" backgroundColor="#0000" childLayout="center">
             <panel id="panel_actions" height="25%" width="25%" align="right" valign="bottom" backgroundColor="#ffffff" childLayout="center" visibleToMouse="true">
                 <control name="button" label="Move" id="StartButton" align="center" valign="center" visibleToMouse="true" >
                     <interact onClick="test(hud)"/>
@@ -19,7 +19,7 @@
                     <interact onClick="test(hud)"/>
                 </control>
             </panel>
-        </layer>
+        </layer>-->
   </screen>
   
   <screen id="spawnMenu" controller="main.game.gui.SpawnMenuController">

@@ -743,17 +743,11 @@ public class Game extends SimpleApplication
          * Creature headers (health bar)
          */
         
-        Matrix4f viewProjectionMatrix = this.viewPort.getCamera().getProjectionMatrix().mult(this.viewPort.getCamera().getViewMatrix());
-        Vector3f point3D;
-        int winX, winY;
-        
         for (Creature creature : this.world.getCreatures())
         {
-            point3D = viewProjectionMatrix.mult(creature.getModel().getLocalTranslation());
-            winX = (int) Math.round(((point3D.x + 1) / 2f) * settings.getWidth());
-            winY = (int) Math.round(((1 - point3D.y) / 2f) * settings.getHeight());
             
-            creature.getCreatureHeader().setLocalTranslation(winX, winY - 10, 0);
+            creature.getCreatureHeader().setText("Health: " + creature.getHealth() + "%");
+            creature.getCreatureHeader().setLocalTranslation(cam.getScreenCoordinates(creature.getModel().getWorldTranslation().add(new Vector3f(-1 * creature.getCreatureHeader().getLineWidth() / 2f, 30, 0))));
         }
     }
 
