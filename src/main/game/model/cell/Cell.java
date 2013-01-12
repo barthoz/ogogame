@@ -31,8 +31,8 @@ public abstract class Cell
     private int xCoor;
     private int yCoor;
     private Vector3f worldCoordinates;
-    private List<Creature> occupants = null;
-    private List<Creature> airborneOccupants = null;
+    private List<Creature> occupants = new ArrayList<Creature>();
+    private List<Creature> airborneOccupants = new ArrayList<Creature>();
 
     /**
      * Constructor
