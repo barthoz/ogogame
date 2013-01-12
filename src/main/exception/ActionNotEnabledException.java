@@ -10,4 +10,5 @@ package main.exception;
  */
 public class ActionNotEnabledException extends Exception
 {
+    // test
 }
