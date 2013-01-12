@@ -680,6 +680,7 @@ public class Game extends SimpleApplication
                     System.out.println("Begin set mode");
                     this.inSetMode = true;
                     this.setModeDone = false;
+                    this.setModeSent = false;
                     blocked = false;
                 }
             }

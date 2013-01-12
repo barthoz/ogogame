@@ -167,7 +167,6 @@ public class Client
                                         }
 
                                         game.getModeBlocked = false;
-                                        game.setModeSent = false;
                                     }
                                 }
                                 else if (message instanceof MessageLeaveGame)
