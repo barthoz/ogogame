@@ -209,6 +209,7 @@ public class Client
                     }
                     catch (IOException ex)
                     {
+                        System.out.println("IO-exception");
                         Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
