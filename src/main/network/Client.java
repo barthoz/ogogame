@@ -103,7 +103,7 @@ public class Client
                             byte[] sendBuffer;
                             DatagramPacket sendPacket;
                             Message sendMessage = null;
-
+                            
                             if (message.getFromClientId() == id)
                             {
                                 // Pass token onto next neighbour
@@ -150,9 +150,10 @@ public class Client
 
                                     for (Integer tempId : setModeDoneMap.keySet())
                                     {
+                                        System.out.println("SETMODEDONE - Client: " + tempId + " - Done: " + setModeDoneMap.get(tempId));
+                                        
                                         if (!setModeDoneMap.get(tempId))
                                         {
-                                            System.out.println("SETMODEDONE - Client: " + tempId + " - Done: " + setModeDoneMap.get(tempId));
                                             allDone = false;
                                             break;
                                         }

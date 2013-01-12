@@ -37,7 +37,7 @@ public abstract class Creature
     protected boolean isAlive = true;
     protected int roundDied = -1;
     protected int rangeOfSight = Game.CONST_INIT_RANGE_OF_SIGHT;
-    protected int actionRadius;
+    protected int actionRadius = 15;
     protected boolean inFight = false;
     /**
      * tweakers, possible define a function to give more dynamic changes
@@ -194,5 +194,29 @@ public abstract class Creature
     public void setIsAlive(boolean isAlive)
     {
         this.isAlive = isAlive;
+    }
+
+    public int getRoundDied() {
+        return roundDied;
+    }
+
+    public void setRoundDied(int roundDied) {
+        this.roundDied = roundDied;
+    }
+
+    public int getRangeOfSight() {
+        return rangeOfSight;
+    }
+
+    public void setRangeOfSight(int rangeOfSight) {
+        this.rangeOfSight = rangeOfSight;
+    }
+
+    public int getActionRadius() {
+        return actionRadius;
+    }
+
+    public void setActionRadius(int actionRadius) {
+        this.actionRadius = actionRadius;
     }
 }

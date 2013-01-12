@@ -55,6 +55,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import main.common.Circle;
 import main.exception.ActionNotEnabledException;
 import main.game.action.Action;
 import main.game.action.SpawnAction;
@@ -141,24 +142,71 @@ public class Game extends SimpleApplication
                     {
                         System.out.println((String) selectedSpatial.getUserData("parentId"));
                         LandCreature creature = (LandCreature) world.findCreatureById((String) selectedSpatial.getUserData("parentId"));
-                        selectedObject = creature;
-                        creature.getModel().setMaterial(mat);
+                        
+                        if (creature.getPlayer().equals(me))
+                        {
+                            selectedObject = creature;
+                            creature.getModel().setMaterial(mat);
+                        }
+                        
+                        Circle circle = new Circle(selectedSpatial.getLocalTranslation(), creature.getActionRadius() * 32, 100);
+                        Geometry circleGeo = new Geometry("radiusCircle", circle);
+                        circleGeo.setMaterial(mat);
+                        rootNode.attachChild(circleGeo);
                     }
                     else if (modelType.equals(SeaCreature.CODE_ID))
                     {
                         SeaCreature creature = (SeaCreature) world.findCreatureById((String) selectedSpatial.getUserData("parentId"));
-                        selectedObject = creature;
-                        creature.getModel().setMaterial(mat);
+                        
+                        if (creature.getPlayer().equals(me))
+                        {
+                            selectedObject = creature;
+                            creature.getModel().setMaterial(mat);
+                        }
+                        
+                        Circle circle = new Circle(selectedSpatial.getLocalTranslation(), creature.getActionRadius() * 32, 100);
+                        Geometry circleGeo = new Geometry("radiusCircle", circle);
+                        circleGeo.setMaterial(mat);
+                        rootNode.attachChild(circleGeo);
                     }
                     else if (modelType.equals(AirborneCreature.CODE_ID))
                     {
                         AirborneCreature creature = (AirborneCreature) world.findCreatureById((String) selectedSpatial.getUserData("parentId"));
-                        selectedObject = creature;
-                        creature.getModel().setMaterial(mat);
+                        
+                        if (creature.getPlayer().equals(me))
+                        {
+                            selectedObject = creature;
+                            creature.getModel().setMaterial(mat);
+                        }
+                        
+                        Circle circle = new Circle(selectedSpatial.getLocalTranslation(), creature.getActionRadius() * 32, 100);
+                        Geometry circleGeo = new Geometry("radiusCircle", circle);
+                        circleGeo.setMaterial(mat);
+                        rootNode.attachChild(circleGeo);
                     }
                     else if (modelType.equals("Duck"))
                     {
                         world.findDuck().quack(quackAudio);
+                    }
+                }
+                else
+                {
+                    // Get rid of radius circle if it is there
+                    if (rootNode.getChild("radiusCircle") != null)
+                    {
+                        rootNode.detachChildNamed("radiusCircle");
+                    }
+                    
+                    if (selectedObject != null)
+                    {
+                        // revert the selection
+                        if (selectedObject instanceof Creature)
+                        {
+                            Creature creature = (Creature) selectedObject;
+                            
+                        }
+                        
+                        selectedObject = null;
                     }
                 }
             }
@@ -189,6 +237,12 @@ public class Game extends SimpleApplication
              */
             else if (!keyPressed && name.equals("Select") && selectedObject != null)
             {
+                // Get rid of radius circle if it is there
+                if (rootNode.getChild("radiusCircle") != null)
+                {
+                    rootNode.detachChildNamed("radiusCircle");
+                }
+                
                 Vector2f click2d = inputManager.getCursorPosition();
                 Vector3f click3d = cam.getWorldCoordinates(new Vector2f(click2d.x, click2d.y), 0f).clone();
                 Vector3f dir = cam.getWorldCoordinates(new Vector2f(click2d.x, click2d.y), 1f).subtractLocal(click3d).normalizeLocal();
