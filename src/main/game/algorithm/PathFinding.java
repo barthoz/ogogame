@@ -245,9 +245,9 @@ public class PathFinding
                + Math.abs(currentCell.getYCoor() - to.getYCoor()));
     }
     
-    private static Set<Cell> retrieveNeighbouringCells(Cell[][] cells, Cell cell, Creature creature)
+    private static List<Cell> retrieveNeighbouringCells(Cell[][] cells, Cell cell, Creature creature)
     {
-        Set<Cell> neighbours = new HashSet<Cell>();
+        List<Cell> neighbours = new ArrayList<Cell>();
         
         int x = cell.getXCoor();
         int y = cell.getYCoor();
@@ -292,7 +292,7 @@ public class PathFinding
             }
         }
         
-        Set<Cell> finalNeighbours = new HashSet<Cell>();
+        List<Cell> finalNeighbours = new ArrayList<Cell>();
         
         for (Cell neighbour : neighbours)
         {

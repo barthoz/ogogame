@@ -187,12 +187,13 @@ public class Client
                             //sendMessage = new MessagePassToken();
                             sendBuffer = xstream.toXML(sendMessage).getBytes();
 
-                            if (!(sendMessage instanceof MessagePassToken))
-                            {
-                                System.out.println("Client out: " + xstream.toXML(sendMessage));
-                            }
+                            System.out.println("Client out: " + xstream.toXML(sendMessage));
                             sendPacket = new DatagramPacket(sendBuffer, sendBuffer.length, InetAddress.getByName(outNeighbour.getAddress()), Client.PORT);
                             socket.send(sendPacket);
+                        }
+                        else
+                        {
+                            System.out.println("UNEXPECTED MESSAGE: " + strMessage);
                         }
                             
                         try
@@ -204,7 +205,7 @@ public class Client
                     }
                     catch (SocketTimeoutException ex)
                     {
-                        
+                        System.out.println("Client time-out");
                     }
                     catch (IOException ex)
                     {
