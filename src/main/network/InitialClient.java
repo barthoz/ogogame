@@ -61,6 +61,8 @@ public class InitialClient
         } catch (SocketException ex) {
             Logger.getLogger(InitialClient.class.getName()).log(Level.SEVERE, null, ex);
         }
+        
+        this.listenToJoinServer();
     }
     
     /**
@@ -161,12 +163,137 @@ public class InitialClient
         listening.start();
     }
     
+    public void listenToJoinServer()
+    {
+        /**
+         * Open thread that listens to incoming messages
+         */
+        
+        Thread listener = new Thread(new Runnable()
+        {
+            private boolean listening = true;
+            
+            public void run()
+            {                
+                byte[] buffer = new byte[2048];
+                DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
+                
+                Client me = null;
+                
+                while (this.listening)
+                {
+                    try
+                    {
+                        socket.receive(packet);
+                        String strMessage = new String(buffer, 0, packet.getLength());
+                        Message message = (Message) xstream.fromXML(strMessage);
+                        
+                        System.out.println("Client listener: " + strMessage);
+                   
+                        if (message instanceof MessagePing)
+                        {
+                            MessagePong msgPong = new MessagePong();
+                            msgPong.setFromClientId(me.getId());
+                            byte[] sendMsg = xstream.toXML(msgPong).getBytes();
+                            DatagramPacket sendPacket = new DatagramPacket(sendMsg, sendMsg.length, packet.getAddress(), InitialServer.PORT);
+                            socket.send(sendPacket);
+                        }
+                        else if (message instanceof MessageJoinApproved)
+                        {
+                            me = ((MessageJoinApproved) message).getClient();
+                            System.out.println("Join approved");
+                        }
+                        else if (message instanceof MessageJoinDisapproved)
+                        {
+                            System.out.println("Join disapproved: " + ((MessageJoinDisapproved) message).getReason());
+                            this.stopListening();
+                        }
+                        else if (message instanceof MessagePlayerJoined)
+                        {
+                            lobby.addPlayer(((MessagePlayerJoined) message).getUsername());
+                        }
+                        else if (message instanceof MessageStartGame)
+                        {
+                            MessageStartGame msgStartGame = (MessageStartGame) message;
+
+                            // Find me in token ring
+                            // (new instance of me since it has been sent over the network with the message)
+                            for (Client client : msgStartGame.getTokenRing())
+                            {
+                                if (client.getId() == me.getId())
+                                {
+                                    me = client;
+                                }
+                            }
+                            
+                            lobby.startGame(me, msgStartGame.getTokenRing(), msgStartGame.getGameCredentials());
+                            this.stopListening();
+                        }
+                        
+                        packet.setLength(buffer.length);
+                    }                    
+                    catch (SocketTimeoutException ex)
+                    {
+                        System.out.println("Listening...");
+                    }
+                    catch (IOException ex)
+                    {
+                        Logger.getLogger(InitialClient.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    
+                    try
+                    {
+                        Thread.sleep(10);
+                    }
+                    catch (InterruptedException ex)
+                    {
+                        Logger.getLogger(InitialClient.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            }
+            
+            private void stopListening()
+            {
+                this.listening = false;
+            }
+        });
+        
+        listener.start();
+    }
+    
+    public void joinGame(GameCredentials gameCredentials, String username)
+    {
+       /**
+        * Send join request
+        */
+
+        try
+        {
+           InetAddress address = InetAddress.getByName(gameCredentials.getInitialHostIp());
+           MessageJoinRequest msgJoinReq = new MessageJoinRequest(username);
+           String reqstrMsg = xstream.toXML(msgJoinReq);
+           byte[] reqMessage = reqstrMsg.getBytes();
+
+           System.out.println("Client out: " + reqstrMsg);
+           DatagramPacket reqPacket = new DatagramPacket(reqMessage, reqMessage.length, address, InitialServer.PORT);
+           socket.send(reqPacket);
+        }   
+        catch (UnknownHostException ex)
+        {
+           Logger.getLogger(InitialClient.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        catch (IOException ex)
+        {
+           Logger.getLogger(InitialClient.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
     /**
      * Join game.
      * @param gameCredentials
      * @param username 
      */
-    public void joinGame(GameCredentials gameCredentials, String username)
+    public void joinGameOld(GameCredentials gameCredentials, String username)
     {
         final GameCredentials gameCredentialsFinal = gameCredentials;
         final String usernameFinal = username;
