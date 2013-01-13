@@ -199,6 +199,30 @@ public class Client
 
                                         sendMessage = new MessageSetModeDone(player.getActions());
                                         sendMessage.setFromClientId(id);
+                                        
+                                        boolean allDone = true;
+
+                                        for (Integer tempId : setModeDoneMap.keySet())
+                                        {
+                                            System.out.println("SETMODEDONE - Client: " + tempId + " - Done: " + setModeDoneMap.get(tempId));
+
+                                            if (!setModeDoneMap.get(tempId))
+                                            {
+                                                allDone = false;
+                                                break;
+                                            }
+                                        }
+
+                                        if (allDone)
+                                        {
+                                            for (Integer id : setModeDoneMap.keySet())
+                                            {
+                                                setModeDoneMap.put(id, false);
+                                            }
+
+                                            // unblock get turn
+                                            game.getModeBlocked = false;
+                                        }
                                     }
                                     else
                                     {
