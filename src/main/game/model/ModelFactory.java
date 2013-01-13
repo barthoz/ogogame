@@ -161,6 +161,8 @@ public class ModelFactory
            creatureMove = assetManager.loadModel("Models/Air/move.mesh.xml");
            creatureMove.setLocalScale(0.5f);
            creatureMove.setName("Move");
+           creatureMove.setUserData("parentId", id);
+           creatureMove.setUserData("modelType", creatureType);
            
            creatureModel.attachChild(creatureStand);
            creatureModel.attachChild(creatureMove);
@@ -174,7 +176,7 @@ public class ModelFactory
             * Health bar (above creature)
             */
            
-           BitmapText text = new BitmapText(game.getGuiFont(), false);
+           /*BitmapText text = new BitmapText(game.getGuiFont(), false);
            text.setSize(game.getGuiFont().getCharSet().getRenderedSize());
            if (game.getMe().equals(player))
            {
@@ -186,7 +188,7 @@ public class ModelFactory
            }
            game.getGuiNode().attachChild(text);
            
-           creature.setCreatureHeader(text);
+           creature.setCreatureHeader(text);*/
         // Determine spawn location
         //Cell location = player.getBase().getLocation().getWorld().getCells()[32][32];
         Cell location = player.getBase().getClosestSpawnableCell(creature);

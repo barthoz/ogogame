@@ -60,7 +60,8 @@ public class AirborneCreatureControl extends AbstractControl implements Savable,
     {
         this.stand = spatial.getChild("Stand");
         this.move = spatial.getChild("Move");
-        super.setSpatial(stand);
+        spatial.detachChild(move);
+        super.setSpatial(spatial);
         //this.spatial = spatial;
         this.game = game;
         this.controllee = controllee;

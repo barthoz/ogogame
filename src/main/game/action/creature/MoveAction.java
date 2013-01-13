@@ -16,6 +16,7 @@ import com.jme3.math.Quaternion;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
+import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import main.exception.ActionNotEnabledException;
@@ -30,6 +31,7 @@ import main.game.model.control.LandCreatureControl;
 import main.game.model.creature.AirborneCreature;
 import main.game.model.creature.Creature;
 import main.game.model.creature.LandCreature;
+import main.game.model.creature.SeaCreature;
 
 /**
  *
@@ -94,6 +96,12 @@ public class MoveAction extends CreatureAction
         {            
             try
             {
+                final Vector3f airDestination = new Vector3f(destination.getWorldCoordinates().x, PathFinding.airCreatureHeight, destination.getWorldCoordinates().z);
+                final MotionPath path = PathFinding.createMotionPath(game.getTerrain(), game.getWorld().getCells(), this.subject.getLocation(), this.destination, this.subject);
+                
+                final Cinematic cinematic = new Cinematic(game.getWorld().getWorldNode(), 20);
+                MotionEvent track = new MotionEvent(this.subject.getModel(), path);
+                
                 if(subject instanceof LandCreature)
                 {
                     LandCreatureControl c= (LandCreatureControl)this.subject.getController();
@@ -102,28 +110,17 @@ public class MoveAction extends CreatureAction
                     s.attachChild(c.getMove());
                     c.setSpatial(null);
                     c.setSpatial(s);
+                    track.setDirectionType(MotionEvent.Direction.Path);
                 }
-                
-                else if(subject instanceof AirborneCreature)
-                {
-                    AirborneCreatureControl c= (AirborneCreatureControl)this.subject.getController();
-                    Node s = (Node) c.getSpatial();
-                    s.detachChild(c.getStand());
-                    s.attachChild(c.getMove());
-                    c.setSpatial(null);
-                    c.setSpatial(s);
+                else if (subject instanceof SeaCreature){
+                    track.setDirectionType(MotionEvent.Direction.LookAt);
+                    track.setLookAt(destination.getWorldCoordinates(), Vector3f.UNIT_Y);
+                    
                 }
-                
-                final MotionPath path = PathFinding.createMotionPath(game.getTerrain(), game.getWorld().getCells(), this.subject.getLocation(), this.destination, this.subject);
-                
-                final Cinematic cinematic = new Cinematic(game.getWorld().getWorldNode(), 20);
-                MotionEvent track = new MotionEvent(this.subject.getModel(), path);
-                
-                /**
-                 * Not sure how to fix this
-                 */
-                
-                track.setDirectionType(MotionEvent.Direction.Path);
+                else if (subject instanceof AirborneCreature){
+                    track.setDirectionType(MotionEvent.Direction.LookAt);
+                    track.setLookAt(airDestination, Vector3f.UNIT_Y);
+                }
                 cinematic.addCinematicEvent(0, track);
                 cinematic.fitDuration();
                 game.getStateManager().attach(cinematic);
@@ -141,7 +138,7 @@ public class MoveAction extends CreatureAction
                     }
                 });
                 
-                final Vector3f airDestination = new Vector3f(destination.getWorldCoordinates().x, PathFinding.airCreatureHeight, destination.getWorldCoordinates().z);
+                
                 
                 cinematic.addListener(new CinematicEventListener()
                 {
@@ -167,16 +164,6 @@ public class MoveAction extends CreatureAction
                             c.setSpatial(s);
                         }
                         
-                        if(subject instanceof AirborneCreature)
-                        {
-                            AirborneCreatureControl c= (AirborneCreatureControl)subject.getController();
-                            Node s = (Node) c.getSpatial();
-                            s.detachChild(c.getMove());
-                            s.attachChild(c.getStand());
-                            c.setSpatial(null);
-                            c.setSpatial(s);
-                        }
-                        
                         if (subject instanceof AirborneCreature)
                         {
                             subject.getModel().setLocalTranslation(airDestination);
@@ -191,6 +178,12 @@ public class MoveAction extends CreatureAction
                 
                         // Reposition creatures
                         destination.repositionCreatures();
+                        System.out.println("AHAHAHAHAHAHAHAHAHAHAAAAA");
+                        System.out.println("World: " + subject.getModel().getWorldTranslation().toString());
+                        System.out.println("Cell:  " + subject.getLocation().getWorldCoordinates().toString());
+                        AirborneCreatureControl a = (AirborneCreatureControl) subject.getController();
+                        Node n = (Node) a.getSpatial();
+                        System.out.println("Spatial: " + Arrays.toString(n.getChildren().toArray()));
                     }
                     
                 });

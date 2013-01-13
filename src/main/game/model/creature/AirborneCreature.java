@@ -48,11 +48,23 @@ public class AirborneCreature extends Creature
     public void land()
     {
         this.airborne = false;
+        AirborneCreatureControl c= (AirborneCreatureControl) this.getController();
+        Node s = (Node) c.getSpatial();
+        s.detachChild(c.getMove());
+        s.attachChild(c.getStand());
+        c.setSpatial(null);
+        c.setSpatial(s);
     }
     
     public void takeOff()
     {
         this.airborne = true;
+        AirborneCreatureControl c= (AirborneCreatureControl) this.getController();
+        Node s = (Node) c.getSpatial();
+        s.detachChild(c.getStand());
+        s.attachChild(c.getMove());
+        c.setSpatial(null);
+        c.setSpatial(s);
     }
     
     /**
