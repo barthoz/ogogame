@@ -175,6 +175,7 @@ public class InitialClient
         Thread listener = new Thread(new Runnable()
         {
             private boolean listening = true;
+            private boolean hasSentRequest = false;
             
             public void run()
             {
@@ -264,7 +265,7 @@ public class InitialClient
         
         try
         {
-            Thread.sleep(200);
+            Thread.sleep(1000);
         }
         catch (InterruptedException ex)
         {
