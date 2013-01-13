@@ -80,7 +80,9 @@ public class Client
         Thread listening = new Thread(new Runnable()
         {            
             public void run()
-            {                
+            {
+                messageQueue = new LinkedList<Message>();
+                
                 XStream xstream = new XStream();
                 byte[] buffer = new byte[2048];
                 DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
