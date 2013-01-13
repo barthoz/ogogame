@@ -214,12 +214,12 @@ public class Client
                             System.out.println("UNEXPECTED MESSAGE: " + strMessage);
                         }
                             
-                        try
+                        /*try
                         {
                             Thread.sleep(10);
                         } catch (InterruptedException ex) {
                             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
-                        }
+                        }*/
                     }
                     catch (SocketTimeoutException ex)
                     {

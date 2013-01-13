@@ -204,11 +204,11 @@ public class InitialServer
                            
                         }
                         
-                        try {
+                        /*try {
                             Thread.sleep(10);
                         } catch (InterruptedException ex) {
                             Logger.getLogger(InitialServer.class.getName()).log(Level.SEVERE, null, ex);
-                        }
+                        }*/
                     }
                 } catch (IOException ex) {
                     Logger.getLogger(InitialServer.class.getName()).log(Level.SEVERE, null, ex);

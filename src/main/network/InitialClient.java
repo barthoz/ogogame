@@ -241,14 +241,14 @@ public class InitialClient
                         Logger.getLogger(InitialClient.class.getName()).log(Level.SEVERE, null, ex);
                     }
                     
-                    try
+                    /*try
                     {
                         Thread.sleep(10);
                     }
                     catch (InterruptedException ex)
                     {
                         Logger.getLogger(InitialClient.class.getName()).log(Level.SEVERE, null, ex);
-                    }
+                    }*/
                 }
             }
             
