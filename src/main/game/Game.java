@@ -828,8 +828,8 @@ public class Game extends SimpleApplication
         
         for (Creature creature : this.world.getCreatures())
         {
-            creature.getCreatureHeader().setText("Health: " + creature.getHealth() + "%");
-            creature.getCreatureHeader().setLocalTranslation(cam.getScreenCoordinates(creature.getModel().getWorldTranslation().add(0, 20f, 0)).add(-1 * creature.getCreatureHeader().getLineWidth() / 2f, 0f, 0f));
+         //   creature.getCreatureHeader().setText("Health: " + creature.getHealth() + "%");
+           // creature.getCreatureHeader().setLocalTranslation(cam.getScreenCoordinates(creature.getModel().getWorldTranslation().add(0, 20f, 0)).add(-1 * creature.getCreatureHeader().getLineWidth() / 2f, 0f, 0f));
         }
         
         /**
