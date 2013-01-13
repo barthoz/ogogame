@@ -4,6 +4,7 @@
  */
 package main.game.model.creature;
 
+import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import main.game.Player;
 import main.game.model.control.AirborneCreatureControl;
@@ -27,7 +28,7 @@ public class AirborneCreature extends Creature
      * Constructor
      */
     
-    public AirborneCreature(Player player, String id, Spatial model)
+    public AirborneCreature(Player player, String id, Node model)
     {
         super(player, id, model);
         this.controller = new AirborneCreatureControl(model, player.getGame(), this);

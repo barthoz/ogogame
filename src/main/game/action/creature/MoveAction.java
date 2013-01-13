@@ -15,6 +15,7 @@ import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
+import com.jme3.scene.Node;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import main.exception.ActionNotEnabledException;
@@ -24,6 +25,7 @@ import main.game.Player;
 import main.game.World;
 import main.game.algorithm.PathFinding;
 import main.game.model.cell.Cell;
+import main.game.model.control.AirborneCreatureControl;
 import main.game.model.control.LandCreatureControl;
 import main.game.model.creature.AirborneCreature;
 import main.game.model.creature.Creature;
@@ -95,7 +97,21 @@ public class MoveAction extends CreatureAction
                 if(subject instanceof LandCreature)
                 {
                     LandCreatureControl c= (LandCreatureControl)this.subject.getController();
-                    //c.setSpatial(c.getMove());
+                    Node s = (Node) c.getSpatial();
+                    s.detachChild(c.getStand());
+                    s.attachChild(c.getMove());
+                    c.setSpatial(null);
+                    c.setSpatial(s);
+                }
+                
+                else if(subject instanceof AirborneCreature)
+                {
+                    AirborneCreatureControl c= (AirborneCreatureControl)this.subject.getController();
+                    Node s = (Node) c.getSpatial();
+                    s.detachChild(c.getStand());
+                    s.attachChild(c.getMove());
+                    c.setSpatial(null);
+                    c.setSpatial(s);
                 }
                 
                 final MotionPath path = PathFinding.createMotionPath(game.getTerrain(), game.getWorld().getCells(), this.subject.getLocation(), this.destination, this.subject);
@@ -141,6 +157,26 @@ public class MoveAction extends CreatureAction
                     public void onStop(CinematicEvent cinematic) {
                         //throw new UnsupportedOperationException("Not supported yet.");
                         
+                        if(subject instanceof LandCreature)
+                        {
+                            LandCreatureControl c= (LandCreatureControl)subject.getController();
+                            Node s = (Node) c.getSpatial();
+                            s.detachChild(c.getMove());
+                            s.attachChild(c.getStand());
+                            c.setSpatial(null);
+                            c.setSpatial(s);
+                        }
+                        
+                        if(subject instanceof AirborneCreature)
+                        {
+                            AirborneCreatureControl c= (AirborneCreatureControl)subject.getController();
+                            Node s = (Node) c.getSpatial();
+                            s.detachChild(c.getMove());
+                            s.attachChild(c.getStand());
+                            c.setSpatial(null);
+                            c.setSpatial(s);
+                        }
+                        
                         if (subject instanceof AirborneCreature)
                         {
                             subject.getModel().setLocalTranslation(airDestination);
@@ -151,15 +187,14 @@ public class MoveAction extends CreatureAction
                         }
                         
                         subject.setLocation(destination);
+                        
+                
+                        // Reposition creatures
+                        destination.repositionCreatures();
                     }
                     
                 });
                 cinematic.play();
-                if(subject instanceof LandCreature)
-                {
-                    LandCreatureControl c= (LandCreatureControl)this.subject.getController();
-                    //c.setSpatial(c.getStand());
-                }
                 
                 /**
                  * Update locations
@@ -185,9 +220,6 @@ public class MoveAction extends CreatureAction
                 {
                     this.destination.addCreature(this.subject, false);
                 }
-                
-                // Reposition creatures
-                this.destination.repositionCreatures();
                 
             } catch (NoReachablePathException ex) {
                 Logger.getLogger(MoveAction.class.getName()).log(Level.SEVERE, null, ex);
