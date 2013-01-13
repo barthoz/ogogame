@@ -264,7 +264,7 @@ public class InitialClient
         
         try
         {
-            Thread.sleep(20);
+            Thread.sleep(200);
         }
         catch (InterruptedException ex)
         {
