@@ -64,6 +64,11 @@ public class Client
         this.messageQueue = new LinkedList<Message>();
     }
     
+    public Client()
+    {
+        this.messageQueue = new LinkedList<Message>();
+    }
+    
     /**
      * Business logic
      */
