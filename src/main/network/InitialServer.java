@@ -173,6 +173,7 @@ public class InitialServer
                                     String strMessageApproved = xstream.toXML(messageApproved);
                                     byte[] sendBuffer = strMessageApproved.getBytes();
                                     DatagramPacket sendPacket = new DatagramPacket(sendBuffer, sendBuffer.length, packet.getAddress(), Client.PORT);
+                                    System.out.println("Server out: " + strMessageApproved);
                                     socket.send(sendPacket);
 
                                     // Send the update to all clients that a player has joined

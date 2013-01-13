@@ -262,6 +262,15 @@ public class InitialClient
         
         listener.start();
         
+        try
+        {
+            Thread.sleep(20);
+        }
+        catch (InterruptedException ex)
+        {
+            Logger.getLogger(InitialClient.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
         /**
          * Send join request
          */
