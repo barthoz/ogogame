@@ -99,6 +99,8 @@ public class ModelFactory
         
         FoodSource foodSource = new FoodSource(id, fsModel, game, location);
         
+        game.getWorld().getFoodSourceContainer().attachChild(fsModel);
+        
         return foodSource;
     }
     

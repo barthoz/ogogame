@@ -370,4 +370,52 @@ public class World
     {
         return worldNode;
     }
+
+    public Game getGame() {
+        return game;
+    }
+
+    public void setGame(Game game) {
+        this.game = game;
+    }
+
+    public Node getCreatureContainer() {
+        return creatureContainer;
+    }
+
+    public void setCreatureContainer(Node creatureContainer) {
+        this.creatureContainer = creatureContainer;
+    }
+
+    public Node getBaseContainer() {
+        return baseContainer;
+    }
+
+    public void setBaseContainer(Node baseContainer) {
+        this.baseContainer = baseContainer;
+    }
+
+    public Node getFoodSourceContainer() {
+        return foodSourceContainer;
+    }
+
+    public void setFoodSourceContainer(Node foodSourceContainer) {
+        this.foodSourceContainer = foodSourceContainer;
+    }
+
+    public Node getDuckContainer() {
+        return duckContainer;
+    }
+
+    public void setDuckContainer(Node duckContainer) {
+        this.duckContainer = duckContainer;
+    }
+
+    public Duck getDuck() {
+        return duck;
+    }
+
+    public void setDuck(Duck duck) {
+        this.duck = duck;
+    }
 }
