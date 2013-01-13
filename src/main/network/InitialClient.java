@@ -203,52 +203,13 @@ public class InitialClient
                         String strMessage = new String(buffer, 0, packet.getLength());
                         Message message = (Message) xstream.fromXML(strMessage);
                         
-                        //System.out.println("Client listener: " + strMessage);
+                        System.out.println("Client listener: " + strMessage);
                         
                         messageQueue.add(message);
-                   
-                        serverAddress = packet.getAddress();
-                        /*if (message instanceof MessagePing)
-                        {
-                            MessagePong msgPong = new MessagePong();
-                            msgPong.setFromClientId(me.getId());
-                            byte[] sendMsg = xstream.toXML(msgPong).getBytes();
-                            DatagramPacket sendPacket = new DatagramPacket(sendMsg, sendMsg.length, packet.getAddress(), InitialServer.PORT);
-                            socket.send(sendPacket);
-                        }
-                        else if (message instanceof MessageJoinApproved)
-                        {
-                            me = ((MessageJoinApproved) message).getClient();
-                            System.out.println("Join approved");
-                        }
-                        else if (message instanceof MessageJoinDisapproved)
-                        {
-                            System.out.println("Join disapproved: " + ((MessageJoinDisapproved) message).getReason());
-                            stopListeningtoJoinServer();
-                        }
-                        else if (message instanceof MessagePlayerJoined)
-                        {
-                            lobby.addPlayer(((MessagePlayerJoined) message).getUsername());
-                        }
-                        else if (message instanceof MessageStartGame)
-                        {
-                            MessageStartGame msgStartGame = (MessageStartGame) message;
 
-                            // Find me in token ring
-                            // (new instance of me since it has been sent over the network with the message)
-                            for (Client client : msgStartGame.getTokenRing())
-                            {
-                                if (client.getId() == me.getId())
-                                {
-                                    me = client;
-                                }
-                            }
-                            
-                            lobby.startGame(me, msgStartGame.getTokenRing(), msgStartGame.getGameCredentials(), false);
-                            stopListeningtoJoinServer();
-                        }
+                        serverAddress = packet.getAddress();
                         
-                        packet.setLength(buffer.length);*/
+                        packet.setLength(buffer.length);
                     }                    
                     catch (SocketTimeoutException ex)
                     {
@@ -289,8 +250,6 @@ public class InitialClient
                         if (!messageQueue.isEmpty())
                         {
                             Message message = (Message) messageQueue.poll();
-
-                            System.out.println("Client listener: " + xstream.toXML(message));
 
                             if (message instanceof MessagePing)
                             {
