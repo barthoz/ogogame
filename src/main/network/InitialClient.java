@@ -49,6 +49,7 @@ public class InitialClient
     private boolean listening = false;
     private boolean responding = false;
     private Queue<Message> messageQueue;
+    private InetAddress serverAddress;
     
     private boolean serverStarted;
     private List<Client> tokenRing;
@@ -206,6 +207,7 @@ public class InitialClient
                         
                         messageQueue.add(message);
                    
+                        serverAddress = packet.getAddress();
                         /*if (message instanceof MessagePing)
                         {
                             MessagePong msgPong = new MessagePong();
@@ -295,7 +297,7 @@ public class InitialClient
                                 MessagePong msgPong = new MessagePong();
                                 msgPong.setFromClientId(me.getId());
                                 byte[] sendMsg = xstream.toXML(msgPong).getBytes();
-                                DatagramPacket sendPacket = new DatagramPacket(sendMsg, sendMsg.length, packet.getAddress(), InitialServer.PORT);
+                                DatagramPacket sendPacket = new DatagramPacket(sendMsg, sendMsg.length, serverAddress, InitialServer.PORT);
                                 socket.send(sendPacket);
                             }
                             else if (message instanceof MessageJoinApproved)
