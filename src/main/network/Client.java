@@ -114,9 +114,13 @@ public class Client
                         packet.setLength(buffer.length);
                         
                         // Handle message
-                        System.out.println("Client in (listening): " + strMessage);
                         Message message = (Message) xstream.fromXML(strMessage);
                         messageQueue.add(message);
+                        
+                        if (!(message instanceof MessagePassToken))
+                        {
+                            System.out.println("Client in (listening): " + strMessage);
+                        }
                     }
                     catch (SocketTimeoutException ex)
                     {
@@ -163,7 +167,7 @@ public class Client
                 {
                     try
                     {
-                        System.out.println("responding...");
+                        //System.out.println("responding...");
                         
                         if (!messageQueue.isEmpty())
                         {
@@ -259,7 +263,10 @@ public class Client
                                 //sendMessage = new MessagePassToken();
                                 sendBuffer = xstream.toXML(sendMessage).getBytes();
 
-                                System.out.println("Client out: " + xstream.toXML(sendMessage));
+                                if (!(sendMessage instanceof MessagePassToken))
+                                {
+                                    System.out.println("Client out: " + xstream.toXML(sendMessage));
+                                }
                                 sendPacket = new DatagramPacket(sendBuffer, sendBuffer.length, InetAddress.getByName(outNeighbour.getAddress()), Client.PORT);
                                 socket.send(sendPacket);
                             }
