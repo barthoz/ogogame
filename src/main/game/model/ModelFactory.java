@@ -131,8 +131,6 @@ public class ModelFactory
            creatureMove = assetManager.loadModel("Models/Land/move.mesh.xml");
            creatureMove.setLocalScale(0.2f);
            creatureMove.setName("Move");
-           creatureMove.setUserData("parentId", id);
-           creatureMove.setUserData("modelType", creatureType);
            
            creatureModel.attachChild(creatureStand);
            creatureModel.attachChild(creatureMove);
@@ -156,18 +154,35 @@ public class ModelFactory
            creature = new LandCreature(player, id, creatureModel);
            creature.setCreatureHeader(text);
         }
-        /*else if (creatureType.equals(SeaCreature.CODE_ID))
+        else if (creatureType.equals(SeaCreature.CODE_ID))
         {
-            creatureModel = assetManager.loadModel("Models/Sea/move.mesh.xml");
-            creatureModel.setLocalScale(4f);
+            creatureModel = new Node("SeaCreature");
+            creatureMove = assetManager.loadModel("Models/Sea/move.mesh.xml");
+            creatureMove.setLocalScale(4f);
+            creatureMove.setName("Move");
+            creatureMove.setUserData("parentId", id);
+            creatureMove.setUserData("modelType", creatureType);
+            creatureModel.attachChild(creatureStand);
             creature = new SeaCreature(player, id, creatureModel);
         }
         else if (creatureType.equals(AirborneCreature.CODE_ID))
         {
-            creatureModel = assetManager.loadModel("Models/Air/stilstaand.mesh.xml");
-            creatureModel.setLocalScale(0.5f);
-            creature = new AirborneCreature(player, id, creatureModel);
-        }*/
+            creatureModel = new Node("AirborneCreature");
+           
+           creatureStand = assetManager.loadModel("Models/Air/stilstaand.mesh.xml");
+           creatureStand.setLocalScale(0.5f);
+           creatureStand.setName("Stand");
+           creatureStand.setUserData("parentId", id);
+           creatureStand.setUserData("modelType", creatureType);
+           
+           creatureMove = assetManager.loadModel("Models/Air/move.mesh.xml");
+           creatureMove.setLocalScale(0.5f);
+           creatureMove.setName("Move");
+           
+           creatureModel.attachChild(creatureStand);
+           creatureModel.attachChild(creatureMove);
+           creature = new AirborneCreature(player, id, creatureModel);
+        }
         
         creatureModel.setUserData("parentId", id);
         creatureModel.setUserData("modelType", creatureType);

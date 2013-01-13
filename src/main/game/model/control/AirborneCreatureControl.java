@@ -14,11 +14,13 @@ import com.jme3.export.Savable;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
+import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
 import com.jme3.scene.control.Control;
 import java.io.IOException;
 import main.game.Game;
+import main.game.action.Action;
 import main.game.algorithm.PathFinding;
 import main.game.model.creature.AirborneCreature;
 
@@ -32,10 +34,16 @@ public class AirborneCreatureControl extends AbstractControl implements Savable,
     /**
      * Properties
      */
+    private Node spatial;
+    private Spatial stand;
+    private Spatial move;
     private Game game;
     private AirborneCreature controllee;
-    private AnimChannel channel;
-    private AnimControl control;
+    private Action openAction;
+    private AnimChannel channelStand;
+    private AnimControl controlStand;
+    private AnimChannel channelMove;
+    private AnimControl controlMove;
     private double time = 0;
 
     /**
@@ -48,15 +56,23 @@ public class AirborneCreatureControl extends AbstractControl implements Savable,
     {
     }
 
-    public AirborneCreatureControl(Spatial spatial, Game game, AirborneCreature controllee)
+    public AirborneCreatureControl(Node spatial, Game game, AirborneCreature controllee)
     {
-        super.setSpatial(spatial);
+        this.stand = spatial.getChild("Stand");
+        this.move = spatial.getChild("Move");
+        super.setSpatial(stand);
+        //this.spatial = spatial;
         this.game = game;
         this.controllee = controllee;
-        control = spatial.getControl(AnimControl.class);
-        control.addListener(this);
-        channel = control.createChannel();
-        channel.setAnim("Stilstaand");
+        controlStand = stand.getControl(AnimControl.class);
+        controlStand.addListener(this);
+        channelStand = controlStand.createChannel();
+        channelStand.setAnim("Stilstaand");
+        
+        controlMove = move.getControl(AnimControl.class);
+        controlMove.addListener(this);
+        channelMove = controlMove.createChannel();
+        channelMove.setAnim("Move");
     }
 
     /**
@@ -143,10 +159,32 @@ public class AirborneCreatureControl extends AbstractControl implements Savable,
             channel.setLoopMode(LoopMode.DontLoop);
             channel.setSpeed(1f);
         }
+        else if(animName.equals("Move"))
+        {
+            channel.setAnim("Move", 0.50f);
+            channel.setLoopMode(LoopMode.DontLoop);
+            channel.setSpeed(1f);   
+        }
     }
 
     public void onAnimChange(AnimControl control, AnimChannel channel, String animName)
     {
         //throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public Spatial getStand() {
+        return stand;
+    }
+
+    public void setStand(Spatial stand) {
+        this.stand = stand;
+    }
+
+    public Spatial getMove() {
+        return move;
+    }
+
+    public void setMove(Spatial move) {
+        this.move = move;
     }
 }
