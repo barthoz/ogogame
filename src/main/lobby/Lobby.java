@@ -157,6 +157,7 @@ public class Lobby
         game.setSettings(settings);
         me.setGame(game);
         me.startListening();
+        me.startResponding();
         game.start();
     }
     

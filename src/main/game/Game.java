@@ -14,6 +14,7 @@ import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.bullet.util.CollisionShapeFactory;
 import com.jme3.collision.CollisionResults;
 import com.jme3.font.BitmapFont;
+import com.jme3.font.BitmapText;
 import com.jme3.input.KeyInput;
 import com.jme3.input.MouseInput;
 import com.jme3.input.controls.ActionListener;
@@ -455,6 +456,9 @@ public class Game extends SimpleApplication
         /**
          * Initialize GUI setup
          */
+        
+        initHud();
+        
         this.niftyDisplay = new NiftyJmeDisplay(assetManager, inputManager, audioRenderer, guiViewPort);
         this.nifty = niftyDisplay.getNifty();
 
@@ -829,6 +833,52 @@ public class Game extends SimpleApplication
             creature.getCreatureHeader().setText("Health: " + creature.getHealth() + "%");
             creature.getCreatureHeader().setLocalTranslation(cam.getScreenCoordinates(creature.getModel().getWorldTranslation().add(0, 20f, 0)).add(-1 * creature.getCreatureHeader().getLineWidth() / 2f, 0f, 0f));
         }
+        
+        /**
+         * Update hud info
+         */
+        
+        modeInfo.setText("Mode: " + (this.setModeDone ? "Get" : "Set, time left: " + (CONST_SET_MODE_TIME_LIMIT - (int) (this.countSetMode / 1000f))));
+        roundInfo.setText("Round number: " + this.round);
+        
+        // Count alive creatures
+        int alive = 0;
+        for (Creature creature : me.getCreatures())
+        {
+            if (creature.isIsAlive())
+            {
+                alive++;
+            }
+        }
+        
+        playerInfo.setText("Number of creatures left: " + alive);
+    }
+    
+    private BitmapText modeInfo;
+    private BitmapText roundInfo;
+    private BitmapText playerInfo;
+    
+    public void initHud()
+    {
+        this.modeInfo = new BitmapText(guiFont, false);
+        this.roundInfo = new BitmapText(guiFont, false);
+        this.playerInfo = new BitmapText(guiFont, false);
+        
+        this.modeInfo.setSize(guiFont.getCharSet().getRenderedSize() * 1.5f);
+        this.roundInfo.setSize(guiFont.getCharSet().getRenderedSize() * 1.5f);
+        this.playerInfo.setSize(guiFont.getCharSet().getRenderedSize() * 1.5f);
+        
+        this.modeInfo.setColor(ColorRGBA.Blue);
+        this.roundInfo.setColor(ColorRGBA.Blue);
+        this.playerInfo.setColor(ColorRGBA.Blue);
+        
+        this.modeInfo.setLocalTranslation(5f, 5f + modeInfo.getHeight(), 0f);
+        this.roundInfo.setLocalTranslation(5f, 10f + modeInfo.getHeight() + roundInfo.getHeight(), 0f);
+        this.playerInfo.setLocalTranslation(5f, 15f + modeInfo.getHeight() + roundInfo.getHeight() + playerInfo.getHeight(), 0f);
+        
+        guiNode.attachChild(modeInfo);
+        guiNode.attachChild(roundInfo);
+        guiNode.attachChild(playerInfo);
     }
 
     @Override
