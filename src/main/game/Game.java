@@ -382,7 +382,7 @@ public class Game extends SimpleApplication
      * Game state variables
      */
     private boolean started;
-    private boolean inSetMode = true;
+    private boolean inSetMode = false;
     private int round = 0;
     private int regenTime = 10;
     /**
@@ -619,8 +619,8 @@ public class Game extends SimpleApplication
      * Networking
      */
     
-    public boolean setModeSent = false;
-    public boolean getModeBlocked = true;
+    public boolean setModeSent = true;
+    public boolean getModeBlocked = false;
     
     private long countSetMode = 0;
     private long countGetMode = 0;
