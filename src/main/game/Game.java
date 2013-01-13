@@ -91,12 +91,21 @@ import main.lobby.Lobby;
 public class Game extends SimpleApplication
 {
     /**
+     * Networking
+     */
+    
+    private boolean quack = false;
+    
+    /**
      * While running
      */
+    
     private Object selectedObject = null;
+    
     /**
      * Setup
      */
+    
     private boolean isRunning = true;
     private ActionListener actionListener = new ActionListener()
     {
@@ -195,7 +204,8 @@ public class Game extends SimpleApplication
                     }
                     else if (modelType.equals("Duck"))
                     {
-                        world.findDuck().quack(quackAudio);
+                        quack = true;
+                        quack();
                     }
                 }
                 else
@@ -338,6 +348,7 @@ public class Game extends SimpleApplication
 
         }
     };
+    
     private AnalogListener analogListener = new AnalogListener()
     {
         public void onAnalog(String name, float value, float tpf)
@@ -365,12 +376,15 @@ public class Game extends SimpleApplication
             }
         }
     };
+    
     /**
      * Game identification
      */
+    
     private Game parent = this;
     private GameCredentials gameCredentials;
     private Lobby lobby;
+    
     /**
      * Game constants
      */
@@ -378,6 +392,7 @@ public class Game extends SimpleApplication
     public final static int CONST_SET_MODE_TIME_LIMIT = 10;
     public final static int CONST_INIT_RANGE_OF_SIGHT = 10;
     public final static int CONST_INIT_START_FOOD = 10;
+    
     /**
      * Game state variables
      */
@@ -385,12 +400,14 @@ public class Game extends SimpleApplication
     private boolean inSetMode = false;
     private int round = 0;
     private int regenTime = 10;
+    
     /**
      * Properties
      */
     private World world;
     private Player me;
     private List<Player> players;
+    
     /**
      * Terrain
      */
@@ -1073,6 +1090,11 @@ public class Game extends SimpleApplication
 
         this.world.setCells(cells);
     }
+    
+    public void quack()
+    {
+        this.world.findDuck().quack(quackAudio);
+    }
 
     /**
      * Getters & setters
@@ -1200,5 +1222,13 @@ public class Game extends SimpleApplication
     public BitmapFont getGuiFont()
     {
         return this.guiFont;
+    }
+
+    public boolean isQuack() {
+        return quack;
+    }
+
+    public void setQuack(boolean quack) {
+        this.quack = quack;
     }
 }

@@ -224,6 +224,12 @@ public class Client
                                             game.getModeBlocked = false;
                                         }
                                     }
+                                    else if (game.isQuack())
+                                    {
+                                        game.setQuack(false);
+                                        sendMessage = new MessageQuack();
+                                        sendMessage.setFromClientId(id);
+                                    }
                                     else
                                     {
                                         sendMessage = new MessagePassToken();
@@ -274,10 +280,9 @@ public class Client
                                     {
 
                                     }
-                                    else if (message instanceof MessagePlayerActions)
+                                    else if (message instanceof MessageQuack)
                                     {
-                                        // We have received actions from a player
-
+                                        game.quack();
                                     }
 
                                     // Pass message onto the next neighbour (unchanged)
@@ -291,6 +296,7 @@ public class Client
                                 {
                                     System.out.println("Client out: " + xstream.toXML(sendMessage));
                                 }
+                                
                                 sendPacket = new DatagramPacket(sendBuffer, sendBuffer.length, InetAddress.getByName(outNeighbour.getAddress()), Client.PORT);
                                 socket.send(sendPacket);
                             }
