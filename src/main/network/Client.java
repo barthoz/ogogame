@@ -45,7 +45,7 @@ public class Client
     private Client outNeighbour;
     
     private transient DatagramSocket socket;
-    private transient XStream xstream = new XStream();
+    //private transient XStream xstream = new XStream();
     private transient boolean isListening = false;
     private transient boolean isResponding = false;
     private transient Queue<Message> messageQueue = new LinkedList<Message>();
@@ -77,6 +77,7 @@ public class Client
             
             public void run()
             {                
+                XStream xstream = new XStream();
                 byte[] buffer = new byte[2048];
                 DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
 
@@ -107,6 +108,7 @@ public class Client
                         packet.setLength(buffer.length);
                         
                         // Handle message
+                        System.out.println("Client in (listening: " + strMessage);
                         Message message = (Message) xstream.fromXML(strMessage);
                         messageQueue.add(message);
                         /*if (message instanceof MessagePassToken || message instanceof MessageSetModeDone || message instanceof MessageLeaveGame || message instanceof MessagePlayerActions)
@@ -251,6 +253,8 @@ public class Client
             
             public void run()
             {
+                XStream xstream = new XStream();
+                
                 // Initialize set turns
                 for (Player p : game.getPlayers())
                 {
