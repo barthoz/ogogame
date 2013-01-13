@@ -69,14 +69,16 @@ public class Lobby
         this.startGameJFrame = new StartGameJFrame(this);
         lobbyFrame.setVisible(true);
         
-        try {
-            GameCredentials testGame = new GameCredentials(0, "test", "hostnamehere", NetworkInterface.getByInetAddress(Inet4Address.getLocalHost()).getInterfaceAddresses().get(0).getAddress().toString().replaceFirst("/", ""));
+        this.initialServer = new InitialServer(this);
+        this.initialClient = new InitialClient(this);
+        
+        /*try {
+            //GameCredentials testGame = new GameCredentials(0, "test", "hostnamehere", NetworkInterface.getByInetAddress(Inet4Address.getLocalHost()).getInterfaceAddresses().get(0).getAddress().toString().replaceFirst("/", ""));
             
-            Game game = new Game(this, testGame);
-            game.start();
+            //Game game = new Game(this, testGame);
+            //game.start();
             
-            this.initialServer = new InitialServer(this);
-            this.initialClient = new InitialClient(this);
+            
             //this.initialServer.broadcastGame(testGame);
             //this.initialServer.listenToClients();
             //this.initialClient.listenToServers();
@@ -85,7 +87,7 @@ public class Lobby
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         } catch (UnknownHostException ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        }*/
     }
     
     /**

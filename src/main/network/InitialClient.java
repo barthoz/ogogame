@@ -202,9 +202,10 @@ public class InitialClient
                             DatagramPacket sendPacket = new DatagramPacket(sendMsg, sendMsg.length, packet.getAddress(), InitialServer.PORT);
                             socket.send(sendPacket);
                         }
-                        if (message instanceof MessageJoinApproved)
+                        else if (message instanceof MessageJoinApproved)
                         {
                             me = ((MessageJoinApproved) message).getClient();
+                            System.out.println("Join approved");
                         }
                         else if (message instanceof MessageJoinDisapproved)
                         {
@@ -262,15 +263,6 @@ public class InitialClient
         });
         
         listener.start();
-        
-        try
-        {
-            Thread.sleep(1000);
-        }
-        catch (InterruptedException ex)
-        {
-            Logger.getLogger(InitialClient.class.getName()).log(Level.SEVERE, null, ex);
-        }
         
         /**
          * Send join request
