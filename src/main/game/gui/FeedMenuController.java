@@ -8,30 +8,46 @@ import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
+import com.thoughtworks.xstream.XStream;
 import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.screen.Screen;
 import de.lessvoid.nifty.screen.ScreenController;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import main.exception.ActionNotEnabledException;
 import main.game.Game;
+import main.game.action.SpawnAction;
 
 /**
  *
  * @author s116861
  */
-public class HudController  extends AbstractAppState implements ScreenController {
+public class FeedMenuController  extends AbstractAppState implements ScreenController {
  
   private Nifty nifty;
   private Screen screen;
   private SimpleApplication app;
   private Game game;
  
-  /** custom methods */ 
+  /** custom methods */
+  public void feedCreature(int numFood)
+  {
+    game.feedSelectedCreature(numFood);
+    nifty.gotoScreen("hud");
+  }
+  
+  public void cancel()
+  {
+      System.out.println("cancelled");
+      nifty.gotoScreen("hud");
+  }
  
-  public HudController(Game game)
+  public FeedMenuController(Game game)
   {
       this.game = game;
   }
   
-  public HudController(String data) { 
+  public FeedMenuController(String data) { 
     /** Your custom constructor, can accept arguments */ 
   } 
  
@@ -39,7 +55,7 @@ public class HudController  extends AbstractAppState implements ScreenController
  
   public void bind(Nifty nifty, Screen screen) {
     this.nifty = nifty;
-    this.screen = screen;
+    this.screen = screen;    
   }
  
   public void onStartScreen() { }

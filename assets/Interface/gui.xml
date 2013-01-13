@@ -7,20 +7,38 @@
   <useStyles filename="nifty-default-styles.xml" />
     
     <screen id="hud" controller="main.game.gui.HudController">
-        <!--<layer id="layer1" backgroundColor="#0000" childLayout="center">
-            <panel id="panel_actions" height="25%" width="25%" align="right" valign="bottom" backgroundColor="#ffffff" childLayout="center" visibleToMouse="true">
-                <control name="button" label="Move" id="StartButton" align="center" valign="center" visibleToMouse="true" >
-                    <interact onClick="test(hud)"/>
-                </control>
-                <control name="button" label="Eat" id="StartButton" align="center" valign="center" visibleToMouse="true" >
-                    <interact onClick="test(hud)"/>
-                </control>
-                <control name="button" label="Attack" id="StartButton" align="center" valign="center" visibleToMouse="true" >
-                    <interact onClick="test(hud)"/>
+        
+    </screen>
+  
+    <screen id="feedMenu" controller="main.game.gui.FeedMenuController">
+        <layer id="layer1" backgroundColor="#0000" childLayout="vertical">
+            <panel id="panel_actions0" height="20%" width="25%" align="right" valign="bottom" backgroundColor="#ffffff" childLayout="center" visibleToMouse="true">
+                <control name="button" label="Feed 1 food" id="FeedCreature1" align="center" valign="center" visibleToMouse="true" >
+                    <interact onClick="feedCreature(1)"/>
                 </control>
             </panel>
-        </layer>-->
-  </screen>
+            <panel id="panel_actions1" height="20%" width="25%" align="right" valign="bottom" backgroundColor="#ffffff" childLayout="center" visibleToMouse="true">
+                <control name="button" label="Feed 2 food" id="FeedCreature2" align="center" valign="center" visibleToMouse="true" >
+                    <interact onClick="feedCreature(2)"/>
+                </control>
+            </panel>
+            <panel id="panel_actions2" height="20%" width="25%" align="right" valign="bottom" backgroundColor="#ffffff" childLayout="center" visibleToMouse="true">
+                <control name="button" label="Feed 3 food" id="FeedCreature3" align="center" valign="center" visibleToMouse="true" >
+                    <interact onClick="feedCreature(3)"/>
+                </control>
+            </panel>
+            <panel id="panel_actions3" height="20%" width="25%" align="right" valign="bottom" backgroundColor="#ffffff" childLayout="center" visibleToMouse="true">
+                <control name="button" label="Feed 4 food" id="FeedCreature4" align="center" valign="center" visibleToMouse="true" >
+                    <interact onClick="feedCreature(4)"/>
+                </control>
+            </panel>
+            <panel id="panel_actions4" height="20%" width="25%" align="right" valign="bottom" backgroundColor="#ffffff" childLayout="center" visibleToMouse="true">
+                <control name="button" label="Cancel" id="CancelFeedMenu" align="center" valign="center" visibleToMouse="true" >
+                    <interact onClick="cancel()"/>
+                </control>
+            </panel>
+        </layer>
+    </screen>
   
   <screen id="spawnMenu" controller="main.game.gui.SpawnMenuController">
         <layer id="layer1" backgroundColor="#0000" childLayout="vertical">

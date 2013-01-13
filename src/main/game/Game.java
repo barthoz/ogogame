@@ -68,6 +68,7 @@ import main.game.action.creature.EatAction;
 import main.game.action.creature.FleeAction;
 import main.game.action.creature.MoveAction;
 import main.game.action.creature.PickupFoodAction;
+import main.game.gui.FeedMenuController;
 import main.game.gui.HudController;
 import main.game.gui.SpawnMenuController;
 import main.game.model.Base;
@@ -160,15 +161,16 @@ public class Game extends SimpleApplication
                         
                         if (creature.getPlayer().equals(me))
                         {
+                            nifty.gotoScreen("feedMenu");
                             selectedObject = creature;
                             creature.getModel().setMaterial(mat);
+                            
+                            Circle circle = new Circle(creature.getActionRadius() * 32, 100);
+                            Geometry circleGeo = new Geometry("radiusCircle", circle);
+                            circleGeo.setLocalTranslation(creature.getLocation().getWorldCoordinates());
+                            circleGeo.setMaterial(mat);
+                            rootNode.attachChild(circleGeo);
                         }
-                        
-                        Circle circle = new Circle(creature.getActionRadius() * 32, 100);
-                        Geometry circleGeo = new Geometry("radiusCircle", circle);
-                        circleGeo.setLocalTranslation(creature.getLocation().getWorldCoordinates());
-                        circleGeo.setMaterial(mat);
-                        rootNode.attachChild(circleGeo);
                     }
                     else if (modelType.equals(SeaCreature.CODE_ID))
                     {
@@ -176,15 +178,16 @@ public class Game extends SimpleApplication
                         
                         if (creature.getPlayer().equals(me))
                         {
+                            nifty.gotoScreen("feedMenu");
                             selectedObject = creature;
                             creature.getModel().setMaterial(mat);
+                            
+                            Circle circle = new Circle(creature.getActionRadius() * 32, 100);
+                            Geometry circleGeo = new Geometry("radiusCircle", circle);
+                            circleGeo.setLocalTranslation(creature.getLocation().getWorldCoordinates());
+                            circleGeo.setMaterial(mat);
+                            rootNode.attachChild(circleGeo);
                         }
-                        
-                        Circle circle = new Circle(creature.getActionRadius() * 32, 100);
-                        Geometry circleGeo = new Geometry("radiusCircle", circle);
-                        circleGeo.setLocalTranslation(creature.getLocation().getWorldCoordinates());
-                        circleGeo.setMaterial(mat);
-                        rootNode.attachChild(circleGeo);
                     }
                     else if (modelType.equals(AirborneCreature.CODE_ID))
                     {
@@ -192,15 +195,16 @@ public class Game extends SimpleApplication
                         
                         if (creature.getPlayer().equals(me))
                         {
+                            nifty.gotoScreen("feedMenu");
                             selectedObject = creature;
                             creature.getModel().setMaterial(mat);
+                            
+                            Circle circle = new Circle(creature.getActionRadius() * 32, 100);
+                            Geometry circleGeo = new Geometry("radiusCircle", circle);
+                            circleGeo.setLocalTranslation(creature.getLocation().getWorldCoordinates());
+                            circleGeo.setMaterial(mat);
+                            rootNode.attachChild(circleGeo);
                         }
-                        
-                        Circle circle = new Circle(creature.getActionRadius() * 32, 100);
-                        Geometry circleGeo = new Geometry("radiusCircle", circle);
-                        circleGeo.setLocalTranslation(creature.getLocation().getWorldCoordinates());
-                        circleGeo.setMaterial(mat);
-                        rootNode.attachChild(circleGeo);
                     }
                     else if (modelType.equals("Duck"))
                     {
@@ -309,32 +313,19 @@ public class Game extends SimpleApplication
                                 /**
                                  * PickupFoodAction
                                  */
+                                
                                 PickupFoodAction act = new PickupFoodAction(me, (Creature) selectedObject, world.findFoodSourceById((Integer) results.getClosestCollision().getGeometry().getParent().getUserData("parentId")));
                                 me.registerAction(act);
-                                
-                                /*try
-                                {
-                                    act.performAction(parent);
-                                } catch (ActionNotEnabledException ex)
-                                {
-                                    Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
-                                }*/
                             }
                         } else
                         {
                             /**
                              * MoveAction
                              */
+                            
                             MoveAction act = new MoveAction(me, (Creature) selectedObject, selectedCell);
                             me.registerAction(act);
-                            /*try
-                            {
-                                act.performAction(parent);
-                            } catch (ActionNotEnabledException ex)
-                            {
-                                Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
-                            }*/
-
+                            
                             // De-select creature
                             Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
                             mat.setColor("Color", ColorRGBA.White);
@@ -479,7 +470,7 @@ public class Game extends SimpleApplication
         this.niftyDisplay = new NiftyJmeDisplay(assetManager, inputManager, audioRenderer, guiViewPort);
         this.nifty = niftyDisplay.getNifty();
 
-        nifty.fromXml("Interface/gui.xml", "hud", new HudController(this), new SpawnMenuController(this));
+        nifty.fromXml("Interface/gui.xml", "hud", new HudController(this), new SpawnMenuController(this), new FeedMenuController(this));
         guiViewPort.addProcessor(niftyDisplay);
 
         nifty.gotoScreen("hud");
@@ -606,6 +597,17 @@ public class Game extends SimpleApplication
         }*/
     }
 
+    /**
+     * Feed the creature that is currently selected.
+     * 
+     * @Pre this.selectedObject instanceof Creature
+     */
+    public void feedSelectedCreature(int numFood)
+    {
+        EatAction act = new EatAction(me, ((Creature) this.selectedObject), numFood);
+        me.registerAction(act);
+    }
+    
     /**
      * Initialize key mappings
      */
@@ -836,7 +838,7 @@ public class Game extends SimpleApplication
          * Update hud info
          */
         
-        modeInfo.setText("Mode: " + (!this.inSetMode ? "Get" : "Set, time left: " + (CONST_SET_MODE_TIME_LIMIT - (int) (this.countSetMode / 1000f))));
+        modeInfo.setText("Mode: " + (!this.inSetMode ? "Get (" + (10 - (int) (this.countGetMode / 1000f)) + "s left)" : "Set, time left: " + (CONST_SET_MODE_TIME_LIMIT - (int) (this.countSetMode / 1000f)) + "s"));
         roundInfo.setText("Round number: " + this.round);
         
         // Count alive creatures
@@ -849,7 +851,7 @@ public class Game extends SimpleApplication
             }
         }
         
-        playerInfo.setText("Number of creatures left: " + alive);
+        playerInfo.setText("Creatures: " + alive + " / Food: " + me.getFood());
     }
     
     private BitmapText modeInfo;
@@ -866,9 +868,9 @@ public class Game extends SimpleApplication
         this.roundInfo.setSize(guiFont.getCharSet().getRenderedSize() * 1.5f);
         this.playerInfo.setSize(guiFont.getCharSet().getRenderedSize() * 1.5f);
         
-        this.modeInfo.setColor(ColorRGBA.Blue);
-        this.roundInfo.setColor(ColorRGBA.Blue);
-        this.playerInfo.setColor(ColorRGBA.Blue);
+        this.modeInfo.setColor(ColorRGBA.White);
+        this.roundInfo.setColor(ColorRGBA.White);
+        this.playerInfo.setColor(ColorRGBA.White);
         
         this.modeInfo.setLocalTranslation(5f, 5f + modeInfo.getHeight(), 0f);
         this.roundInfo.setLocalTranslation(5f, 10f + modeInfo.getHeight() + roundInfo.getHeight(), 0f);
