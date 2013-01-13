@@ -645,9 +645,11 @@ public class Game extends SimpleApplication
             {
                 System.out.println("Set mode done");
                 this.inSetMode = false;
+                this.countSetMode = 0;
                 this.countGetMode = 0;
                 this.getModeBlocked = true;
                 this.getModePerformed = false;
+                this.disableActions();
             }
         }
         else
@@ -658,7 +660,6 @@ public class Game extends SimpleApplication
                 if (!this.getModePerformed)
                 {
                     this.getModePerformed = true;
-                    this.disableActions();
                     
                     /**
                      * Perform actions
@@ -749,6 +750,7 @@ public class Game extends SimpleApplication
                     this.enableActions();
                     this.inSetMode = true;
                     this.countSetMode = 0;
+                    this.countGetMode = 0;
                     this.setModeSent = false;
                 }
             }
