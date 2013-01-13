@@ -133,6 +133,7 @@ public class Lobby
            
            GameCredentials gameCredentials = new GameCredentials(0, gameName, username, address);
            Client me = new Client(0, address, username);
+           this.initialClient.stopListeningtoJoinServer();
            this.initialServer.broadcastGame(gameCredentials, me);
            this.initialServer.listenToClients();
         } catch (SocketException ex) {
@@ -142,7 +143,7 @@ public class Lobby
         }
     }
     
-    public void startGame(Client me, List<Client> tokenRing, GameCredentials gameCredentials)
+    public void startGame(Client me, List<Client> tokenRing, GameCredentials gameCredentials, boolean initialHost)
     {
         System.out.println("Server started!");
         this.me = me;
@@ -157,7 +158,7 @@ public class Lobby
         game.setSettings(settings);
         me.setGame(game);
         me.startListening();
-        me.startResponding();
+        me.startResponding(initialHost);
         game.start();
     }
     

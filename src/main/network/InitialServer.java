@@ -371,21 +371,7 @@ public class InitialServer
                                 }
                             }
 
-                            MessagePassToken msgInitialToken = new MessagePassToken();
-                            msgInitialToken.setFromClientId(me.getId());
-
-                            sendBuffer = xstream.toXML(msgInitialToken).getBytes();
-
-                            try {
-                                DatagramPacket sendPacket = new DatagramPacket(sendBuffer, sendBuffer.length, InetAddress.getByName(me.getOutNeighbour().getAddress()), Client.PORT);
-                                socket.send(sendPacket);
-                            } catch (UnknownHostException ex) {
-                                Logger.getLogger(InitialServer.class.getName()).log(Level.SEVERE, null, ex);
-                            } catch (IOException ex) {
-                                Logger.getLogger(InitialServer.class.getName()).log(Level.SEVERE, null, ex);
-                            }
-
-                            lobby.startGame(me, clients, serverBroadcaster.getGameCredentials());
+                            lobby.startGame(me, clients, serverBroadcaster.getGameCredentials(), true);
                         }
                         else
                         {

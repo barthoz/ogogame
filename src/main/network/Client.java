@@ -243,7 +243,7 @@ public class Client
         this.isListening = false;
     }
     
-    public void startResponding()
+    public void startResponding(boolean initialHost)
     {
         this.isResponding = true;
         
@@ -386,6 +386,25 @@ public class Client
         });
         
         responding.start();
+        
+        XStream xstream =  new XStream();
+        
+        if (initialHost)
+        {
+            MessagePassToken msgInitialToken = new MessagePassToken();
+            msgInitialToken.setFromClientId(this.id);
+
+            byte[] sendBuffer = xstream.toXML(msgInitialToken).getBytes();
+
+            try {
+                DatagramPacket sendPacket = new DatagramPacket(sendBuffer, sendBuffer.length, InetAddress.getByName(this.outNeighbour.getAddress()), Client.PORT);
+                socket.send(sendPacket);
+            } catch (UnknownHostException ex) {
+                Logger.getLogger(InitialServer.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IOException ex) {
+                Logger.getLogger(InitialServer.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
     }
     
     public void stopResponding()

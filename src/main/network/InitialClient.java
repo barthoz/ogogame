@@ -44,6 +44,7 @@ public class InitialClient
     private DatagramSocket socket = null;
     private Client me;
     private boolean joiningServer = false;
+    private boolean listening = false;
     
     private boolean serverStarted;
     private List<Client> tokenRing;
@@ -163,15 +164,21 @@ public class InitialClient
         listening.start();
     }
     
+    public void stopListeningtoJoinServer()
+    {
+        this.listening = false;
+    }
+    
     public void listenToJoinServer()
     {
+        this.listening = true;
+        
         /**
          * Open thread that listens to incoming messages
          */
         
         Thread listener = new Thread(new Runnable()
         {
-            private boolean listening = true;
             
             public void run()
             {                
@@ -180,7 +187,7 @@ public class InitialClient
                 
                 Client me = null;
                 
-                while (this.listening)
+                while (listening)
                 {
                     try
                     {
@@ -206,7 +213,7 @@ public class InitialClient
                         else if (message instanceof MessageJoinDisapproved)
                         {
                             System.out.println("Join disapproved: " + ((MessageJoinDisapproved) message).getReason());
-                            this.stopListening();
+                            stopListeningtoJoinServer();
                         }
                         else if (message instanceof MessagePlayerJoined)
                         {
@@ -226,8 +233,8 @@ public class InitialClient
                                 }
                             }
                             
-                            lobby.startGame(me, msgStartGame.getTokenRing(), msgStartGame.getGameCredentials());
-                            this.stopListening();
+                            lobby.startGame(me, msgStartGame.getTokenRing(), msgStartGame.getGameCredentials(), false);
+                            stopListeningtoJoinServer();
                         }
                         
                         packet.setLength(buffer.length);
@@ -250,11 +257,6 @@ public class InitialClient
                         Logger.getLogger(InitialClient.class.getName()).log(Level.SEVERE, null, ex);
                     }*/
                 }
-            }
-            
-            private void stopListening()
-            {
-                this.listening = false;
             }
         });
         
@@ -395,7 +397,7 @@ public class InitialClient
                                 }
                             }
                             
-                            lobby.startGame(me, msgStartGame.getTokenRing(), msgStartGame.getGameCredentials());
+                            lobby.startGame(me, msgStartGame.getTokenRing(), msgStartGame.getGameCredentials(), false);
                             this.stopListening();
                         }
                         
@@ -563,7 +565,7 @@ public class InitialClient
 
                                         joiningServer = false;
 
-                                        lobby.startGame(me, tokenRing, msgStartGame.getGameCredentials());
+                                        lobby.startGame(me, tokenRing, msgStartGame.getGameCredentials(), false);
 
                                         break;
                                     }
