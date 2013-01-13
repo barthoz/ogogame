@@ -167,6 +167,12 @@ public class InitialServer
                                     System.out.println("Added client! Details:");
                                     clients.add(client);
                                     lobby.addPlayer(client.getUsername());
+                                    
+                                    try {
+                                        Thread.sleep(500);
+                                    } catch (InterruptedException ex) {
+                                        Logger.getLogger(InitialServer.class.getName()).log(Level.SEVERE, null, ex);
+                                    }
 
                                     // Success, so send message back to client with success
                                     MessageJoinApproved messageApproved = new MessageJoinApproved(client);
