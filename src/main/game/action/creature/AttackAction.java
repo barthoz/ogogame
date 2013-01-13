@@ -78,7 +78,9 @@ public class AttackAction extends CreatureAction
     public boolean isEnabled(Game game)
     {
         if(destination.creatureAllowed(subject)){
-            return true;
+            if(!player.getCreatures().contains(opponent)){
+                return true;
+            }
         }
         return false;
         
