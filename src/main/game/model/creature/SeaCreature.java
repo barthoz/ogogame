@@ -4,6 +4,7 @@
  */
 package main.game.model.creature;
 
+import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import main.game.Player;
 import main.game.model.control.SeaCreatureControl;
@@ -24,7 +25,7 @@ public class SeaCreature extends Creature
      * Constructor
      */
     
-    public SeaCreature(Player player, String id, Spatial model)
+    public SeaCreature(Player player, String id, Node model)
     {
         super(player, id, model);
         this.controller = new SeaCreatureControl(model, player.getGame(), this);

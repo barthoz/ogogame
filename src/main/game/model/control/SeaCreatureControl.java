@@ -14,6 +14,7 @@ import com.jme3.export.Savable;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
+import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
 import com.jme3.scene.control.Control;
@@ -52,12 +53,13 @@ public class SeaCreatureControl extends AbstractControl implements Savable, Clon
      * Optional custom constructor with arguments that can init custom fields.
      * Note: you cannot modify the spatial here yet!
      */
-    public SeaCreatureControl(Spatial spatial, Game game, SeaCreature controllee)
+    public SeaCreatureControl(Node spatial, Game game, SeaCreature controllee)
     {
+        Spatial s = spatial.getChild("Move");
         super.setSpatial(spatial);
         this.game = game;
         this.controllee = controllee;
-        control = spatial.getControl(AnimControl.class);
+        control = s.getControl(AnimControl.class);
         control.addListener(this);
         channel = control.createChannel();
         channel.setAnim("Move");
