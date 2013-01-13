@@ -118,6 +118,15 @@ public class MoveAction extends CreatureAction
                     
                 }
                 else if (subject instanceof AirborneCreature){
+                    if (!((AirborneCreature) subject).isAirborne())
+                    {
+                        AirborneCreatureControl c = (AirborneCreatureControl) subject.getController();
+                        Node s = (Node) c.getSpatial();
+                        s.detachChild(c.getStand());
+                        s.attachChild(c.getMove());
+                        c.setSpatial(null);
+                        c.setSpatial(s);
+                    }
                     track.setDirectionType(MotionEvent.Direction.LookAt);
                     track.setLookAt(airDestination, Vector3f.UNIT_Y);
                 }

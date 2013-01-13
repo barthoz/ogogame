@@ -44,10 +44,7 @@ public class PathFinding
         if (creature instanceof AirborneCreature)
         {
             AirborneCreature airCreature = (AirborneCreature) creature;
-            if(!airCreature.isAirborne())
-            {
-                airCreature.takeOff();
-            }
+            airCreature.takeOff();
         }
         
         if (!to.creatureAllowed(creature))
