@@ -168,12 +168,6 @@ public class InitialServer
                                     clients.add(client);
                                     lobby.addPlayer(client.getUsername());
                                     
-                                    // First ping client
-                                    byte[] pingBuffer = xstream.toXML(new MessagePing()).getBytes();
-                                    DatagramPacket sendPingPacket = new DatagramPacket(pingBuffer, pingBuffer.length, packet.getAddress(), Client.PORT);
-                                    System.out.println("Pinging...");
-                                    socket.send(sendPingPacket);
-                                    
                                     // Success, so send message back to client with success
                                     MessageJoinApproved messageApproved = new MessageJoinApproved(client);
                                     String strMessageApproved = xstream.toXML(messageApproved);
