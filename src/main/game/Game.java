@@ -375,7 +375,7 @@ public class Game extends SimpleApplication
      * Game constants
      */
     public final static int CONST_CREATURES_LIMIT = 10;
-    public final static int CONST_SET_MODE_TIME_LIMIT = 4;
+    public final static int CONST_SET_MODE_TIME_LIMIT = 10;
     public final static int CONST_INIT_RANGE_OF_SIGHT = 10;
     public final static int CONST_INIT_START_FOOD = 10;
     /**
@@ -619,15 +619,12 @@ public class Game extends SimpleApplication
      * Networking
      */
     
-    public boolean getModeDone = false;
-    public boolean setModeDone = false;
     public boolean setModeSent = false;
+    public boolean getModeBlocked = true;
     
     private long countSetMode = 0;
     private long countGetMode = 0;
-    //private boolean inSetMode = true;
-    private boolean blocked = false;
-    public boolean getModeBlocked = true;
+    private boolean getModePerformed = false;
     
     /**
      * Perform the update loop.
@@ -639,30 +636,30 @@ public class Game extends SimpleApplication
     {
         System.out.println(this.countSetMode + " - " + tpf + " - " + this.countGetMode);
         
-        if (!setModeDone)
+        if (this.inSetMode)
         {
+            // SET-mode
             this.countSetMode += tpf * 1000;
-
+            
             if (countSetMode > CONST_SET_MODE_TIME_LIMIT * 1000)
             {
                 System.out.println("Set mode done");
+                this.inSetMode = false;
+                this.countGetMode = 0;
                 this.getModeBlocked = true;
-                //this.inSetMode = false;
-                this.setModeDone = true;
-                this.countSetMode = 0;
+                this.getModePerformed = false;
             }
         }
         else
         {
-            if (!getModeBlocked)
+            // GET-mode
+            if (!this.getModeBlocked)
             {
-                if (!blocked)
+                if (!this.getModePerformed)
                 {
-                    blocked = true;
-                    System.out.println("Begin get mode");
-                    disableActions();
-                    this.countGetMode = 0;
-
+                    this.getModePerformed = true;
+                    this.disableActions();
+                    
                     /**
                      * Perform actions
                      */
@@ -742,35 +739,17 @@ public class Game extends SimpleApplication
                             }
                         }
                     }
-                    /*for (Player player : players)
-                    {
-                        for (Action action : player.getActions())
-                        {
-                            try {
-                                action.performAction(parent);
-                            } catch (ActionNotEnabledException ex) {
-                                Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
-                            }
-                        }
-
-                        player.getActions().clear();
-                    }*/
                 }
-
+                
                 this.countGetMode += tpf * 1000;
-
+            
                 if (this.countGetMode > 10000)
                 {
-                    /**
-                     * Get mode done
-                     */
-                    System.out.println("End get mode");
-                    System.out.println("Begin set mode");
+                    System.out.println("Get mode done.");
+                    this.enableActions();
                     this.inSetMode = true;
-                    this.setModeDone = false;
+                    this.countSetMode = 0;
                     this.setModeSent = false;
-                    blocked = false;
-                    enableActions();
                 }
             }
         }
@@ -838,7 +817,7 @@ public class Game extends SimpleApplication
          * Update hud info
          */
         
-        modeInfo.setText("Mode: " + (this.setModeDone ? "Get" : "Set, time left: " + (CONST_SET_MODE_TIME_LIMIT - (int) (this.countSetMode / 1000f))));
+        modeInfo.setText("Mode: " + (!this.inSetMode ? "Get" : "Set, time left: " + (CONST_SET_MODE_TIME_LIMIT - (int) (this.countSetMode / 1000f))));
         roundInfo.setText("Round number: " + this.round);
         
         // Count alive creatures

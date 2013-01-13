@@ -147,6 +147,7 @@ public class Client
         Thread responding = new Thread(new Runnable()
         {
             private Map<Integer, Boolean> setModeDoneMap = new HashMap<Integer, Boolean>();
+            private boolean setModeDoneMessageSent = false;
             
             public void run()
             {
@@ -186,7 +187,7 @@ public class Client
                                     // We have the token, create our MessagePlayerActions or MessageLeaveGame message here.
 
                                     // Check whether our set mode is done
-                                    if (game.setModeDone && !game.setModeSent)
+                                    if (!game.isInSetMode() && !game.setModeSent)
                                     {
                                         // Send message to all players that our set mode is done
                                         game.setModeSent = true;
@@ -237,8 +238,8 @@ public class Client
                                                 setModeDoneMap.put(id, false);
                                             }
 
+                                            // unblock get turn
                                             game.getModeBlocked = false;
-                                            game.setModeSent = false;
                                         }
                                     }
                                     else if (message instanceof MessageLeaveGame)
