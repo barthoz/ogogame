@@ -109,7 +109,7 @@ public class Game extends SimpleApplication
             /**
              * [RIGHT-CLICK] Select creature, base
              */
-            if (!keyPressed && name.equals("RightClick"))
+            if (actionsEnabled && !keyPressed && name.equals("RightClick"))
             {
                 Vector2f click2d = inputManager.getCursorPosition();
                 Vector3f click3d = cam.getWorldCoordinates(new Vector2f(click2d.x, click2d.y), 0f).clone();
@@ -222,7 +222,7 @@ public class Game extends SimpleApplication
             /**
              * [LEFT-CLICK while nothing selected]
              */
-            if (!keyPressed && name.equals("Select") && selectedObject == null)
+            if (actionsEnabled && !keyPressed && name.equals("Select") && selectedObject == null)
             {
                 Vector2f click2d = inputManager.getCursorPosition();
                 Vector3f click3d = cam.getWorldCoordinates(new Vector2f(click2d.x, click2d.y), 0f).clone();
@@ -243,7 +243,7 @@ public class Game extends SimpleApplication
             } /**
              * [LEFT-CLICK while something selected] Select terrain, food source
              */
-            else if (!keyPressed && name.equals("Select") && selectedObject != null)
+            else if (actionsEnabled && !keyPressed && name.equals("Select") && selectedObject != null)
             {
                 // Get rid of radius circle if it is there
                 if (rootNode.getChild("radiusCircle") != null)
@@ -656,6 +656,7 @@ public class Game extends SimpleApplication
                 {
                     blocked = true;
                     System.out.println("Begin get mode");
+                    disableActions();
                     this.countGetMode = 0;
 
                     /**
@@ -765,6 +766,7 @@ public class Game extends SimpleApplication
                     this.setModeDone = false;
                     this.setModeSent = false;
                     blocked = false;
+                    enableActions();
                 }
             }
         }
@@ -867,12 +869,16 @@ public class Game extends SimpleApplication
         this.started = false;
     }
 
+    private boolean actionsEnabled = true;
+    
     private void disableActions()
     {
+        this.actionsEnabled = false;
     }
 
     private void enableActions()
     {
+        this.actionsEnabled = true;
     }
 
     private void nextRound()
