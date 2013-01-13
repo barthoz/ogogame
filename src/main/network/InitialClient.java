@@ -168,6 +168,8 @@ public class InitialClient
      */
     public void joinGame(GameCredentials gameCredentials, String username)
     {
+        final GameCredentials gameCredentialsFinal = gameCredentials;
+        final String usernameFinal = username;
         /**
          * Open thread that listens to incoming messages
          */
@@ -179,6 +181,36 @@ public class InitialClient
             
             public void run()
             {
+                Thread sendRequest = new Thread(new Runnable()
+                {
+                    public void run()
+                    {
+                       /**
+                        * Send join request
+                        */
+
+                        try
+                        {
+                           InetAddress address = InetAddress.getByName(gameCredentialsFinal.getInitialHostIp());
+                           MessageJoinRequest msgJoinReq = new MessageJoinRequest(usernameFinal);
+                           String reqstrMsg = xstream.toXML(msgJoinReq);
+                           byte[] reqMessage = reqstrMsg.getBytes();
+
+                           System.out.println("Client out: " + reqstrMsg);
+                           DatagramPacket reqPacket = new DatagramPacket(reqMessage, reqMessage.length, address, InitialServer.PORT);
+                           socket.send(reqPacket);
+                        }   
+                        catch (UnknownHostException ex)
+                        {
+                           Logger.getLogger(InitialClient.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                        catch (IOException ex)
+                        {
+                           Logger.getLogger(InitialClient.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+                });
+                
                 byte[] buffer = new byte[2048];
                 DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
                 
@@ -188,6 +220,12 @@ public class InitialClient
                 {
                     try
                     {
+                        if (!hasSentRequest)
+                        {
+                            sendRequest.start();
+                            hasSentRequest = true;
+                        }
+                        
                         socket.receive(packet);
                         String strMessage = new String(buffer, 0, packet.getLength());
                         Message message = (Message) xstream.fromXML(strMessage);
@@ -263,30 +301,6 @@ public class InitialClient
         });
         
         listener.start();
-        
-        /**
-         * Send join request
-         */
-        
-        try
-        {
-            InetAddress address = InetAddress.getByName(gameCredentials.getInitialHostIp());
-            MessageJoinRequest msgJoinReq = new MessageJoinRequest(username);
-            String reqstrMsg = xstream.toXML(msgJoinReq);
-            byte[] reqMessage = reqstrMsg.getBytes();
-
-            System.out.println("Client out: " + reqstrMsg);
-            DatagramPacket reqPacket = new DatagramPacket(reqMessage, reqMessage.length, address, InitialServer.PORT);
-            socket.send(reqPacket);
-        }   
-        catch (UnknownHostException ex)
-        {
-            Logger.getLogger(InitialClient.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        catch (IOException ex)
-        {
-            Logger.getLogger(InitialClient.class.getName()).log(Level.SEVERE, null, ex);
-        }
     }
         
         
