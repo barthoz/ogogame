@@ -37,6 +37,8 @@ public class FoodSource
         this.hasFood = true;
         this.roundLastEaten = -1;
         this.controller = new FoodSourceControl(model, game, this);
+        
+        this.location.setFoodSource(this);
     }
 
     /**

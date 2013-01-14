@@ -13,6 +13,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 import main.game.World;
+import main.game.model.Base;
+import main.game.model.FoodSource;
 
 /**
  *
@@ -33,6 +35,9 @@ public abstract class Cell
     private Vector3f worldCoordinates;
     private List<Creature> occupants = new ArrayList<Creature>();
     private List<Creature> airborneOccupants = new ArrayList<Creature>();
+    
+    private Base base = null;
+    private FoodSource foodSource = null;
 
     /**
      * Constructor
@@ -303,5 +308,21 @@ public abstract class Cell
 
     public void setWorld(World world) {
         this.world = world;
+    }
+
+    public Base getBase() {
+        return base;
+    }
+
+    public void setBase(Base base) {
+        this.base = base;
+    }
+
+    public FoodSource getFoodSource() {
+        return foodSource;
+    }
+
+    public void setFoodSource(FoodSource foodSource) {
+        this.foodSource = foodSource;
     }
 }

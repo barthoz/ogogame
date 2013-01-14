@@ -25,6 +25,7 @@ public abstract class Creature
     public final static int TYPE_LAND = 0;
     public final static int TYPE_SEA = 1;
     public final static int TYPE_AIR = 2;
+    
     /**
      * Properties
      */
@@ -38,7 +39,7 @@ public abstract class Creature
     protected boolean isAlive = true;
     protected int roundDied = -1;
     protected int rangeOfSight = Game.CONST_INIT_RANGE_OF_SIGHT;
-    protected int actionRadius = 10;
+    protected int actionRadius = 20;
     protected boolean inFight = false;
     /**
      * tweakers, possible define a function to give more dynamic changes

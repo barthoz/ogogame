@@ -98,66 +98,69 @@ public class AttackAction extends CreatureAction
         }
         else
         {
-            try
+            if (!this.subject.getLocation().equals(this.destination))
             {
-                final MotionPath path = PathFinding.createMotionPath(game.getTerrain(), game.getWorld().getCells(), this.subject.getLocation(), this.destination, this.subject);
-
-                final Cinematic cinematic = new Cinematic(game.getWorld().getWorldNode(), 20);
-                MotionEvent track = new MotionEvent(this.subject.getModel(), path);
-
-                /**
-                 * Not sure how to fix this
-                 */
-                //track.setDirectionType(MotionEvent.Direction.Path);
-                cinematic.addCinematicEvent(0, track);
-                cinematic.fitDuration();
-                game.getStateManager().attach(cinematic);
-
-                path.addListener(new MotionPathListener()
+                try
                 {
-                    public void onWayPointReach(MotionEvent control, int wayPointIndex)
+                    final MotionPath path = PathFinding.createMotionPath(game.getTerrain(), game.getWorld().getCells(), this.subject.getLocation(), this.destination, this.subject);
+
+                    final Cinematic cinematic = new Cinematic(game.getWorld().getWorldNode(), 20);
+                    MotionEvent track = new MotionEvent(this.subject.getModel(), path);
+
+                    /**
+                     * Not sure how to fix this
+                     */
+                    //track.setDirectionType(MotionEvent.Direction.Path);
+                    cinematic.addCinematicEvent(0, track);
+                    cinematic.fitDuration();
+                    game.getStateManager().attach(cinematic);
+
+                    path.addListener(new MotionPathListener()
                     {
-                        if (path.getNbWayPoints() == wayPointIndex + 1)
+                        public void onWayPointReach(MotionEvent control, int wayPointIndex)
                         {
-                            //control.getSpatial().setLocalTranslation(destination.getWorldCoordinates().subtract(control.getSpatial().getWorldTranslation()));
-                            cinematic.stop();
+                            if (path.getNbWayPoints() == wayPointIndex + 1)
+                            {
+                                //control.getSpatial().setLocalTranslation(destination.getWorldCoordinates().subtract(control.getSpatial().getWorldTranslation()));
+                                cinematic.stop();
+                            }
                         }
-                    }
-                });
+                    });
 
-                final Vector3f airDestination = new Vector3f(destination.getWorldCoordinates().x, PathFinding.airCreatureHeight, destination.getWorldCoordinates().z);
+                    final Vector3f airDestination = new Vector3f(destination.getWorldCoordinates().x, PathFinding.airCreatureHeight, destination.getWorldCoordinates().z);
 
-                cinematic.addListener(new CinematicEventListener()
-                {
-                    public void onPlay(CinematicEvent cinematic)
+                    cinematic.addListener(new CinematicEventListener()
                     {
-                        //throw new UnsupportedOperationException("Not supported yet.");
-                    }
-
-                    public void onPause(CinematicEvent cinematic)
-                    {
-                        //throw new UnsupportedOperationException("Not supported yet.");
-                    }
-
-                    public void onStop(CinematicEvent cinematic)
-                    {
-                        //throw new UnsupportedOperationException("Not supported yet.");
-
-                        if (subject instanceof AirborneCreature)
+                        public void onPlay(CinematicEvent cinematic)
                         {
-                            subject.getModel().setLocalTranslation(airDestination);
-                        } else
-                        {
-                            subject.getModel().setLocalTranslation(destination.getWorldCoordinates());
+                            //throw new UnsupportedOperationException("Not supported yet.");
                         }
 
-                        subject.setLocation(destination);
-                    }
-                });
-                cinematic.play();
-            } catch (NoReachablePathException ex)
-            {
-                Logger.getLogger(MoveAction.class.getName()).log(Level.SEVERE, null, ex);
+                        public void onPause(CinematicEvent cinematic)
+                        {
+                            //throw new UnsupportedOperationException("Not supported yet.");
+                        }
+
+                        public void onStop(CinematicEvent cinematic)
+                        {
+                            //throw new UnsupportedOperationException("Not supported yet.");
+
+                            if (subject instanceof AirborneCreature)
+                            {
+                                subject.getModel().setLocalTranslation(airDestination);
+                            } else
+                            {
+                                subject.getModel().setLocalTranslation(destination.getWorldCoordinates());
+                            }
+
+                            subject.setLocation(destination);
+                        }
+                    });
+                    cinematic.play();
+                } catch (NoReachablePathException ex)
+                {
+                    Logger.getLogger(MoveAction.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
 
             subject.setInFight(true);

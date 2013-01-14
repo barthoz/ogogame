@@ -43,6 +43,8 @@ public class Base
         this.location = location;
         this.controller = new BaseControl(model, player.getGame(), this);
         
+        this.location.setBase(this);
+        
         model.setLocalTranslation(location.getWorldCoordinates());
     }
 

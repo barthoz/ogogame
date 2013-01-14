@@ -276,6 +276,7 @@ public class Game extends SimpleApplication
 
                 terrain.collideWith(ray, terrainResults);
                 world.getSelectableObjects().collideWith(ray, results);
+                
                 // Check if something was selected
                 if (terrainResults.getClosestCollision() != null)
                 {
@@ -287,7 +288,6 @@ public class Game extends SimpleApplication
                     if (contactPoint.y < 0)
                     {
                         // Water cell must be selected
-
                         Vector3f inverseDir = dir.negate();
                         inverseDir = inverseDir.normalize();
                         inverseDir = inverseDir.mult(0.2f);
@@ -358,10 +358,19 @@ public class Game extends SimpleApplication
                                 if (results.getClosestCollision().getGeometry().getParent().getUserData("modelType").equals("FoodSource"))
                                 {                                
                                     /**
-                                     * PickupFoodAction
+                                     * PickupFoodAction (from clicked food source)
                                      */
 
                                     PickupFoodAction act = new PickupFoodAction(me, (Creature) selectedObject, world.findFoodSourceById((Integer) results.getClosestCollision().getGeometry().getParent().getUserData("parentId")));
+                                    me.registerAction(act);
+                                }
+                                else if (selectedCell.getFoodSource() != null)
+                                {
+                                    /**
+                                     * PickupFoodAction (from selected cell)
+                                     */
+
+                                    PickupFoodAction act = new PickupFoodAction(me, (Creature) selectedObject, selectedCell.getFoodSource());
                                     me.registerAction(act);
                                 }
                             }
