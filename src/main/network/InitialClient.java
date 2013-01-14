@@ -254,7 +254,7 @@ public class InitialClient
                             if (message instanceof MessagePing)
                             {
                                 MessagePong msgPong = new MessagePong();
-                                msgPong.setFromClientId(me.getId());
+                                if (me != null) { msgPong.setFromClientId(me.getId()); }
                                 byte[] sendMsg = xstream.toXML(msgPong).getBytes();
                                 DatagramPacket sendPacket = new DatagramPacket(sendMsg, sendMsg.length, serverAddress, InitialServer.PORT);
                                 socket.send(sendPacket);
