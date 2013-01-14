@@ -63,7 +63,7 @@ public class InitialClient
         try {
             this.lobby = lobby;
             this.socket = new DatagramSocket(Client.PORT);
-            this.socket.setSoTimeout(10);
+            this.socket.setSoTimeout(500);
         } catch (SocketException ex) {
             Logger.getLogger(InitialClient.class.getName()).log(Level.SEVERE, null, ex);
         }
