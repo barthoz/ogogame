@@ -92,7 +92,7 @@ public class FleeAction extends CreatureAction
                 this.player.decreaseFood(this.player.getFleeCost());
                 this.player.increaseFleeCost();
                 
-                if (subject.getLocation().getOccupants().size() < 2)
+                if (subject.getLocation().getOccupants().size() <= 2)
                 {
                     for (Creature c : subject.getLocation().getOccupants())
                     {

@@ -143,7 +143,11 @@ public class Game extends SimpleApplication
                     Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
                     mat.setColor("Color", ColorRGBA.Orange);
 
-                    if (modelType.equals("Base"))
+                    if (selectedSpatial == null)
+                    {
+                        
+                    }
+                    else if (modelType.equals("Base"))
                     {
                         Base base = (Base) world.findBaseById((Integer) selectedSpatial.getUserData("parentId"));
 
