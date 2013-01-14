@@ -154,6 +154,8 @@ public class AttackAction extends CreatureAction
                             }
 
                             subject.setLocation(destination);
+                            
+                            fight();
                         }
                     });
                     cinematic.play();
@@ -161,33 +163,7 @@ public class AttackAction extends CreatureAction
                 {
                     Logger.getLogger(MoveAction.class.getName()).log(Level.SEVERE, null, ex);
                 }
-            }
-
-            subject.setInFight(true);
-            opponent.setInFight(true);
-
-            fight(subject, opponent);
-
-            // in moves that alter the subjects cell we have to check if 
-            // there are multiple creatures in the new cell and set them 
-            // all in a fight
-
-            List<Creature> cell = destination.getOccupants();
-            for (int i = 0; i < cell.size(); i++)
-            {
-                if (!cell.get(i).getPlayer().equals(this.player))
-                {
-                    for (Creature c : destination.getOccupants())
-                    {
-                        c.setInFight(true);
-                    }
-                    break;
-                }
-            }
-            
-            // If location differs (the creature has travalled to attack another creature)
-            if (!this.subject.getLocation().equals(this.destination))
-            {
+                
                 // Update old location
                 if (this.subject instanceof AirborneCreature)
                 {
@@ -209,11 +185,35 @@ public class AttackAction extends CreatureAction
                     this.destination.addCreature(this.subject, false);
                 }
             }
+            else
+            {
+                fight();
+            }
         }
     }
 
-    private void fight(Creature subject, Creature opponent)
+    private void fight()
     {
+        subject.setInFight(true);
+        opponent.setInFight(true);
+
+        // in moves that alter the subjects cell we have to check if 
+        // there are multiple creatures in the new cell and set them 
+        // all in a fight
+
+        List<Creature> cell = destination.getOccupants();
+        for (int i = 0; i < cell.size(); i++)
+        {
+            if (!cell.get(i).getPlayer().equals(this.player))
+            {
+                for (Creature c : destination.getOccupants())
+                {
+                    c.setInFight(true);
+                }
+                break;
+            }
+        }
+        
         // define some algorithm to find the winner and the quantity of damage
 
         int hp = (int)Math.sqrt((double)subject.getLevel()/(double)opponent.getLevel());
