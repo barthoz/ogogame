@@ -25,6 +25,8 @@ public class Player
      * Properties
      */
     
+    public final static int INIT_FLEE_COST = 4;
+    
     private Game game;
     
     private int id;
@@ -38,6 +40,7 @@ public class Player
     private List<Creature> creatures;
     
     private int allocatedCreatureId;
+    private int fleeCost = 4;
    
     /**
      * Constructor
@@ -57,6 +60,11 @@ public class Player
     /**
      * Business logic
      */
+    
+    public void increaseFleeCost()
+    {
+        this.fleeCost++;
+    }
     
     public int retrieveAllocatedCreatureId()
     {
@@ -99,6 +107,31 @@ public class Player
      */
     public void registerAction(Action action)
     {
+        /**
+         * Remove any action where creature is involved (when CreatureAction)
+         */
+        
+        if (action instanceof CreatureAction)
+        {
+            Set<Action> removeAction = new HashSet<Action>();
+            
+            for (Action cAction : this.actions)
+            {
+                if (cAction instanceof CreatureAction)
+                {
+                    if (((CreatureAction) cAction).getSubject().equals(((CreatureAction) action).getSubject()))
+                    {
+                        removeAction.add(cAction);
+                    }
+                }
+            }
+            
+            for (Action rAction : removeAction)
+            {
+                this.actions.remove(rAction);
+            }
+        }
+        
         this.actions.add(action);
     }
     
@@ -201,5 +234,13 @@ public class Player
 
     public void setAllocatedCreatureId(int allocatedCreatureId) {
         this.allocatedCreatureId = allocatedCreatureId;
+    }
+
+    public int getFleeCost() {
+        return fleeCost;
+    }
+
+    public void setFleeCost(int fleeCost) {
+        this.fleeCost = fleeCost;
     }
 }

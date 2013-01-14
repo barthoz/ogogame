@@ -317,14 +317,23 @@ public class Game extends SimpleApplication
                                 PickupFoodAction act = new PickupFoodAction(me, (Creature) selectedObject, world.findFoodSourceById((Integer) results.getClosestCollision().getGeometry().getParent().getUserData("parentId")));
                                 me.registerAction(act);
                             }
-                        } else
+                        }
+                        else
                         {
                             /**
-                             * MoveAction
+                             * MoveAction/FleeAction
                              */
                             
-                            MoveAction act = new MoveAction(me, (Creature) selectedObject, selectedCell);
-                            me.registerAction(act);
+                            if (((Creature) selectedObject).isInFight())
+                            {
+                                FleeAction act = new FleeAction(me, (Creature) selectedObject, selectedCell);
+                                me.registerAction(act);
+                            }
+                            else
+                            {
+                                MoveAction act = new MoveAction(me, (Creature) selectedObject, selectedCell);
+                                me.registerAction(act);
+                            }
                             
                             // De-select creature
                             Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");

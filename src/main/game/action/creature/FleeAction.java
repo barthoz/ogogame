@@ -52,7 +52,17 @@ public class FleeAction extends CreatureAction
     @Override
     public boolean isEnabled(Game game)
     {
-        return subject.isInFight();
+        if (this.subject.isInFight()
+            && !this.subject.getLocation().equals(this.destination)
+            && this.destination.creatureAllowed(this.subject)
+            && this.player.getFood() - this.player.getFleeCost() >= 0)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 
     @Override
@@ -61,17 +71,26 @@ public class FleeAction extends CreatureAction
         if (!isEnabled(game))
         {
             throw new ActionNotEnabledException();
-        } else
+        }
+        else
         {
             try
             {
+                /**
+                 * Update flee cost
+                 */
+                
+                this.player.decreaseFood(this.player.getFleeCost());
+                this.player.increaseFleeCost();
+                
                 if (subject.getLocation().getOccupants().size() < 2)
                 {
                     for (Creature c : subject.getLocation().getOccupants())
                     {
                         c.setInFight(false);
                     }
-                } else
+                }
+                else
                 {
                     subject.setInFight(false);
                 }
@@ -130,9 +149,35 @@ public class FleeAction extends CreatureAction
                     }
                 });
                 cinematic.play();
-            } catch (NoReachablePathException ex)
+            }
+            catch (NoReachablePathException ex)
             {
                 Logger.getLogger(MoveAction.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
+           /**
+            * Update locations
+            */
+
+            // Update old location
+            if (this.subject instanceof AirborneCreature)
+            {
+               this.subject.getLocation().removeCreature(this.subject, ((AirborneCreature) this.subject).isAirborne());
+            }
+            else
+            {
+               this.subject.getLocation().removeCreature(this.subject, false);
+            }
+
+            // Update new location
+            if (this.subject instanceof AirborneCreature)
+            {
+               ((AirborneCreature) this.subject).setAirborne(true);
+               this.destination.addCreature(this.subject, true);
+            }
+            else
+            {
+               this.destination.addCreature(this.subject, false);
             }
         }
     }
