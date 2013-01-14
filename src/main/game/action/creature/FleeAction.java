@@ -55,7 +55,8 @@ public class FleeAction extends CreatureAction
         if (this.subject.isInFight()
             && !this.subject.getLocation().equals(this.destination)
             && this.destination.creatureAllowed(this.subject)
-            && this.player.getFood() - this.player.getFleeCost() >= 0)
+            && this.player.getFood() - this.player.getFleeCost() >= 0
+            && this.subject.getLocation().distance(this.destination) <= this.subject.getActionRadius())
         {
             return true;
         }

@@ -77,7 +77,9 @@ public class AttackAction extends CreatureAction
     @Override
     public boolean isEnabled(Game game)
     {
-        if (destination.creatureAllowed(subject) && !player.getCreatures().contains(opponent))
+        if (destination.creatureAllowed(subject)
+            && !player.getCreatures().contains(opponent)
+            && this.subject.getLocation().distance(this.destination) <= this.subject.getActionRadius())
         {
                 return true;
         }

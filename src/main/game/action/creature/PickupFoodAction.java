@@ -64,7 +64,8 @@ public class PickupFoodAction extends CreatureAction
     {
         if (this.foodSource.getLocation().creatureAllowed(subject) 
             && !this.subject.isInFight()
-            && this.foodSource.hasFood())
+            && this.foodSource.hasFood()
+            && this.subject.getLocation().distance(this.foodSource.getLocation()) <= this.subject.getActionRadius())
         {
             return true;
         }

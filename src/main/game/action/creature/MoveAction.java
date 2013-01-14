@@ -77,7 +77,9 @@ public class MoveAction extends CreatureAction
     @Override
     public boolean isEnabled(Game game)
     {
-        if (this.destination.creatureAllowed(subject) && !this.subject.isInFight())
+        if (this.destination.creatureAllowed(subject)
+            && !this.subject.isInFight()
+            && this.subject.getLocation().distance(this.destination) <= this.subject.getActionRadius())
         {
             return true;
         }

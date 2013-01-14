@@ -878,6 +878,11 @@ public class Game extends SimpleApplication
                 header = "Health: " + creature.getHealth() + "%";
             }
             
+            if (creature.isInFight())
+            {
+                header += " (!)";
+            }
+            
             creature.getCreatureHeader().setText(header);
             creature.getCreatureHeader().setLocalTranslation(cam.getScreenCoordinates(creature.getModel().getWorldTranslation().add(0, 20f, 0)).add(-1 * creature.getCreatureHeader().getLineWidth() / 2f, 0f, 0f));
         }
