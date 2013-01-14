@@ -681,7 +681,7 @@ public class Game extends SimpleApplication
                         // Attack anybody who is in the same cell as this creature
                         for (Creature opponent : creature.getLocation().getOccupants())
                         {
-                            if (!creature.equals(opponent))
+                            if (!creature.equals(opponent) && !(creature.getPlayer().equals(opponent.getPlayer())))
                             {
                                 AttackAction act = new AttackAction(this.me, creature, opponent, creature.getLocation());
                                 this.me.registerAction(act);
