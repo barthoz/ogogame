@@ -99,12 +99,12 @@ public abstract class Creature
         {
             // Creature died
             this.die();
-            this.health = 0;
         }
     }
     
     public void die()
     {
+        this.health = 0;
         this.isAlive = false;
     }
 

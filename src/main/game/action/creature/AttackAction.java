@@ -77,13 +77,14 @@ public class AttackAction extends CreatureAction
     @Override
     public boolean isEnabled(Game game)
     {
-        if(destination.creatureAllowed(subject)){
-            if(!player.getCreatures().contains(opponent)){
+        if (destination.creatureAllowed(subject) && !player.getCreatures().contains(opponent))
+        {
                 return true;
-            }
         }
-        return false;
-        
+        else
+        {
+            return false;
+        }        
     }
 
     @Override
@@ -176,6 +177,31 @@ public class AttackAction extends CreatureAction
                         c.setInFight(true);
                     }
                     break;
+                }
+            }
+            
+            // If location differs (the creature has travalled to attack another creature)
+            if (!this.subject.getLocation().equals(this.destination))
+            {
+                // Update old location
+                if (this.subject instanceof AirborneCreature)
+                {
+                    this.subject.getLocation().removeCreature(this.subject, ((AirborneCreature) this.subject).isAirborne());
+                }
+                else
+                {
+                    this.subject.getLocation().removeCreature(this.subject, false);
+                }
+
+                // Update new location
+                if (this.subject instanceof AirborneCreature)
+                {
+                    ((AirborneCreature) this.subject).setAirborne(true);
+                    this.destination.addCreature(this.subject, true);
+                }
+                else
+                {
+                    this.destination.addCreature(this.subject, false);
                 }
             }
         }

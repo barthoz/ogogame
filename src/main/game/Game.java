@@ -383,6 +383,7 @@ public class Game extends SimpleApplication
     public final static int CONST_SET_MODE_TIME_LIMIT = 10;
     public final static int CONST_INIT_RANGE_OF_SIGHT = 10;
     public final static int CONST_INIT_START_FOOD = 10;
+    public final static int CONST_REGENERATE_FOOD_ROUNDS = 5;
     
     /**
      * Game state variables
@@ -669,26 +670,6 @@ public class Game extends SimpleApplication
                 this.getModeBlocked = true;
                 this.getModePerformed = false;
                 this.disableActions();
-                
-                /**
-                 * Handle battles
-                 */
-                
-                for (Creature creature : this.me.getCreatures())
-                {
-                    if (creature.isInFight())
-                    {
-                        // Attack anybody who is in the same cell as this creature
-                        for (Creature opponent : creature.getLocation().getOccupants())
-                        {
-                            if (!creature.equals(opponent) && !(creature.getPlayer().equals(opponent.getPlayer())))
-                            {
-                                AttackAction act = new AttackAction(this.me, creature, opponent, creature.getLocation());
-                                this.me.registerAction(act);
-                            }
-                        }
-                    }
-                }
             }
         }
         else
@@ -791,6 +772,33 @@ public class Game extends SimpleApplication
                     this.countSetMode = 0;
                     this.countGetMode = 0;
                     this.setModeSent = false;
+                    
+                    /**
+                     * Do some bookkeeping
+                     */
+                    
+                    this.nextRound();
+                    
+                    /**
+                    * Handle battles
+                    */
+
+                    // For any of our creatures that are in fight
+                    for (Creature creature : this.me.getCreatures())
+                    {
+                        if (creature.isInFight())
+                        {
+                            // Attack anybody who is in the same cell as this creature (from the opposite team)
+                            for (Creature opponent : creature.getLocation().getOccupants())
+                            {
+                                if (!(this.me.equals(opponent.getPlayer())))
+                                {
+                                    AttackAction act = new AttackAction(this.me, creature, opponent, creature.getLocation());
+                                    this.me.registerAction(act);
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -848,9 +856,20 @@ public class Game extends SimpleApplication
          * Update creature headers (health bar)
          */
         
+        String header;
+        
         for (Creature creature : this.world.getCreatures())
         {
-            creature.getCreatureHeader().setText("Health: " + creature.getHealth() + "%");
+            if (creature instanceof AirborneCreature)
+            {
+                header = "Health: " + creature.getHealth() + "% / Stamina: " + ((AirborneCreature) creature).getStamina() + "%";
+            }
+            else
+            {
+                header = "Health: " + creature.getHealth() + "%";
+            }
+            
+            creature.getCreatureHeader().setText(header);
             creature.getCreatureHeader().setLocalTranslation(cam.getScreenCoordinates(creature.getModel().getWorldTranslation().add(0, 20f, 0)).add(-1 * creature.getCreatureHeader().getLineWidth() / 2f, 0f, 0f));
         }
         
@@ -953,6 +972,38 @@ public class Game extends SimpleApplication
 
     private void nextRound()
     {
+        this.round++;
+        
+        /*
+         * Regenerate food when necessary
+         */
+        
+        if (this.round % CONST_REGENERATE_FOOD_ROUNDS == 0)
+        {
+            for (FoodSource foodSource : this.world.getFoodSources())
+            {
+                foodSource.refill();
+            }
+        }
+        
+        /**
+         * Decrease/increase stamina of airborne creatures
+         */
+        
+        for (Creature creature : this.world.getCreatures())
+        {
+            if (creature instanceof AirborneCreature)
+            {
+                if (((AirborneCreature) creature).isAirborne())
+                {
+                    ((AirborneCreature) creature).decreaseStamina();
+                }
+                else
+                {
+                    ((AirborneCreature) creature).increaseStamina();
+                }
+            }
+        }
     }
     protected Geometry player;
 

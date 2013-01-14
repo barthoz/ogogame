@@ -19,10 +19,14 @@ public class AirborneCreature extends Creature
      * Properties
      */
     
+    public final static int CONST_STAMINA_DECREASE = 15;
+    public final static int CONST_STAMINA_INCREASE = 20;
     public final static String CODE_ID = "Creature-Airborne";
     
     private int stamina = 100;
     private boolean airborne = false;
+    
+    
     
     /**
      * Constructor
@@ -53,6 +57,41 @@ public class AirborneCreature extends Creature
     public void takeOff()
     {
         this.airborne = true;
+    }
+    
+    /**
+     * Increase the stamina for this round.
+     * 
+     * @Pre this.isAirborne == false
+     */
+    public void increaseStamina()
+    {
+        if (this.stamina + CONST_STAMINA_INCREASE >= 100)
+        {
+            this.stamina = 100;
+        }
+        else
+        {
+            this.stamina += CONST_STAMINA_INCREASE;
+        }
+    }
+    
+    /**
+     * Decrease the stamina for this round.
+     * 
+     * @Pre this.isAirbone == true
+     */
+    public void decreaseStamina()
+    {
+        if (this.stamina - CONST_STAMINA_DECREASE <= 0)
+        {
+            this.stamina = 0;
+            this.die();
+        }
+        else
+        {
+            this.stamina -= CONST_STAMINA_DECREASE;
+        }
     }
     
     /**
