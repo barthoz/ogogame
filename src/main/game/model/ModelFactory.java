@@ -67,17 +67,20 @@ public class ModelFactory
         
         Spatial fsModel;
         
-        if(location instanceof DeepWaterCell){
+        if (location instanceof DeepWaterCell)
+        {
             // First create the spatial
             fsModel = assetManager.loadModel("Models/Food/Sea/seafood.mesh.xml");
             fsModel.setLocalScale(0.015f, 0.05f, 0.015f);
         }
-        else if(location instanceof ShallowWaterCell){
+        else if (location instanceof ShallowWaterCell)
+        {
             // First create the spatial
             fsModel = assetManager.loadModel("Models/Food/Sea/seafood.mesh.xml");
             fsModel.setLocalScale(0.015f, 0.03f, 0.015f);
         }
-        else{
+        else
+        {
             // First create the spatial
             Node fsModels = new Node("fs");
             Spatial fsTree = assetManager.loadModel("Models/Food/Land/tree.mesh.xml"); 
@@ -89,8 +92,11 @@ public class ModelFactory
             fsModels.setUserData("modelType", "FoodSource");
             fsModels.setUserData("parentId", id);
             FoodSource foodSource = new FoodSource(id, fsModels, game, location);
+            
+            fsModels.setLocalTranslation(location.getWorldCoordinates());
+            game.getWorld().getFoodSourceContainer().attachChild(fsModels);
+            
             return foodSource;
-        
         }
         //creatureModel.setLocalScale(0.2f);
         fsModel.setUserData("modelType", "FoodSource");

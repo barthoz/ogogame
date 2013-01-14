@@ -217,7 +217,7 @@ public class Game extends SimpleApplication
                     // Get rid of radius circle if it is there
                     if (rootNode.getChild("radiusCircle") != null)
                     {
-                        rootNode.detachChildNamed("radiusCircle");
+                        rootNode.detachChild(rootNode.getChild("radiusCircle"));
                     }
                     
                     if (selectedObject != null)
@@ -263,7 +263,7 @@ public class Game extends SimpleApplication
                 // Get rid of radius circle if it is there
                 if (rootNode.getChild("radiusCircle") != null)
                 {
-                    rootNode.detachChildNamed("radiusCircle");
+                    rootNode.detachChild(rootNode.getChild("radiusCircle"));
                 }
                 
                 Vector2f click2d = inputManager.getCursorPosition();
@@ -299,47 +299,78 @@ public class Game extends SimpleApplication
                         }
 
                         selectedCell = world.getCellFromWorldCoordinates(result);
-                    } else
+                    }
+                    else
                     {
                         selectedCell = world.getCellFromWorldCoordinates(contactPoint);
                     }
 
                     if (selectedObject instanceof Creature)
                     {
-                        if (results.size() > 0)
+                       /**
+                        * Attack action
+                        */
+
+                        boolean enemyInCell = false;
+                        Creature enemy = null;
+
+                        for (Creature c : selectedCell.getOccupants())
                         {
-                            if (results.getClosestCollision().getGeometry().getParent().getUserData("modelType").equals("FoodSource") && !(selectedObject instanceof AirborneCreature))
-                            {
-                                /**
-                                 * PickupFoodAction
-                                 */
-                                
-                                PickupFoodAction act = new PickupFoodAction(me, (Creature) selectedObject, world.findFoodSourceById((Integer) results.getClosestCollision().getGeometry().getParent().getUserData("parentId")));
-                                me.registerAction(act);
-                            }
+                           if (!c.getPlayer().equals(me))
+                           {
+                               enemyInCell = true;
+                               enemy = c;
+                               break;
+                           }
+                        }
+
+                        if (enemyInCell)
+                        {
+                           /**
+                            * AttackAction
+                            */
+
+                           AttackAction act = new AttackAction(me, (Creature) selectedObject, enemy, selectedCell);
+                           me.registerAction(act);
+                        }
+                        else if (((Creature) selectedObject).isInFight())
+                        {
+                            /**
+                             * Flee action
+                             */
+                            
+                            FleeAction act = new FleeAction(me, (Creature) selectedObject, selectedCell);
+                            me.registerAction(act);
+                        }
+                        else if (!((Creature) selectedObject).isInFight())
+                        {
+                            /**
+                             * Move action
+                             */
+                            
+                            MoveAction act = new MoveAction(me, (Creature) selectedObject, selectedCell);
+                            me.registerAction(act);
                         }
                         else
                         {
-                            /**
-                             * MoveAction/FleeAction
-                             */
-                            
-                            if (((Creature) selectedObject).isInFight())
+                            if (results.size() > 0)
                             {
-                                FleeAction act = new FleeAction(me, (Creature) selectedObject, selectedCell);
-                                me.registerAction(act);
+                                if (results.getClosestCollision().getGeometry().getParent().getUserData("modelType").equals("FoodSource"))
+                                {                                
+                                    /**
+                                     * PickupFoodAction
+                                     */
+
+                                    PickupFoodAction act = new PickupFoodAction(me, (Creature) selectedObject, world.findFoodSourceById((Integer) results.getClosestCollision().getGeometry().getParent().getUserData("parentId")));
+                                    me.registerAction(act);
+                                }
                             }
-                            else
-                            {
-                                MoveAction act = new MoveAction(me, (Creature) selectedObject, selectedCell);
-                                me.registerAction(act);
-                            }
-                            
-                            // De-select creature
-                            Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-                            mat.setColor("Color", ColorRGBA.White);
-                            ((Creature) selectedObject).getModel().setMaterial(mat);
                         }
+                        
+                        // De-select creature
+                        Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+                        mat.setColor("Color", ColorRGBA.White);
+                        ((Creature) selectedObject).getModel().setMaterial(mat);
                     }
 
                     selectedObject = null;
@@ -663,7 +694,7 @@ public class Game extends SimpleApplication
     @Override
     public void simpleUpdate(float tpf)
     {
-        System.out.println(this.countSetMode + " - " + tpf + " - " + this.countGetMode);
+        //System.out.println(this.countSetMode + " - " + tpf + " - " + this.countGetMode);
         
         if (this.inSetMode)
         {
