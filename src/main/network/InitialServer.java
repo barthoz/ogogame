@@ -170,7 +170,7 @@ public class InitialServer
                                     
                                     // Wake up client
                                     byte[] pingBuffer = xstream.toXML(new MessagePing()).getBytes();
-                                    DatagramPacket wakePacket = new DatagramPacket(pingBuffer, pingBuffer.length, packet.getAddress(), Client.PORT);
+                                    DatagramPacket wakePacket = new DatagramPacket(pingBuffer, pingBuffer.length, InetAddress.getByName(client.getAddress()), Client.PORT);
                                     for (int i = 0; i < 5; i++)
                                     {
                                         socket.send(wakePacket);
@@ -180,7 +180,7 @@ public class InitialServer
                                     MessageJoinApproved messageApproved = new MessageJoinApproved(client);
                                     String strMessageApproved = xstream.toXML(messageApproved);
                                     byte[] sendBuffer = strMessageApproved.getBytes();
-                                    DatagramPacket sendPacket = new DatagramPacket(sendBuffer, sendBuffer.length, packet.getAddress(), Client.PORT);
+                                    DatagramPacket sendPacket = new DatagramPacket(sendBuffer, sendBuffer.length, InetAddress.getByName(client.getAddress()), Client.PORT);
                                     System.out.println("Server out: " + strMessageApproved);
                                     socket.send(sendPacket);
 
