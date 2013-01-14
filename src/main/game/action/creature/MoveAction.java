@@ -117,16 +117,14 @@ public class MoveAction extends CreatureAction
                     track.setLookAt(destination.getWorldCoordinates(), Vector3f.UNIT_Y);
                     
                 }
-                else if (subject instanceof AirborneCreature){
-                    if (!((AirborneCreature) subject).isAirborne())
-                    {
-                        AirborneCreatureControl c = (AirborneCreatureControl) subject.getController();
-                        Node s = (Node) c.getSpatial();
-                        s.detachChild(c.getStand());
-                        s.attachChild(c.getMove());
-                        c.setSpatial(null);
-                        c.setSpatial(s);
-                    }
+                else if (subject instanceof AirborneCreature)
+                 {
+                    AirborneCreatureControl c = (AirborneCreatureControl) subject.getController();
+                    Node s = (Node) c.getSpatial();
+                    s.detachChild(c.getStand());
+                    s.attachChild(c.getMove());
+                    c.setSpatial(null);
+                    c.setSpatial(s);
                     track.setDirectionType(MotionEvent.Direction.LookAt);
                     track.setLookAt(airDestination, Vector3f.UNIT_Y);
                 }
@@ -166,6 +164,16 @@ public class MoveAction extends CreatureAction
                         if(subject instanceof LandCreature)
                         {
                             LandCreatureControl c= (LandCreatureControl)subject.getController();
+                            Node s = (Node) c.getSpatial();
+                            s.detachChild(c.getMove());
+                            s.attachChild(c.getStand());
+                            c.setSpatial(null);
+                            c.setSpatial(s);
+                        }
+                        
+                        if(subject instanceof AirborneCreature)
+                        {
+                            AirborneCreatureControl c = (AirborneCreatureControl)subject.getController();
                             Node s = (Node) c.getSpatial();
                             s.detachChild(c.getMove());
                             s.attachChild(c.getStand());
