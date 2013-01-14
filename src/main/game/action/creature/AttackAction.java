@@ -20,6 +20,7 @@ import main.exception.NoReachablePathException;
 import main.game.Game;
 import main.game.Player;
 import main.game.algorithm.PathFinding;
+import main.game.model.ModelFactory;
 import main.game.model.cell.Cell;
 import main.game.model.creature.AirborneCreature;
 import main.game.model.creature.Creature;

@@ -130,38 +130,11 @@
                 </panel>
             </panel>
             
-
             <panel id="cancel" height="10%" width="75%" align="center" valign="center"  childLayout="center" visibleToMouse="true">
                 <control name="button" label="Go Back" id="Cancel" align="center" valign="center" visibleToMouse="true" >
                     <interact onClick="cancel()"/>
                 </control>
             </panel>          
         </layer>
-      
-        <!--<layer id="layer1" backgroundColor="#0000" childLayout="vertical">
-            <panel id="spawn_landCreature" height="25%" width="25%" align="center" valign="top" backgroundColor="#ffffff" childLayout="center" visibleToMouse="true">
-                <control name="button" label="Spawn land creature (costs .. food)" id="SpawnCreatureLand" align="center" valign="center" visibleToMouse="true" >
-                    <interact onClick="spawnCreature(Creature-Land)"/>
-                </control>
-            </panel>
-            
-            <panel id="spawn_seaCreature" height="25%" width="25%" align="center" valign="center" backgroundColor="#ffffff" childLayout="center" visibleToMouse="true">
-                <control name="button" label="Spawn sea creature (costs .. food)" id="SpawnCreatureSea" align="center" valign="center" visibleToMouse="true" >
-                    <interact onClick="spawnCreature(Creature-Sea)"/>
-                </control>
-            </panel>
-            
-            <panel id="spawn_airborneCreature" height="25%" width="25%" align="center" valign="bottom" backgroundColor="#ffffff" childLayout="center" visibleToMouse="true">
-                <control name="button" label="Spawn air creature (costs .. food)" id="SpawnCreatureAir" align="center" valign="center" visibleToMouse="true" >
-                    <interact onClick="spawnCreature(Creature-Airborne)"/>
-                </control>
-            </panel>
-            
-            <panel id="cancel" height="25%" width="25%" align="center" valign="center" backgroundColor="#ffffff" childLayout="center" visibleToMouse="true">
-                <control name="button" label="Cancel" id="Cancel" align="center" valign="center" visibleToMouse="true" >
-                    <interact onClick="cancel()"/>
-                </control>
-            </panel>            
-        </layer>-->
   </screen>
 </nifty>

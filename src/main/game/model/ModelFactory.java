@@ -98,7 +98,6 @@ public class ModelFactory
             
             return foodSource;
         }
-        //creatureModel.setLocalScale(0.2f);
         fsModel.setUserData("modelType", "FoodSource");
         fsModel.setUserData("parentId", id);
         
