@@ -48,6 +48,14 @@ public class FleeAction extends CreatureAction
     /**
      * Business Logic
      */
+    
+    @Override
+    public void deserialize(Game game)
+    {
+        super.deserialize(game);
+        
+        this.destination = game.getWorld().getCells()[this.destinationX][this.destinationY];
+    }
 
     @Override
     public boolean isEnabled(Game game)
