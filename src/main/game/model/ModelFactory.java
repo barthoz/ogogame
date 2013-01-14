@@ -172,23 +172,23 @@ public class ModelFactory
         creatureModel.setUserData("parentId", id);
         creatureModel.setUserData("modelType", creatureType);
         
-            /**
-            * Health bar (above creature)
-            */
-           
-           BitmapText text = new BitmapText(game.getGuiFont(), false);
-           text.setSize(game.getGuiFont().getCharSet().getRenderedSize());
-           if (game.getMe().equals(player))
-           {
-               text.setColor(ColorRGBA.Blue);
-           }
-           else
-           {
-               text.setColor(ColorRGBA.Red);
-           }
-           game.getGuiNode().attachChild(text);
-           
-           creature.setCreatureHeader(text);
+        /**
+        * Health bar (above creature)
+        */
+
+        BitmapText text = new BitmapText(game.getGuiFont(), false);
+        text.setSize(game.getGuiFont().getCharSet().getRenderedSize());
+        if (game.getMe().equals(player))
+        {
+           text.setColor(ColorRGBA.Blue);
+        }
+        else
+        {
+           text.setColor(ColorRGBA.Red);
+        }
+        game.getGuiNode().attachChild(text);
+
+        creature.setCreatureHeader(text);
         // Determine spawn location
         //Cell location = player.getBase().getLocation().getWorld().getCells()[32][32];
         Cell location = player.getBase().getClosestSpawnableCell(creature);

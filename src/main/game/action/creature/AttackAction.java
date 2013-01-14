@@ -183,7 +183,6 @@ public class AttackAction extends CreatureAction
 
     private void fight(Creature subject, Creature opponent)
     {
-
         // define some algorithm to find the winner and the quantity of damage
 
         int hp = (int)Math.sqrt((double)subject.getLevel()/(double)opponent.getLevel());
@@ -192,14 +191,14 @@ public class AttackAction extends CreatureAction
         
         if (subject.getHealth() <= 0)
         {
-            subject.setHealth(0);
+            //subject.setHealth(0);
             subject.setIsAlive(false);
             subject.setInFight(false);
             opponent.setInFight(false);
         }
         if (opponent.getHealth() <= 0)
         {
-            opponent.setHealth(0);
+            //opponent.setHealth(0);
             opponent.setIsAlive(false);
             subject.setInFight(false);
             opponent.setInFight(false);

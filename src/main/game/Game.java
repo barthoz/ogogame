@@ -669,6 +669,26 @@ public class Game extends SimpleApplication
                 this.getModeBlocked = true;
                 this.getModePerformed = false;
                 this.disableActions();
+                
+                /**
+                 * Handle battles
+                 */
+                
+                for (Creature creature : this.me.getCreatures())
+                {
+                    if (creature.isInFight())
+                    {
+                        // Attack anybody who is in the same cell as this creature
+                        for (Creature opponent : creature.getLocation().getOccupants())
+                        {
+                            if (!creature.equals(opponent))
+                            {
+                                AttackAction act = new AttackAction(this.me, creature, opponent, creature.getLocation());
+                                this.me.registerAction(act);
+                            }
+                        }
+                    }
+                }
             }
         }
         else
@@ -830,8 +850,8 @@ public class Game extends SimpleApplication
         
         for (Creature creature : this.world.getCreatures())
         {
-         //   creature.getCreatureHeader().setText("Health: " + creature.getHealth() + "%");
-           // creature.getCreatureHeader().setLocalTranslation(cam.getScreenCoordinates(creature.getModel().getWorldTranslation().add(0, 20f, 0)).add(-1 * creature.getCreatureHeader().getLineWidth() / 2f, 0f, 0f));
+            creature.getCreatureHeader().setText("Health: " + creature.getHealth() + "%");
+            creature.getCreatureHeader().setLocalTranslation(cam.getScreenCoordinates(creature.getModel().getWorldTranslation().add(0, 20f, 0)).add(-1 * creature.getCreatureHeader().getLineWidth() / 2f, 0f, 0f));
         }
         
         /**
