@@ -125,8 +125,9 @@ public class MoveAction extends CreatureAction
                     s.attachChild(c.getMove());
                     c.setSpatial(null);
                     c.setSpatial(s);
-                    track.setDirectionType(MotionEvent.Direction.LookAt);
-                    track.setLookAt(airDestination, Vector3f.UNIT_Y);
+                    track.setDirectionType(MotionEvent.Direction.None);
+                   // track.setDirectionType(MotionEvent.Direction.LookAt);
+                    //track.setLookAt(airDestination, Vector3f.UNIT_Y);
                 }
                 cinematic.addCinematicEvent(0, track);
                 cinematic.fitDuration();
@@ -195,12 +196,6 @@ public class MoveAction extends CreatureAction
                 
                         // Reposition creatures
                         destination.repositionCreatures();
-                        System.out.println("AHAHAHAHAHAHAHAHAHAHAAAAA");
-                        System.out.println("World: " + subject.getModel().getWorldTranslation().toString());
-                        System.out.println("Cell:  " + subject.getLocation().getWorldCoordinates().toString());
-                        AirborneCreatureControl a = (AirborneCreatureControl) subject.getController();
-                        Node n = (Node) a.getSpatial();
-                        System.out.println("Spatial: " + Arrays.toString(n.getChildren().toArray()));
                     }
                     
                 });

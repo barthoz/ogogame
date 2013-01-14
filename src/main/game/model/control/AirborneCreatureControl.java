@@ -109,6 +109,7 @@ public class AirborneCreatureControl extends AbstractControl implements Savable,
     {
         if (spatial != null)
         {   
+            /*
             //should only change height when it is actually flying
             if (controllee.isAirborne() && spatial.getLocalTranslation().y >= PathFinding.airCreatureHeight - 3)
             {
@@ -118,7 +119,7 @@ public class AirborneCreatureControl extends AbstractControl implements Savable,
                 //System.out.println(time + " : " + pos.y);
                 spatial.setLocalTranslation(pos);
                 // spatial.rotate(tpf,tpf,tpf); // example behaviour
-            }
+            }*/
         }
     }
 
