@@ -358,6 +358,15 @@ public class Game extends SimpleApplication
                             MoveAction act = new MoveAction(me, (Creature) selectedObject, selectedCell);
                             me.registerAction(act);
                         }
+                        else if (selectedCell.getFoodSource() != null)
+                        {
+                            /**
+                             * PickupFoodAction (from selected cell)
+                             */
+
+                            PickupFoodAction act = new PickupFoodAction(me, (Creature) selectedObject, selectedCell.getFoodSource());
+                            me.registerAction(act);
+                        }
                         else
                         {
                             if (results.size() > 0)
@@ -371,15 +380,7 @@ public class Game extends SimpleApplication
                                     PickupFoodAction act = new PickupFoodAction(me, (Creature) selectedObject, world.findFoodSourceById((Integer) results.getClosestCollision().getGeometry().getParent().getUserData("parentId")));
                                     me.registerAction(act);
                                 }
-                                else if (selectedCell.getFoodSource() != null)
-                                {
-                                    /**
-                                     * PickupFoodAction (from selected cell)
-                                     */
-
-                                    PickupFoodAction act = new PickupFoodAction(me, (Creature) selectedObject, selectedCell.getFoodSource());
-                                    me.registerAction(act);
-                                }
+                                
                             }
                         }
                         
