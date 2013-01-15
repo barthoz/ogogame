@@ -147,10 +147,13 @@ public class Game extends SimpleApplication
                     Spatial selectedSpatial = results.getClosestCollision().getGeometry().getParent();
                     String modelType = selectedSpatial.getUserData("modelType");
                     
-                    if (modelType.equals("Duck") && world.findDuck().isQuackable())
+                    if (selectedSpatial != null)
                     {
-                        quack = true;
-                        world.findDuck().quack(quackAudio, false);
+                        if (modelType.equals("Duck") && world.findDuck().isQuackable())
+                        {
+                            quack = true;
+                            world.findDuck().quack(quackAudio, false);
+                        }
                     }
                 }
             }
