@@ -185,9 +185,9 @@ public class Game extends SimpleApplication
                     Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
                     mat.setColor("Color", ColorRGBA.Orange);
 
-                    if (selectedSpatial == null)
+                    if (modelType == null)
                     {
-                        
+                        // Do nothing here
                     }
                     else if (modelType.equals("Base"))
                     {
