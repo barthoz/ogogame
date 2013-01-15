@@ -152,6 +152,8 @@ public class Client
         {
             private Map<Integer, Boolean> setModeDoneMap = new HashMap<Integer, Boolean>();
             private boolean setModeDoneMessageSent = false;
+            private boolean leaveGameSent = false;
+            private int clientLeaveGame = -1; // default: -1, no client leaves
             
             public void run()
             {
@@ -185,13 +187,24 @@ public class Client
                                     // Pass token onto next neighbour
                                     sendMessage = new MessagePassToken();
                                     sendMessage.setFromClientId(id);
+                                    
+                                    if (game.isLeaveGame() && this.leaveGameSent)
+                                    {
+                                        // Leave game
+                                        game.stop();
+                                    }
                                 }
                                 else if (message instanceof MessagePassToken)
                                 {
                                     // We have the token, create our MessagePlayerActions or MessageLeaveGame message here.
 
-                                    // Check whether our set mode is done
-                                    if (!game.isInSetMode() && !game.setModeSent)
+                                    if (game.isLeaveGame() && !leaveGameSent)
+                                    {
+                                        this.leaveGameSent = true;
+                                        sendMessage = new MessageLeaveGame();
+                                        sendMessage.setFromClientId(id);
+                                    }
+                                    else if (!game.isInSetMode() && !game.setModeSent) // Check whether our set mode is done
                                     {
                                         // Send message to all players that our set mode is done
                                         game.setModeSent = true;
@@ -278,7 +291,7 @@ public class Client
                                     }
                                     else if (message instanceof MessageLeaveGame)
                                     {
-
+                                        this.clientLeaveGame = message.getFromClientId();
                                     }
                                     else if (message instanceof MessageQuack)
                                     {
@@ -299,6 +312,12 @@ public class Client
                                 
                                 sendPacket = new DatagramPacket(sendBuffer, sendBuffer.length, InetAddress.getByName(outNeighbour.getAddress()), Client.PORT);
                                 socket.send(sendPacket);
+                                
+                                if (this.clientLeaveGame != -1)
+                                {
+                                    leaveClient(this.clientLeaveGame);
+                                    this.clientLeaveGame = -1;
+                                }
                             }
                         }
                         
@@ -369,7 +388,55 @@ public class Client
         return true;
     }
     
+    private void leaveClient(int leaveClientId)
+    {
+        if (this.inNeighbour.getId() == leaveClientId)
+        {
+            this.inNeighbour = this.inNeighbour.getInNeighbour();
+        }
+        
+        if (this.outNeighbour.getId() == leaveClientId)
+        {
+            this.outNeighbour = this.outNeighbour.getOutNeighbour();
+        }
+        
+        if (this.inNeighbour == this)
+        {
+            System.out.println("Game ended. Too little players.");
+            this.game.stop();
+        }
+        
+        leaveClient(this.outNeighbour, leaveClientId);
+        
+        /**
+         * Remove player from game
+         */
+        
+        Player leavePlayer = this.game.getPlayerById(leaveClientId);
+        this.game.removePlayerFromGame(leavePlayer);
+    }
     
+    private void leaveClient(Client client, int leaveClientId)
+    {
+        if (this.id == leaveClientId)
+        {
+            return;
+        }
+        else
+        {
+            if (client.inNeighbour.getId() == leaveClientId)
+            {
+                client.setInNeighbour(client.getInNeighbour().getInNeighbour());
+            }
+
+            if (this.outNeighbour.getId() == leaveClientId)
+            {
+                client.setOutNeighbour(client.getOutNeighbour().getOutNeighbour());
+            }
+
+            leaveClient(client.getOutNeighbour(), leaveClientId);
+        }
+    }
     
     /**
      * Getters & Setters

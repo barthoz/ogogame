@@ -78,9 +78,10 @@ public class AttackAction extends CreatureAction
     @Override
     public boolean isEnabled(Game game)
     {
-        if (destination.creatureAllowed(subject)
-            && !player.getCreatures().contains(opponent)
-            && this.subject.getLocation().distance(this.destination) <= this.subject.getActionRadius())
+        if (this.destination.creatureAllowed(subject)
+            && !this.player.getCreatures().contains(opponent)
+            && this.subject.getLocation().distance(this.destination) <= this.subject.getActionRadius()
+            && game.getWorld().getCreatures().contains(this.opponent)) // if player has not left yet
         {
                 return true;
         }

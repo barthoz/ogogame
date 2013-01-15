@@ -9,7 +9,7 @@ package main.network.message;
  * @author s116861
  */
 public class MessageLeaveGame extends Message
-{
+{    
     /**
      * Constructor
      */
