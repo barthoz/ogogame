@@ -941,7 +941,11 @@ public class Game extends SimpleApplication
             }
             
             creature.getCreatureHeader().setText(header);
-            creature.getCreatureHeader().setLocalTranslation(cam.getScreenCoordinates(creature.getModel().getWorldTranslation().add(0, 20f, 0)).add(-1 * creature.getCreatureHeader().getLineWidth() / 2f, 0f, 0f));
+            
+            if (creature.getLocation().getOccupants().size() > 1)
+            {
+                creature.getCreatureHeader().setLocalTranslation(cam.getScreenCoordinates(creature.getModel().getWorldTranslation().add(0, 20f * Float.parseFloat(creature.getId().split("_")[1]), 0)).add(-1 * creature.getCreatureHeader().getLineWidth() / 2f, 0f, 0f));
+            }
         }
         
         /**
