@@ -65,39 +65,38 @@ public class ModelFactory
     {
         AssetManager assetManager = game.getAssetManager();
         
-        Spatial fsModel;
+        Node fsModel;
+        Spatial fsBase;
+        Spatial fsFull;
         
         if (location instanceof DeepWaterCell)
         {
             // First create the spatial
-            fsModel = assetManager.loadModel("Models/Food/Sea/seafood.mesh.xml");
-            fsModel.setLocalScale(0.015f, 0.05f, 0.015f);
+            fsBase = (Node) assetManager.loadModel("Models/Food/Sea/seafood.mesh.xml");
+            fsBase.setLocalScale(0.01f, 0.03f, 0.01f);
+            fsFull = (Node) assetManager.loadModel("Models/Food/Sea/seafood.mesh.xml");
+            fsFull.setLocalScale(0.015f, 0.05f, 0.015f);
         }
         else if (location instanceof ShallowWaterCell)
         {
             // First create the spatial
-            fsModel = assetManager.loadModel("Models/Food/Sea/seafood.mesh.xml");
-            fsModel.setLocalScale(0.015f, 0.03f, 0.015f);
+            fsBase = (Node) assetManager.loadModel("Models/Food/Sea/seafood.mesh.xml");
+            fsBase.setLocalScale(0.01f, 0.01f, 0.01f);
+            fsFull = (Node) assetManager.loadModel("Models/Food/Sea/seafood.mesh.xml");
+            fsFull.setLocalScale(0.015f, 0.03f, 0.015f);
         }
         else
         {
             // First create the spatial
-            Node fsModels = new Node("fs");
-            Spatial fsTree = assetManager.loadModel("Models/Food/Land/tree.mesh.xml"); 
-            fsTree.setLocalScale(20f);
-            Spatial fsBanana = assetManager.loadModel("Models/Food/Land/banana.mesh.xml"); 
-            fsBanana.setLocalScale(0.003f);
-            fsModels.attachChild(fsTree);
-            fsModels.attachChild(fsBanana);
-            fsModels.setUserData("modelType", "FoodSource");
-            fsModels.setUserData("parentId", id);
-            FoodSource foodSource = new FoodSource(id, fsModels, game, location);
-            
-            fsModels.setLocalTranslation(location.getWorldCoordinates());
-            game.getWorld().getFoodSourceContainer().attachChild(fsModels);
-            
-            return foodSource;
+            fsBase = assetManager.loadModel("Models/Food/Land/tree.mesh.xml"); 
+            fsBase.setLocalScale(20f);
+            fsFull = assetManager.loadModel("Models/Food/Land/banana.mesh.xml"); 
+            fsFull.setLocalScale(0.003f);
         }
+        fsFull.setName("Full");
+        fsModel = new Node();
+        fsModel.attachChild(fsBase);
+        fsModel.attachChild(fsFull);
         fsModel.setUserData("modelType", "FoodSource");
         fsModel.setUserData("parentId", id);
         
