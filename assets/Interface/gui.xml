@@ -47,7 +47,7 @@
                 </image>
         </layer>
         <layer id="specialActions_forground" childLayout="center">
-            <panel width="100%" height="50px" childLayout="center" valign="bottom">
+            <panel width="100%" height="50px" childLayout="horziontal" valign="bottom">
                 <control name="button" label="Leave" id="leave" align="left" valign="center" visibleToMouse="true" width="20%">
                     <interact onClick="leave()"/>
                 </control>
