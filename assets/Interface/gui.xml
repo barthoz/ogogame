@@ -200,7 +200,7 @@
             </panel>
         </layer>
     </screen>
-        <screen id="specialActionsMenu" controller="">
+        <screen id="specialActionsMenu">
         <layer id="background" childLayout="vertical">
             <image filename="Interface/background.png"
                    valign="bottom" align="center" height="100%" width="75%">
