@@ -315,8 +315,11 @@ public class Client
                                 
                                 if (this.clientLeaveGame != -1)
                                 {
+                                    this.setModeDoneMap.remove(this.clientLeaveGame);
                                     leaveClient(this.clientLeaveGame);
                                     this.clientLeaveGame = -1;
+                                    stopListening();
+                                    stopResponding();
                                 }
                             }
                         }
