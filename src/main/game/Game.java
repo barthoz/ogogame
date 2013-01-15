@@ -25,6 +25,7 @@ import com.jme3.light.DirectionalLight;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
+import com.jme3.math.Matrix3f;
 import com.jme3.math.Matrix4f;
 import com.jme3.math.Ray;
 import com.jme3.math.Vector2f;
@@ -74,6 +75,7 @@ import main.game.gui.FeedMenuController;
 import main.game.gui.HudController;
 import main.game.gui.SpawnMenuController;
 import main.game.model.Base;
+import main.game.model.Explosion;
 import main.game.model.FoodSource;
 import main.game.model.cell.Cell;
 import main.game.model.cell.DeepWaterCell;
@@ -154,6 +156,7 @@ public class Game extends SimpleApplication
                         {
                             quack = true;
                             world.findDuck().quack(quackAudio, false);
+                            selectedObject = null;
                         }
                     }
                 }
@@ -207,15 +210,8 @@ public class Game extends SimpleApplication
                         
                         if (creature.getPlayer().equals(me) && creature.isIsAlive())
                         {
-                            nifty.gotoScreen("feedMenu");
                             selectedObject = creature;
-                            creature.getModel().setMaterial(mat);
-                            
-                            Circle circle = new Circle(creature.getActionRadius() * 32, 100);
-                            Geometry circleGeo = new Geometry("radiusCircle", circle);
-                            circleGeo.setLocalTranslation(creature.getLocation().getWorldCoordinates());
-                            circleGeo.setMaterial(mat);
-                            rootNode.attachChild(circleGeo);
+                            //creature.getModel().setMaterial(mat);
                         }
                     }
                     else if (modelType.equals(SeaCreature.CODE_ID))
@@ -224,15 +220,8 @@ public class Game extends SimpleApplication
                         
                         if (creature.getPlayer().equals(me) && creature.isIsAlive())
                         {
-                            nifty.gotoScreen("feedMenu");
                             selectedObject = creature;
-                            creature.getModel().setMaterial(mat);
-                            
-                            Circle circle = new Circle(creature.getActionRadius() * 32, 100);
-                            Geometry circleGeo = new Geometry("radiusCircle", circle);
-                            circleGeo.setLocalTranslation(creature.getLocation().getWorldCoordinates());
-                            circleGeo.setMaterial(mat);
-                            rootNode.attachChild(circleGeo);
+                            //creature.getModel().setMaterial(mat);
                         }
                     }
                     else if (modelType.equals(AirborneCreature.CODE_ID))
@@ -241,49 +230,21 @@ public class Game extends SimpleApplication
                         
                         if (creature.getPlayer().equals(me) && creature.isIsAlive())
                         {
-                            nifty.gotoScreen("feedMenu");
                             selectedObject = creature;
-                            creature.getModel().setMaterial(mat);
-                            
-                            Circle circle = new Circle(creature.getActionRadius() * 32, 100);
-                            Geometry circleGeo = new Geometry("radiusCircle", circle);
-                            circleGeo.setLocalTranslation(creature.getLocation().getWorldCoordinates());
-                            circleGeo.setMaterial(mat);
-                            rootNode.attachChild(circleGeo);
+                            //creature.getModel().setMaterial(mat);
                         }
-                    }
-                    else if (modelType.equals("Duck"))
-                    {
-                        quack = true;
-                        quack();
                     }
                 }
                 else
                 {
-                    // Get rid of radius circle if it is there
-                    if (rootNode.getChild("radiusCircle") != null)
-                    {
-                        rootNode.detachChild(rootNode.getChild("radiusCircle"));
-                    }
-                    
-                    if (selectedObject != null)
-                    {
-                        // revert the selection
-                        if (selectedObject instanceof Creature)
-                        {
-                            Creature creature = (Creature) selectedObject;
-                            
-                        }
-                        
-                        selectedObject = null;
-                    }
+                    selectedObject = null;
                 }
             }
 
             /**
              * [LEFT-CLICK while nothing selected]
              */
-            if (actionsEnabled && !keyPressed && name.equals("Select") && selectedObject == null)
+            /*if (actionsEnabled && !keyPressed && name.equals("Select") && selectedObject == null)
             {
                 Vector2f click2d = inputManager.getCursorPosition();
                 Vector3f click3d = cam.getWorldCoordinates(new Vector2f(click2d.x, click2d.y), 0f).clone();
@@ -301,10 +262,11 @@ public class Game extends SimpleApplication
 
                     // Determine which model has been selected
                 }
-            } /**
+            }*/
+            /**
              * [LEFT-CLICK while something selected] Select terrain, food source, other creature
              */
-            else if (actionsEnabled && !keyPressed && name.equals("Select") && selectedObject != null)
+            if (actionsEnabled && !keyPressed && name.equals("Select") && selectedObject != null)
             {
                 // Get rid of radius circle if it is there
                 if (rootNode.getChild("radiusCircle") != null)
@@ -417,16 +379,69 @@ public class Game extends SimpleApplication
                             
                             MoveAction act = new MoveAction(me, (Creature) selectedObject, selectedCell);
                             me.registerAction(act);
+                            
+                            selectedObject = null;
                         }
                         
+                        selectedObject = null;
+                        
                         // De-select creature
-                        Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-                        mat.setColor("Color", ColorRGBA.White);
-                        ((Creature) selectedObject).getModel().setMaterial(mat);
+                        //Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+                        //mat.setColor("Color", ColorRGBA.White);
+                        //((Creature) selectedObject).getModel().setMaterial(mat);
                     }
-
+                    
                     selectedObject = null;
                 }
+                
+                selectedObject = null;
+            }
+            
+            /**
+             * Generate circle if necessary
+             */
+            
+            
+            if (rootNode.getChild("selectionCircle") != null)
+            {
+                rootNode.detachChild(rootNode.getChild("selectionCircle"));
+            }
+
+            if (rootNode.getChild("selectionDiamond") != null)
+            {
+                rootNode.detachChild(rootNode.getChild("selectionDiamond"));
+            }
+            
+            if (selectedObject instanceof Creature)
+            {
+                Creature creature = (Creature) selectedObject;
+                
+                /**
+                 * Draw radius circle
+                 */
+                
+                Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+                mat.setColor("Color", ColorRGBA.Orange);
+                
+                Circle circle = new Circle(creature.getActionRadius() * 32, 100);
+                Geometry circleGeo = new Geometry("selectionCircle", circle);
+                circleGeo.setLocalTranslation(creature.getLocation().getWorldCoordinates());
+                circleGeo.setMaterial(mat);
+                rootNode.attachChild(circleGeo);
+                
+                /**
+                 * Draw diamond above its head
+                 */
+                
+                Material mat2 = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+                mat.setColor("Color", ColorRGBA.Orange);
+                
+                Box diamond = new Box(3.5f, 3.5f, 3.5f);
+                Geometry diamondGeo = new Geometry("selectionDiamond", diamond);
+                diamondGeo.setMaterial(mat2);
+                diamondGeo.rotate(FastMath.QUARTER_PI, FastMath.QUARTER_PI, FastMath.QUARTER_PI);
+                diamondGeo.setLocalTranslation(creature.getModel().getWorldTranslation().add(0f, 30f, 0f));
+                rootNode.attachChild(diamondGeo);
             }
 
         }
@@ -491,6 +506,7 @@ public class Game extends SimpleApplication
     private World world;
     private Player me;
     private List<Player> players;
+    private List<Explosion> explosions = new ArrayList<Explosion>();
     
     /**
      * Terrain
@@ -572,6 +588,7 @@ public class Game extends SimpleApplication
         /**
          * Initialize world
          */
+        
         Node worldNode = new Node("worldNode");
         rootNode.attachChild(worldNode);
         this.world = new World(this, worldNode);
@@ -1004,6 +1021,15 @@ public class Game extends SimpleApplication
         }
         
         /**
+         * Update explosions
+         */
+        
+        for (Explosion explosion : this.explosions)
+        {
+            explosion.getControl().update(tpf);
+        }
+        
+        /**
          * Update hud info
          */
         
@@ -1028,6 +1054,18 @@ public class Game extends SimpleApplication
     private BitmapText modeInfo;
     private BitmapText roundInfo;
     private BitmapText playerInfo;
+    
+    public void addExplosion(Explosion explosion)
+    {
+        this.rootNode.attachChild(explosion.getControl().getSpatial());
+        this.explosions.add(explosion);
+    }
+    
+    public void removeExplosion(Explosion explosion)
+    {
+        this.explosions.remove(explosion);
+        this.rootNode.detachChild(explosion.getControl().getSpatial());
+    }
     
     public void initHud()
     {
@@ -1352,6 +1390,14 @@ public class Game extends SimpleApplication
     public void setIsRunning(boolean isRunning)
     {
         this.isRunning = isRunning;
+    }
+
+    public Object getSelectedObject() {
+        return selectedObject;
+    }
+
+    public void setSelectedObject(Object selectedObject) {
+        this.selectedObject = selectedObject;
     }
 
     public GameCredentials getGameCredentials()

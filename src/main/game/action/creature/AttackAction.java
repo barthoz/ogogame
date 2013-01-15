@@ -20,6 +20,7 @@ import main.exception.NoReachablePathException;
 import main.game.Game;
 import main.game.Player;
 import main.game.algorithm.PathFinding;
+import main.game.model.Explosion;
 import main.game.model.ModelFactory;
 import main.game.model.cell.Cell;
 import main.game.model.creature.AirborneCreature;
@@ -42,6 +43,8 @@ public class AttackAction extends CreatureAction
     private int destinationY;
     private int randomKey;
 
+    private Game tempGame;
+    
     /**
      * Constructors
      */
@@ -94,6 +97,8 @@ public class AttackAction extends CreatureAction
     @Override
     public void performAction(Game game) throws ActionNotEnabledException
     {
+        this.tempGame = game;
+        
         if (!isEnabled(game))
         {
             throw new ActionNotEnabledException();
@@ -217,7 +222,8 @@ public class AttackAction extends CreatureAction
     private void fight()
     {        
         // define some algorithm to find the winner and the quantity of damage
-
+        Explosion explosion = new Explosion(tempGame, destination);
+        
         int hp = (int)Math.sqrt((double)subject.getLevel()/(double)opponent.getLevel());
         hp *= 0.02*randomKey;
         opponent.decreaseHealth(hp);

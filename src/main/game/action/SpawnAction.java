@@ -39,8 +39,19 @@ public class SpawnAction extends Action
     @Override
     public boolean isEnabled(Game game)
     {
+        // Count number of creatures that are alive
+        int aliveCreatures = 0;
+        
+        for (Creature creature : this.player.getCreatures())
+        {
+            if (creature.isIsAlive())
+            {
+                aliveCreatures++;
+            }
+        }
+        
         if (this.player.getFood() - ModelFactory.getCreatureCost(this.creatureType) >= 0
-            && this.player.getCreatures().size() < Game.CONST_CREATURES_LIMIT)
+            && aliveCreatures < Game.CONST_CREATURES_LIMIT)
         {
             return true;
         }
@@ -63,7 +74,6 @@ public class SpawnAction extends Action
             Creature creature = ModelFactory.createCreature(game, id, this.player, this.creatureType);
             this.player.addCreature(creature);
             game.getWorld().addCreature(creature);
-            //game.getWorld().getSelectableObjects().attachChild(creature.getModel());
             creature.getLocation().repositionCreatures();
             System.out.println(id);
             

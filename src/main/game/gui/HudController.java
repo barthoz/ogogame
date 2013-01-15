@@ -14,6 +14,7 @@ import de.lessvoid.nifty.elements.render.TextRenderer;
 import de.lessvoid.nifty.screen.Screen;
 import de.lessvoid.nifty.screen.ScreenController;
 import main.game.Game;
+import main.game.action.creature.LandAction;
 import main.game.model.creature.AirborneCreature;
 import main.game.model.creature.Creature;
 import main.game.model.creature.LandCreature;
@@ -61,6 +62,17 @@ public class HudController  extends AbstractAppState implements ScreenController
   public void onStartScreen() { }
  
   public void onEndScreen() { }
+  
+  public void eat()
+  {
+      this.nifty.gotoScreen("feedMenu");
+  }
+  
+  public void land()
+  {
+      LandAction act = new LandAction(this.game.getMe(), (AirborneCreature) this.game.getSelectedObject());
+      this.game.getMe().registerAction(act);
+  }
   
   public void leave()
   {

@@ -128,6 +128,8 @@ public class ExplosionControl extends AbstractControl implements Savable, Clonea
                 flame.killAllParticles();
                 roundspark.killAllParticles();
                 shockwave.killAllParticles();
+                
+                this.game.removeExplosion(this.controllee);
             }
         }
     }

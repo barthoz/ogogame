@@ -33,7 +33,7 @@ public class Explosion
             shockwave;
     private static final ParticleMesh.Type EMITTER_TYPE = POINT_SPRITE ? ParticleMesh.Type.Point : ParticleMesh.Type.Triangle;
     
-    Explosion(Game game, Cell location){
+    public Explosion(Game game, Cell location){
         this.game = game;
         this.location = location;
         createFlame();
@@ -43,8 +43,9 @@ public class Explosion
         createSmokeTrail();
         createDebris();
         createShockwave();
-        explosionEffect.scale(0.5f);
+        explosionEffect.scale(20f);
         this.control = new ExplosionControl(explosionEffect, game, this);
+        this.game.addExplosion(this);
     }
     
     private void createFlame()
@@ -213,5 +214,17 @@ public class Explosion
         mat.setTexture("Texture", game.getAssetManager().loadTexture("Effects/Explosion/shockwave.png"));
         shockwave.setMaterial(mat);
         explosionEffect.attachChild(shockwave);
+    }
+    
+    /**
+     * Getters & Setters
+     */
+    
+    public ExplosionControl getControl() {
+        return control;
+    }
+
+    public void setControl(ExplosionControl control) {
+        this.control = control;
     }
 }
