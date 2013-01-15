@@ -204,7 +204,7 @@ public class Game extends SimpleApplication
                         System.out.println((String) selectedSpatial.getUserData("parentId"));
                         LandCreature creature = (LandCreature) world.findCreatureById((String) selectedSpatial.getUserData("parentId"));
                         
-                        if (creature.getPlayer().equals(me))
+                        if (creature.getPlayer().equals(me) && creature.isIsAlive())
                         {
                             nifty.gotoScreen("feedMenu");
                             selectedObject = creature;
@@ -221,7 +221,7 @@ public class Game extends SimpleApplication
                     {
                         SeaCreature creature = (SeaCreature) world.findCreatureById((String) selectedSpatial.getUserData("parentId"));
                         
-                        if (creature.getPlayer().equals(me))
+                        if (creature.getPlayer().equals(me) && creature.isIsAlive())
                         {
                             nifty.gotoScreen("feedMenu");
                             selectedObject = creature;
@@ -238,7 +238,7 @@ public class Game extends SimpleApplication
                     {
                         AirborneCreature creature = (AirborneCreature) world.findCreatureById((String) selectedSpatial.getUserData("parentId"));
                         
-                        if (creature.getPlayer().equals(me))
+                        if (creature.getPlayer().equals(me) && creature.isIsAlive())
                         {
                             nifty.gotoScreen("feedMenu");
                             selectedObject = creature;
@@ -301,7 +301,7 @@ public class Game extends SimpleApplication
                     // Determine which model has been selected
                 }
             } /**
-             * [LEFT-CLICK while something selected] Select terrain, food source
+             * [LEFT-CLICK while something selected] Select terrain, food source, other creature
              */
             else if (actionsEnabled && !keyPressed && name.equals("Select") && selectedObject != null)
             {

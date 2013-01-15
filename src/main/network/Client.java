@@ -403,7 +403,7 @@ public class Client
             }
             else
             {
-                tempClient = client.getOutNeighbour();
+                tempClient = tempClient.getOutNeighbour();
             }
         }
         
