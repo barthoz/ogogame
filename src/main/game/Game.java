@@ -127,6 +127,34 @@ public class Game extends SimpleApplication
             }
 
             /**
+             * [RIGHT-CLICK] Select duck
+             */
+            
+            if (!keyPressed && name.equals("RightClick"))
+            {
+                Vector2f click2d = inputManager.getCursorPosition();
+                Vector3f click3d = cam.getWorldCoordinates(new Vector2f(click2d.x, click2d.y), 0f).clone();
+                Vector3f dir = cam.getWorldCoordinates(new Vector2f(click2d.x, click2d.y), 1f).subtractLocal(click3d).normalizeLocal();
+
+                CollisionResults results = new CollisionResults();
+                Ray ray = new Ray(click3d, dir);
+                world.getSelectableObjects().collideWith(ray, results);
+
+                // Check if something was selected
+                if (results.getClosestCollision() != null && results.getClosestCollision().getGeometry().getParent() != null)
+                {
+                    Spatial selectedSpatial = results.getClosestCollision().getGeometry().getParent();
+                    String modelType = selectedSpatial.getUserData("modelType");
+                    
+                    if (modelType.equals("Duck"))
+                    {
+                        quack = true;
+                        quack();
+                    }
+                }
+            }
+            
+            /**
              * [RIGHT-CLICK] Select creature, base
              */
             if (actionsEnabled && !keyPressed && name.equals("RightClick"))
@@ -702,7 +730,7 @@ public class Game extends SimpleApplication
     public boolean setModeSent = true;
     public boolean getModeBlocked = false;
     
-    private long countSetMode = 0;
+    private long countSetMode = CONST_SET_MODE_TIME_LIMIT - 1000;
     private long countGetMode = 0;
     private boolean getModePerformed = false;
     
@@ -922,25 +950,32 @@ public class Game extends SimpleApplication
         
         for (Creature creature : this.world.getCreatures())
         {
-            if (creature instanceof AirborneCreature)
+            if (creature.isIsAlive())
             {
-                header = "Health: " + creature.getHealth() + "% / Stamina: " + ((AirborneCreature) creature).getStamina() + "%";
-            }
-            else
-            {
-                header = "Health: " + creature.getHealth() + "%";
-            }
-            
-            if (creature.isInFight())
-            {
-                header += " (!)";
-            }
-            
-            creature.getCreatureHeader().setText(header);
-            
-            if (creature.getLocation().getOccupants().size() > 1)
-            {
-                creature.getCreatureHeader().setLocalTranslation(cam.getScreenCoordinates(creature.getModel().getWorldTranslation().add(0, 20f + Float.parseFloat(creature.getId().split("_")[1]) * creature.getCreatureHeader().getHeight(), 0)).add(-1 * creature.getCreatureHeader().getLineWidth() / 2f, 0f, 0f));
+                if (creature instanceof AirborneCreature)
+                {
+                    header = "Health: " + creature.getHealth() + "% / Stamina: " + ((AirborneCreature) creature).getStamina() + "%";
+                }
+                else
+                {
+                    header = "Health: " + creature.getHealth() + "%";
+                }
+
+                if (creature.isInFight())
+                {
+                    header += " (!)";
+                }
+
+                creature.getCreatureHeader().setText(header);
+
+                if (creature.getLocation().getOccupants().size() > 1)
+                {
+                    creature.getCreatureHeader().setLocalTranslation(cam.getScreenCoordinates(creature.getModel().getWorldTranslation().add(0, 20f + Float.parseFloat(creature.getId().split("_")[1]) * creature.getCreatureHeader().getHeight(), 0)).add(-1 * creature.getCreatureHeader().getLineWidth() / 2f, 0f, 0f));
+                }
+                else
+                {
+                    creature.getCreatureHeader().setLocalTranslation(cam.getScreenCoordinates(creature.getModel().getWorldTranslation().add(0, 20f, 0)).add(-1 * creature.getCreatureHeader().getLineWidth() / 2f, 0f, 0f));
+                }
             }
         }
         
