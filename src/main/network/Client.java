@@ -418,7 +418,7 @@ public class Client
     
     private void leaveClient(Client client, int leaveClientId)
     {
-        if (this.id == leaveClientId)
+        if (this.id == leaveClientId || client.equals(this))
         {
             return;
         }
