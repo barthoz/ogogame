@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <nifty xmlns="http://nifty-gui.sourceforge.net/nifty-1.3.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://nifty-gui.sourceforge.net/nifty-1.3.xsd http://nifty-gui.sourceforge.net/nifty-1.3.xsd">
-     <!-- Your IDE now tells you that one <screen></screen> element is expected here, etc. -->
+    <!-- Your IDE now tells you that one <screen></screen> element is expected here, etc. -->
     
     <useControls filename="nifty-default-controls.xml" />
-  <useStyles filename="nifty-default-styles.xml" />
+    <useStyles filename="nifty-default-styles.xml" />
     
     <screen id="hud" controller="main.game.gui.HudController">
         <layer id="background" childLayout="vertical">
@@ -16,7 +16,7 @@
             <panel id="topbar_panel" height="50px" width="90%" align="center" valigng="top" childLayout="horizontal" visibleToMouse="true">
                 <control id="button_to_creature_list" name="button" height="50px" width="20%" backgroundColor="#0000" label="Creatures" align="center" valign="center">
                     <interact onClick="showCreatureMenu()"/>
-                    </control >
+                </control >
                 <panel height="100%" width="40%" align="center" valigng="top" childLayout="horizontal" visibleToMouse="true">
                     <control id="num_land_text" name="label" text="             x0" height="100%" width="20%" align="center"/>
                     <image filename="Interface/land.png" 
@@ -41,20 +41,20 @@
                 <control id="set_mode_text" name="label" text="Set Mode: time left: 3s" height="100%" width="20%" align="center"/>
             </panel>
         </layer>
-        <layer id="specialActions_background" childLayout="vertical">
-            <image filename="Interface/background.png"
+        <layer id="specialActions_background" childLayout="center">
+                <image filename="Interface/background.png"
                    valign="bottom" align="center" height="50px" width="100%">
-            </image>
+                </image>
         </layer>
         <layer id="specialActions_forground" childLayout="center">
-            <panel width="75%" height="50px" childLayout="horizontal" align="center" valign="bottom">
-                <control name="button" label="Leave" id="leave" align="center" valign="center" visibleToMouse="true" width="20%">
+            <panel width="100%" height="50px" childLayout="center" valign="bottom">
+                <control name="button" label="Leave" id="leave" align="left" valign="center" visibleToMouse="true" width="20%">
                     <interact onClick="leave()"/>
                 </control>
                 <control name="button" label="Eat" id="cancel" align="center" valign="center" visibleToMouse="true" width="20%" >
                     <interact onClick="eat()"/>
                 </control>
-                <control name="button" label="Land" id="land" align="center" valign="center" visibleToMouse="true" width="20%" >
+                <control name="button" label="Land" id="land" align="right" valign="center" visibleToMouse="true" width="20%" >
                     <interact onClick="land()"/>
                 </control>
             </panel>
@@ -92,9 +92,9 @@
         </layer>
     </screen>
   
-  <screen id="spawnMenu" controller="main.game.gui.SpawnMenuController">
+    <screen id="spawnMenu" controller="main.game.gui.SpawnMenuController">
       
-              <layer id="background" childLayout="center">
+        <layer id="background" childLayout="center">
             <image filename="Interface/background.png"
                    valign="center" align="center" height="100%" width="75%">
             </image>
@@ -116,14 +116,14 @@
                 
                 <panel id="Land_food_display" height="100%" width="45%" align="center" valign="top" childLayout="horizontal" visibleToMouse="true">
                     
-                <panel id="Land_food_quantity" height="100%" width="20%" align="center" valign="top" childLayout="center" visibleToMouse="true">
-                    <control name="label" text="x2 (should be image)" />
-                </panel>
-                <panel id="Land_food_image" height="100%" width="80%" align="center" valign="top" childLayout="center" visibleToMouse="true">
-                    <image filename="Interface/land_food.png" height="128px" width="128px"
+                    <panel id="Land_food_quantity" height="100%" width="20%" align="center" valign="top" childLayout="center" visibleToMouse="true">
+                        <control name="label" text="x2 (should be image)" />
+                    </panel>
+                    <panel id="Land_food_image" height="100%" width="80%" align="center" valign="top" childLayout="center" visibleToMouse="true">
+                        <image filename="Interface/land_food.png" height="128px" width="128px"
                            valign="center" align="center" >
-                    </image>
-                </panel>
+                        </image>
+                    </panel>
                 </panel>
             </panel>
             
@@ -142,14 +142,14 @@
                 
                 <panel id="Sea_food_display" height="100%" width="45%" align="center" valign="top" childLayout="horizontal" visibleToMouse="true">
                     
-                <panel id="Sea_food_quantity" height="100%" width="20%" align="center" valign="top" childLayout="center" visibleToMouse="true">
-                    <control name="label" text="x3 (should be image)" />
-                </panel>
-                <panel id="Sea_food_image" height="100%" width="80%" align="center" valign="top" childLayout="center" visibleToMouse="true">
-                    <image filename="Interface/land_food.png" height="128px" width="128px"
+                    <panel id="Sea_food_quantity" height="100%" width="20%" align="center" valign="top" childLayout="center" visibleToMouse="true">
+                        <control name="label" text="x3 (should be image)" />
+                    </panel>
+                    <panel id="Sea_food_image" height="100%" width="80%" align="center" valign="top" childLayout="center" visibleToMouse="true">
+                        <image filename="Interface/land_food.png" height="128px" width="128px"
                            valign="center" align="center" >
-                    </image>
-                </panel>
+                        </image>
+                    </panel>
                 </panel>
             </panel>
             
@@ -168,14 +168,14 @@
                 
                 <panel id="Airborne_food_display" height="100%" width="45%" align="center" valign="top" childLayout="horizontal" visibleToMouse="true">
                     
-                <panel id="Airborne_food_quantity" height="100%" width="20%" align="center" valign="top" childLayout="center" visibleToMouse="true">
-                    <control name="label" text="x5 (should be image)" />
-                </panel>
-                <panel id="Airborne_food_image" height="100%" width="80%" align="center" valign="top" childLayout="center" visibleToMouse="true">
-                    <image filename="Interface/land_food.png" height="128px" width="128px"
+                    <panel id="Airborne_food_quantity" height="100%" width="20%" align="center" valign="top" childLayout="center" visibleToMouse="true">
+                        <control name="label" text="x5 (should be image)" />
+                    </panel>
+                    <panel id="Airborne_food_image" height="100%" width="80%" align="center" valign="top" childLayout="center" visibleToMouse="true">
+                        <image filename="Interface/land_food.png" height="128px" width="128px"
                            valign="center" align="center" >
-                    </image>
-                </panel>
+                        </image>
+                    </panel>
                 </panel>
             </panel>
             
@@ -185,7 +185,7 @@
                 </control>
             </panel>          
         </layer>
-  </screen>
+    </screen>
     
     <screen id="creatureMenu" controller="main.game.gui.CreatureMenuController">
        <layer id="background" childLayout="vertical">
