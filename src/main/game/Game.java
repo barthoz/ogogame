@@ -53,8 +53,10 @@ import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.builder.ScreenBuilder;
 import de.lessvoid.nifty.screen.DefaultScreenController;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.logging.Level;
@@ -96,6 +98,7 @@ public class Game extends SimpleApplication
      */
     
     private boolean quack = false;
+    private boolean leaveGame = false;
     
     /**
      * While running
@@ -1227,6 +1230,28 @@ public class Game extends SimpleApplication
         this.world.findDuck().quack(quackAudio);
     }
 
+    public void removePlayerFromGame(Player player)
+    {
+        // Remove player from players
+        this.players.remove(player);
+        
+        // Remove all creatures from this player from the game
+        Set<Creature> removeSet = new HashSet<Creature>();
+        
+        for (Creature creature : this.world.getCreatures())
+        {
+            if (creature.getPlayer().equals(player))
+            {
+                removeSet.add(creature);
+            }
+        }
+        
+        for (Creature creature : removeSet)
+        {
+            this.world.removeCreature(creature);
+        }
+    }
+    
     /**
      * Getters & setters
      */
@@ -1381,5 +1406,14 @@ public class Game extends SimpleApplication
     public void setCountGetMode(long countGetMode)
     {
         this.countGetMode = countGetMode;
+    }
+    
+    public boolean isLeaveGame() {
+        return leaveGame;
+    }
+
+    public void setLeaveGame(boolean leaveGame) {
+        this.leaveGame = leaveGame;
+
     }
 }
