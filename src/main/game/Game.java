@@ -1362,4 +1362,24 @@ public class Game extends SimpleApplication
     public void setQuack(boolean quack) {
         this.quack = quack;
     }
+
+    public long getCountSetMode()
+    {
+        return countSetMode;
+    }
+
+    public void setCountSetMode(long countSetMode)
+    {
+        this.countSetMode = countSetMode;
+    }
+
+    public long getCountGetMode()
+    {
+        return countGetMode;
+    }
+
+    public void setCountGetMode(long countGetMode)
+    {
+        this.countGetMode = countGetMode;
+    }
 }
