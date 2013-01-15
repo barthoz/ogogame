@@ -83,6 +83,7 @@ import main.game.model.cell.DeepWaterCell;
 import main.game.model.cell.LandCell;
 import main.game.model.cell.RockCell;
 import main.game.model.cell.ShallowWaterCell;
+import main.game.model.control.FoodSourceControl;
 import main.game.model.creature.AirborneCreature;
 import main.game.model.creature.Creature;
 import main.game.model.creature.LandCreature;
@@ -448,6 +449,12 @@ public class Game extends SimpleApplication
                 diamondGeo.rotate(FastMath.QUARTER_PI, FastMath.QUARTER_PI, FastMath.QUARTER_PI);
                 diamondGeo.setLocalTranslation(creature.getModel().getWorldTranslation().add(0f, 30f, 0f));
                 rootNode.attachChild(diamondGeo);
+                
+                /**
+                 * Create marker here
+                 */
+                
+                
             }
 
         }
@@ -1146,6 +1153,11 @@ public class Game extends SimpleApplication
         {
             for (FoodSource foodSource : this.world.getFoodSources())
             {
+                FoodSourceControl c= (FoodSourceControl)foodSource.getController();
+                Node s = (Node) c.getSpatial();
+                s.attachChild(c.getFull());
+                c.setSpatial(null);
+                c.setSpatial(s);
                 foodSource.refill();
             }
         }

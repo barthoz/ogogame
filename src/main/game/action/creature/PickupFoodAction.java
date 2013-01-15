@@ -11,6 +11,7 @@ import com.jme3.cinematic.events.CinematicEvent;
 import com.jme3.cinematic.events.CinematicEventListener;
 import com.jme3.cinematic.events.MotionEvent;
 import com.jme3.math.Vector3f;
+import com.jme3.scene.Node;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import main.exception.ActionNotEnabledException;
@@ -19,6 +20,7 @@ import main.game.Game;
 import main.game.Player;
 import main.game.algorithm.PathFinding;
 import main.game.model.FoodSource;
+import main.game.model.control.FoodSourceControl;
 import main.game.model.creature.AirborneCreature;
 import main.game.model.creature.Creature;
 
@@ -122,6 +124,11 @@ public class PickupFoodAction extends CreatureAction
                     public void onStop(CinematicEvent cinematic) {
                         //throw new UnsupportedOperationException("Not supported yet.");
                         
+                        FoodSourceControl c= (FoodSourceControl)foodSource.getController();
+                        Node s = (Node) c.getSpatial();
+                        s.detachChild(c.getFull());
+                        c.setSpatial(null);
+                        c.setSpatial(s);
                         subject.getModel().setLocalTranslation(foodSource.getLocation().getWorldCoordinates());
                         //subject.setLocation(foodSource.getLocation());
                     }

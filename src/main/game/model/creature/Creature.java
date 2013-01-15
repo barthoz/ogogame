@@ -107,7 +107,10 @@ public abstract class Creature
     {
         this.health = 0;
         this.isAlive = false;
-        this.creatureHeader.getParent().detachChild(this.creatureHeader);
+        if (this.creatureHeader.getParent() != null)
+        {
+            this.creatureHeader.getParent().detachChild(this.creatureHeader);
+        }
     }
 
     /**

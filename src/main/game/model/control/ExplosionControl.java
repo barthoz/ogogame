@@ -92,6 +92,12 @@ public class ExplosionControl extends AbstractControl implements Savable, Clonea
         super.setSpatial(spatial);
     }
 
+    @Override
+    public void update(float tpf)
+    {
+        this.controlUpdate(tpf);
+    }
+    
     /**
      * Implement your spatial's behaviour here. From here you can modify the
      * scene graph and the spatial (transform them, get and set userdata, etc).

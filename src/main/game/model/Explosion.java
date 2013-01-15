@@ -11,7 +11,9 @@ import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
+import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
+import com.jme3.scene.shape.Box;
 import main.game.Game;
 import main.game.model.cell.Cell;
 import main.game.model.control.ExplosionControl;
@@ -43,8 +45,11 @@ public class Explosion
         createSmokeTrail();
         createDebris();
         createShockwave();
-        explosionEffect.scale(20f);
+        explosionEffect.scale(50f);
+        explosionEffect.setLocalTranslation(this.location.getWorldCoordinates().add(0f, 10f, 0f));
+        game.getRenderManager().preloadScene(explosionEffect);
         this.control = new ExplosionControl(explosionEffect, game, this);
+        this.control.setEnabled(true);
         this.game.addExplosion(this);
     }
     
