@@ -194,7 +194,7 @@
             </image>
         </layer>
         <layer id="foreground" childLayout="vertical">
-            <panel width="75%" height="100%" childLayout="vertical" align="center">
+            <panel width="75%" height="90%" childLayout="vertical" align="center">
                 <panel id="header" align="center" width="100%" height="50px" childLayout="horizontal">
                     <control id="mark_header" name="label" valign="bottom" align="center" text="Marked" width="16%"/>
                     <control id="number_header" name="label" valign="bottom" align="center" text="Creature #" width="16%"/>
@@ -353,6 +353,9 @@
                         </image>
                     </panel>
                 </panel>
+            </panel>
+            <panel>
+                <control id="cancel" name="button" text="Go Back"/>
             </panel>
         </layer>
     </screen>
