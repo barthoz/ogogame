@@ -70,6 +70,7 @@ import main.game.action.creature.EatAction;
 import main.game.action.creature.FleeAction;
 import main.game.action.creature.MoveAction;
 import main.game.action.creature.PickupFoodAction;
+import main.game.gui.CreatureMenuController;
 import main.game.gui.FeedMenuController;
 import main.game.gui.HudController;
 import main.game.gui.SpawnMenuController;
@@ -98,6 +99,7 @@ public class Game extends SimpleApplication
      */
     
     private HudController hudController;
+    private CreatureMenuController cmController;
     
     /**
      * Networking
@@ -531,8 +533,10 @@ public class Game extends SimpleApplication
         this.nifty = niftyDisplay.getNifty();
 
         this.hudController = new HudController(this);
+        this.cmController = new CreatureMenuController(this);
         nifty.fromXml("Interface/gui.xml", "hud", this.hudController, new SpawnMenuController(this), new FeedMenuController(this));
         this.hudController.init();
+        this.cmController.init();
         guiViewPort.addProcessor(niftyDisplay);
         nifty.gotoScreen("hud");
 
@@ -964,6 +968,7 @@ public class Game extends SimpleApplication
         playerInfo.setText("Creatures: " + alive + " / Food: " + me.getFood());
         
         this.hudController.update(tpf);
+        this.cmController.update(tpf);
     }
     
     private BitmapText modeInfo;
@@ -1427,5 +1432,15 @@ public class Game extends SimpleApplication
     public void setLeaveGame(boolean leaveGame) {
         this.leaveGame = leaveGame;
 
+    }
+
+    public Nifty getNifty()
+    {
+        return nifty;
+    }
+
+    public void setNifty(Nifty nifty)
+    {
+        this.nifty = nifty;
     }
 }

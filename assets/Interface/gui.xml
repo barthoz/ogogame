@@ -187,31 +187,169 @@
         </layer>
   </screen>
     
-    <screen id="creatureMenu" controller="mygame.ProgressbarControl">
-        <layer id="background" childLayout="vertical">
+    <screen id="creatureMenu" controller="main.game.gui.CreatureMenuController">
+       <layer id="background" childLayout="vertical">
             <image filename="Interface/background.png"
                    valign="top" align="center" height="100%" width="75%">
             </image>
         </layer>
-        <layer id="forground" childLayout="vertical">
+        <layer id="foreground" childLayout="vertical">
             <panel width="75%" height="100%" childLayout="vertical" align="center">
                 <panel id="header" align="center" width="100%" height="50px" childLayout="horizontal">
-                    <control id="mark_header" name="label" valign="bottom" align="center" text="Marked" width="20%"/>
-                    <control id="number_header" name="label" valign="bottom" align="center" text="Creature #" width="20%"/>
-                    <control id="health_header" name="label" valign="bottom" align="center" text="Health" width="20%"/>
-                    <control id="mark_header" name="label" valign="bottom" align="center" text="Stamina" width="20%"/>
-                    <control id="mark_header" name="label" valign="bottom" align="center" text="Type" width="20%"/>
+                    <control id="mark_header" name="label" valign="bottom" align="center" text="Marked" width="16%"/>
+                    <control id="number_header" name="label" valign="bottom" align="center" text="Creature #" width="16%"/>
+                    <control id="level_header" name="label" valign="bottom" align="center" text="Level" width="16%"/>
+                    <control id="health_header" name="label" valign="bottom" align="center" text="Health" width="16%"/>
+                    <control id="mark_header" name="label" valign="bottom" align="center" text="Stamina" width="16%"/>
+                    <control id="mark_header" name="label" valign="bottom" align="center" text="Type" width="16%"/>
                 </panel>
-                <panel id="check1" align="center" width="100%" height="100px" childLayout="horizontal">
-                    <panel id="mark1_panel" align="center" valign="center" width="20%" childLayout="vertical">
-                        <control id="mark1" name="checkbox" valign="center" align="center"/>
+                <panel id="check_id0" align="center" width="100%" height="75px" childLayout="horizontal">
+                    <effect id="effect_id0" name="hide"/>
+                    <panel id="mark1_panel_id0" align="center" valign="center" width="16%" childLayout="vertical">
+                        <control id="mark_id0" name="checkbox" valign="center" align="center"/>
                     </panel>
-                    <control id="number1" name="label" text="1" valign="center" align="center" width="20%"/>
-                    <control id="health1" name="label" text="100%" valign="center" align="center" width="20%"/>
-                    <control id="stamina1" name="label" text="N/A" valign="center" align="center" width="20%"/>
-                    <panel align="center" valign="center" width="20%"childLayout="vertical">
-                        <image id="type1" filename="Interface/land.png"
-                               valign="center" align="center" width="100px" height="100px">
+                    <control id="number_id0" name="label" text="1" valign="center" align="center" width="16%"/>
+                    <control id="level_id0" name="label" text="1" valign="center" align="center" width="16%"/>
+                    <control id="health_id0" name="label" text="100%" valign="center" align="center" width="16%"/>
+                    <control id="stamina_id0" name="label" text="N/A" valign="center" align="center" width="16%"/>
+                    <panel align="center" valign="center" width="16%"childLayout="vertical">
+                        <image id="type_id0" filename="Interface/land.png"
+                               valign="center" align="center" width="75px" height="75px">
+                        </image>
+                    </panel>
+                </panel>
+                <panel id="check_id1" align="center" width="100%" height="75px" childLayout="horizontal">
+                    <effect id="effect_id1" name="hide"/>
+                    <panel id="mark1_panel_id1" align="center" valign="center" width="16%" childLayout="vertical">
+                        <control id="mark_id1" name="checkbox" valign="center" align="center"/>
+                    </panel>
+                    <control id="number_id1" name="label" text="1" valign="center" align="center" width="16%"/>
+                    <control id="level_id1" name="label" text="1" valign="center" align="center" width="16%"/>
+                    <control id="health_id1" name="label" text="100%" valign="center" align="center" width="16%"/>
+                    <control id="stamina_id1" name="label" text="N/A" valign="center" align="center" width="16%"/>
+                    <panel align="center" valign="center" width="16%"childLayout="vertical">
+                        <image id="type_id1" filename="Interface/land.png"
+                               valign="center" align="center" width="75px" height="75px">
+                        </image>
+                    </panel>
+                </panel>
+                <panel id="check_id2" align="center" width="100%" height="75px" childLayout="horizontal">
+                    <effect id="effect_id2" name="hide"/>
+                    <panel id="mark1_panel_id2" align="center" valign="center" width="16%" childLayout="vertical">
+                        <control id="mark_id2" name="checkbox" valign="center" align="center"/>
+                    </panel>
+                    <control id="number_id2" name="label" text="1" valign="center" align="center" width="16%"/>
+                    <control id="level_id2" name="label" text="1" valign="center" align="center" width="16%"/>
+                    <control id="health_id2" name="label" text="100%" valign="center" align="center" width="16%"/>
+                    <control id="stamina_id2" name="label" text="N/A" valign="center" align="center" width="16%"/>
+                    <panel align="center" valign="center" width="16%"childLayout="vertical">
+                        <image id="type_id2" filename="Interface/land.png"
+                               valign="center" align="center" width="75px" height="75px">
+                        </image>
+                    </panel>
+                </panel>
+                <panel id="check_id3" align="center" width="100%" height="75px" childLayout="horizontal">
+                    <effect id="effect_id3" name="hide"/>
+                    <panel id="mark1_panel_id3" align="center" valign="center" width="16%" childLayout="vertical">
+                        <control id="mark_id3" name="checkbox" valign="center" align="center"/>
+                    </panel>
+                    <control id="number_id3" name="label" text="1" valign="center" align="center" width="16%"/>
+                    <control id="level_id3" name="label" text="1" valign="center" align="center" width="16%"/>
+                    <control id="health_id3" name="label" text="100%" valign="center" align="center" width="16%"/>
+                    <control id="stamina_id3" name="label" text="N/A" valign="center" align="center" width="16%"/>
+                    <panel align="center" valign="center" width="16%"childLayout="vertical">
+                        <image id="type_id3" filename="Interface/land.png"
+                               valign="center" align="center" width="75px" height="75px">
+                        </image>
+                    </panel>
+                </panel>
+                <panel id="check_id4" align="center" width="100%" height="75px" childLayout="horizontal">
+                    <effect id="effect_id4" name="hide"/>
+                    <panel id="mark1_panel_id4" align="center" valign="center" width="16%" childLayout="vertical">
+                        <control id="mark_id4" name="checkbox" valign="center" align="center"/>
+                    </panel>
+                    <control id="number_id4" name="label" text="1" valign="center" align="center" width="16%"/>
+                    <control id="level_id4" name="label" text="1" valign="center" align="center" width="16%"/>
+                    <control id="health_id4" name="label" text="100%" valign="center" align="center" width="16%"/>
+                    <control id="stamina_id4" name="label" text="N/A" valign="center" align="center" width="16%"/>
+                    <panel align="center" valign="center" width="16%"childLayout="vertical">
+                        <image id="type_id4" filename="Interface/land.png"
+                               valign="center" align="center" width="75px" height="75px">
+                        </image>
+                    </panel>
+                </panel>
+                <panel id="check_id5" align="center" width="100%" height="75px" childLayout="horizontal">
+                    <effect id="effect_id5" name="hide"/>
+                    <panel id="mark1_panel_id5" align="center" valign="center" width="16%" childLayout="vertical">
+                        <control id="mark_id5" name="checkbox" valign="center" align="center"/>
+                    </panel>
+                    <control id="number_id5" name="label" text="1" valign="center" align="center" width="16%"/>
+                    <control id="level_id5" name="label" text="1" valign="center" align="center" width="16%"/>
+                    <control id="health_id5" name="label" text="100%" valign="center" align="center" width="16%"/>
+                    <control id="stamina_id5" name="label" text="N/A" valign="center" align="center" width="16%"/>
+                    <panel align="center" valign="center" width="16%"childLayout="vertical">
+                        <image id="type_id5" filename="Interface/land.png"
+                               valign="center" align="center" width="75px" height="75px">
+                        </image>
+                    </panel>
+                </panel>
+                <panel id="check_id6" align="center" width="100%" height="75px" childLayout="horizontal">
+                    <effect id="effect_id6" name="hide"/>
+                    <panel id="mark1_panel_id6" align="center" valign="center" width="16%" childLayout="vertical">
+                        <control id="mark_id6" name="checkbox" valign="center" align="center"/>
+                    </panel>
+                    <control id="number_id6" name="label" text="1" valign="center" align="center" width="16%"/>
+                    <control id="level_id6" name="label" text="1" valign="center" align="center" width="16%"/>
+                    <control id="health_id6" name="label" text="100%" valign="center" align="center" width="16%"/>
+                    <control id="stamina_id6" name="label" text="N/A" valign="center" align="center" width="16%"/>
+                    <panel align="center" valign="center" width="16%"childLayout="vertical">
+                        <image id="type_id6" filename="Interface/land.png"
+                               valign="center" align="center" width="75px" height="75px">
+                        </image>
+                    </panel>
+                </panel>
+                <panel id="check_id7" align="center" width="100%" height="75px" childLayout="horizontal">
+                    <effect id="effect_id7" name="hide"/>
+                    <panel id="mark1_panel_id7" align="center" valign="center" width="16%" childLayout="vertical">
+                        <control id="mark_id7" name="checkbox" valign="center" align="center"/>
+                    </panel>
+                    <control id="number_id7" name="label" text="1" valign="center" align="center" width="16%"/>
+                    <control id="level_id7" name="label" text="1" valign="center" align="center" width="16%"/>
+                    <control id="health_id7" name="label" text="100%" valign="center" align="center" width="16%"/>
+                    <control id="stamina_id7" name="label" text="N/A" valign="center" align="center" width="16%"/>
+                    <panel align="center" valign="center" width="16%"childLayout="vertical">
+                        <image id="type_id7" filename="Interface/land.png"
+                               valign="center" align="center" width="75px" height="75px">
+                        </image>
+                    </panel>
+                </panel>
+                <panel id="check_id8" align="center" width="100%" height="75px" childLayout="horizontal">
+                    <effect id="effect_id8" name="hide"/>
+                    <panel id="mark1_panel_id8" align="center" valign="center" width="16%" childLayout="vertical">
+                        <control id="mark_id8" name="checkbox" valign="center" align="center"/>
+                    </panel>
+                    <control id="number_id8" name="label" text="1" valign="center" align="center" width="16%"/>
+                    <control id="level_id8" name="label" text="1" valign="center" align="center" width="16%"/>
+                    <control id="health_id8" name="label" text="100%" valign="center" align="center" width="16%"/>
+                    <control id="stamina_id8" name="label" text="N/A" valign="center" align="center" width="16%"/>
+                    <panel align="center" valign="center" width="16%"childLayout="vertical">
+                        <image id="type_id8" filename="Interface/land.png"
+                               valign="center" align="center" width="75px" height="75px">
+                        </image>
+                    </panel>
+                </panel>
+                <panel id="check_id9" align="center" width="100%" height="75px" childLayout="horizontal">
+                    <effect id="effect_id9" name="hide"/>
+                    <panel id="mark1_panel_id9" align="center" valign="center" width="16%" childLayout="vertical">
+                        <control id="mark_id9" name="checkbox" valign="center" align="center"/>
+                    </panel>
+                    <control id="number_id9" name="label" text="1" valign="center" align="center" width="16%"/>
+                    <control id="level_id9" name="label" text="1" valign="center" align="center" width="16%"/>
+                    <control id="health_id9" name="label" text="100%" valign="center" align="center" width="16%"/>
+                    <control id="stamina_id9" name="label" text="N/A" valign="center" align="center" width="16%"/>
+                    <panel align="center" valign="center" width="16%"childLayout="vertical">
+                        <image id="type_id9" filename="Interface/land.png"
+                               valign="center" align="center" width="75px" height="75px">
                         </image>
                     </panel>
                 </panel>
