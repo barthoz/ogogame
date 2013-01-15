@@ -106,6 +106,7 @@ public class Game extends SimpleApplication
     private boolean quackReceived = false;
     private boolean quack = false;
     private boolean leaveGame = false;
+    private Player receiveLeaveGamePlayer = null;
     
     /**
      * While running
@@ -884,6 +885,15 @@ public class Game extends SimpleApplication
                     this.nextRound();
                     
                     /**
+                     * Handle leave games
+                     */
+                    
+                    if (this.receiveLeaveGamePlayer != null)
+                    {
+                        this.removePlayerInternally();
+                    }
+                    
+                    /**
                     * Handle battles
                     */
 
@@ -1293,6 +1303,14 @@ public class Game extends SimpleApplication
 
     public void removePlayerFromGame(Player player)
     {
+        this.receiveLeaveGamePlayer = player;
+    }
+    
+    private void removePlayerInternally()
+    {
+        Player player = this.receiveLeaveGamePlayer;
+        this.receiveLeaveGamePlayer = null;
+        
         // Remove player from players
         this.players.remove(player);
         
