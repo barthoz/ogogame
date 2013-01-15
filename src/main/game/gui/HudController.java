@@ -12,6 +12,7 @@ import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.screen.Screen;
 import de.lessvoid.nifty.screen.ScreenController;
 import main.game.Game;
+import main.game.model.creature.Creature;
 
 /**
  *
@@ -19,6 +20,7 @@ import main.game.Game;
  */
 public class HudController  extends AbstractAppState implements ScreenController {
  
+  
   private Nifty nifty;
   private Screen screen;
   private SimpleApplication app;
@@ -52,11 +54,28 @@ public class HudController  extends AbstractAppState implements ScreenController
   public void initialize(AppStateManager stateManager, Application app) {
     super.initialize(stateManager, app);
     this.app=(SimpleApplication)app;
+    
   }
  
   @Override
   public void update(float tpf) { 
-    /** jME update loop! */ 
+      /*modeInfo.setText("Mode: " + (!this.inSetMode ? "Get (" + (10 - (int) (this.countGetMode / 1000f)) + "s left)" : "Set, time left: " + (CONST_SET_MODE_TIME_LIMIT - (int) (this.countSetMode / 1000f)) + "s"));
+        roundInfo.setText("Round number: " + this.round);
+        
+        // Count alive creatures
+        int alive = 0;
+        for (Creature creature : me.getCreatures())
+        {
+            if (creature.isIsAlive())
+            {
+                alive++;
+            }
+        }
+        
+        playerInfo.setText("Creatures: " + alive + " / Food: " + me.getFood());*/
   }
  
+  public void showCreatureMenu(){
+      nifty.gotoScreen("creatureMenu");
+  }
 }

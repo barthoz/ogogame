@@ -7,7 +7,40 @@
   <useStyles filename="nifty-default-styles.xml" />
     
     <screen id="hud" controller="main.game.gui.HudController">
-        
+        <layer id="background" childLayout="vertical">
+            <image filename="Interface/background.png"
+                   valign="top" align="center" height="50px" width="100%">
+            </image>
+        </layer>
+        <layer id="foreground" childLayout="vertical">
+            <panel id="topbar_panel" height="50px" width="90%" align="center" valigng="top" childLayout="horizontal" visibleToMouse="true">
+                <control id="button_to_creature_list" name="button" height="50px" width="20%" backgroundColor="#0000" label="Creatures" align="center" valign="center">
+                    <interact onClick="showCreatureMenu()"/>
+                    </control >
+                <panel height="100%" width="40%" align="center" valigng="top" childLayout="horizontal" visibleToMouse="true">
+                    <control id="num_land_text" name="label" text="             x0" height="100%" width="20%" align="center"/>
+                    <image filename="Interface/land.png" 
+                           align="center" valign="center" height="50px" width="50px">
+                    </image>
+                    <control id="num_sea_text" name="label" text="             x0" height="100%" width="20%" align="center"/>
+                    <image filename="Interface/sea.png"
+                           align="center" valign="center" height="50px" width="50px">
+                    </image>
+                    <control id="num_air_text" name="label" text="             x0" height="100%" width="20%"align="center"/>
+                    <image filename="Interface/air.png"
+                           align="center" valign="center" height="50px" width="50px">
+                    </image>
+                </panel>
+                <panel height="100%" width="20%" align="center" valigng="top" childLayout="horizontal" visibleToMouse="true">
+                    <control id="num_food_text" name="label" text="             x0" height="100%" width="50%" align="center"/>
+                    <image filename="Interface/land_food.png"
+                           align="center" valign="center" height="50px" width="50px">
+                    </image>
+                </panel>
+                
+                <control id="set_mode_text" name="label" text="Set Mode: time left: 3s" height="100%" width="20%" align="center"/>
+            </panel>
+        </layer>
     </screen>
   
     <screen id="feedMenu" controller="main.game.gui.FeedMenuController">
@@ -41,12 +74,10 @@
         </layer>
     </screen>
   
-  
-  
   <screen id="spawnMenu" controller="main.game.gui.SpawnMenuController">
       
               <layer id="background" childLayout="center">
-            <image filename="Interface/loading.jpg"
+            <image filename="Interface/loading.png"
                    valign="center" align="center" height="100%" width="75%">
             </image>
         </layer>
@@ -137,4 +168,36 @@
             </panel>          
         </layer>
   </screen>
+    
+    <screen id="creatureMenu" controller="mygame.ProgressbarControl">
+        <layer id="background" childLayout="vertical">
+            <image filename="Interface/background.png"
+                   valign="top" align="center" height="100%" width="75%">
+            </image>
+        </layer>
+        <layer id="forground" childLayout="vertical">
+            <panel width="75%" height="100%" childLayout="vertical" align="center">
+                <panel id="header" align="center" width="100%" height="50px" childLayout="horizontal">
+                    <control id="mark_header" name="label" valign="bottom" align="center" text="Marked" width="20%"/>
+                    <control id="number_header" name="label" valign="bottom" align="center" text="Creature #" width="20%"/>
+                    <control id="health_header" name="label" valign="bottom" align="center" text="Health" width="20%"/>
+                    <control id="mark_header" name="label" valign="bottom" align="center" text="Stamina" width="20%"/>
+                    <control id="mark_header" name="label" valign="bottom" align="center" text="Type" width="20%"/>
+                </panel>
+                <panel id="check1" align="center" width="100%" height="100px" childLayout="horizontal">
+                    <panel id="mark1_panel" align="center" valign="center" width="20%" childLayout="vertical">
+                        <control id="mark1" name="checkbox" valign="center" align="center"/>
+                    </panel>
+                    <control id="number1" name="label" text="1" valign="center" align="center" width="20%"/>
+                    <control id="health1" name="label" text="100%" valign="center" align="center" width="20%"/>
+                    <control id="stamina1" name="label" text="N/A" valign="center" align="center" width="20%"/>
+                    <panel align="center" valign="center" width="20%"childLayout="vertical">
+                        <image id="type1" filename="Interface/land.png"
+                               valign="center" align="center" width="100px" height="100px">
+                        </image>
+                    </panel>
+                </panel>
+            </panel>
+        </layer>
+    </screen>
 </nifty>
