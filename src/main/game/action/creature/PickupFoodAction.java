@@ -106,7 +106,7 @@ public class PickupFoodAction extends CreatureAction
                     }
                 });
                 
-                final Vector3f airDestination = new Vector3f(foodSource.getLocation().getWorldCoordinates().x, PathFinding.airCreatureHeight, foodSource.getLocation().getWorldCoordinates().z);
+                //final Vector3f airDestination = foodSource.getLocation().getWorldCoordinates();//new Vector3f(foodSource.getLocation().getWorldCoordinates().x, PathFinding.airCreatureHeight, foodSource.getLocation().getWorldCoordinates().z);
                 
                 cinematic.addListener(new CinematicEventListener()
                 {
@@ -122,16 +122,8 @@ public class PickupFoodAction extends CreatureAction
                     public void onStop(CinematicEvent cinematic) {
                         //throw new UnsupportedOperationException("Not supported yet.");
                         
-                        if (subject instanceof AirborneCreature)
-                        {
-                            subject.getModel().setLocalTranslation(airDestination);
-                        }
-                        else
-                        {
-                            subject.getModel().setLocalTranslation(foodSource.getLocation().getWorldCoordinates());
-                        }
-                        
-                        subject.setLocation(foodSource.getLocation());
+                        subject.getModel().setLocalTranslation(foodSource.getLocation().getWorldCoordinates());
+                        //subject.setLocation(foodSource.getLocation());
                     }
                     
                 });
@@ -141,8 +133,26 @@ public class PickupFoodAction extends CreatureAction
             }
             
             // When succeeded, perform some action
-            foodSource.eat();
+            this.foodSource.eat();
             this.player.increaseFood(1);
+            
+            /**
+            * Update locations
+            */
+
+            // Update old location
+            if (this.subject instanceof AirborneCreature)
+            {
+               this.subject.getLocation().removeCreature(this.subject, ((AirborneCreature) this.subject).isAirborne());
+               ((AirborneCreature) this.subject).land();
+            }
+            else
+            {
+               this.subject.getLocation().removeCreature(this.subject, false);
+            }
+
+            // Update new location
+            this.foodSource.getLocation().addCreature(this.subject, false);
         }
     }
     

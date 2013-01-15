@@ -181,7 +181,7 @@ public class FleeAction extends CreatureAction
             // Update new location
             if (this.subject instanceof AirborneCreature)
             {
-               ((AirborneCreature) this.subject).setAirborne(true);
+               ((AirborneCreature) this.subject).takeOff();
                this.destination.addCreature(this.subject, true);
             }
             else

@@ -85,6 +85,8 @@ public class LandAction extends CreatureAction
         
         cinematic.play();
         
+        ((AirborneCreature) this.subject).land();
+        
         /**
          * Update locations
          */
