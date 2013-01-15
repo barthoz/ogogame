@@ -41,6 +41,24 @@
                 <control id="set_mode_text" name="label" text="Set Mode: time left: 3s" height="100%" width="20%" align="center"/>
             </panel>
         </layer>
+        <layer id="specialActions_background" childLayout="vertical">
+            <image filename="Interface/background.png"
+                   valign="bottom" align="center" height="50px" width="100%">
+            </image>
+        </layer>
+        <layer id="specialActions_forground" childLayout="vertical">
+            <panel width="75%" height="50px" childLayout="vertical" align="center">
+                <control name="button" label="Leave" id="leave" align="center" valign="center" visibleToMouse="true" >
+                    <interact onClick="leave()"/>
+                </control>
+                <control name="button" label="Eat" id="cancel" align="center" valign="center" visibleToMouse="true" >
+                    <interact onClick="eat()"/>
+                </control>
+                <control name="button" label="Land" id="land" align="center" valign="center" visibleToMouse="true" >
+                    <interact onClick="land()"/>
+                </control>
+            </panel>
+        </layer>
     </screen>
   
     <screen id="feedMenu" controller="main.game.gui.FeedMenuController">
@@ -200,24 +218,5 @@
             </panel>
         </layer>
     </screen>
-        <screen id="specialActionsMenu">
-        <layer id="background" childLayout="vertical">
-            <image filename="Interface/background.png"
-                   valign="bottom" align="center" height="100%" width="75%">
-            </image>
-        </layer>
-        <layer id="forground" childLayout="vertical">
-            <panel width="75%" height="100%" childLayout="vertical" align="center">
-                <control name="button" label="Leave" id="leave" align="center" valign="center" visibleToMouse="true" >
-                    <interact onClick="leave()"/>
-                </control>
-                <control name="button" label="Eat" id="cancel" align="center" valign="center" visibleToMouse="true" >
-                    <interact onClick="eat()"/>
-                </control>
-                <control name="button" label="Land" id="land" align="center" valign="center" visibleToMouse="true" >
-                    <interact onClick="land()"/>
-                </control>
-            </panel>
-        </layer>
-    </screen>
+
 </nifty>
