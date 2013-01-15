@@ -390,23 +390,28 @@ public class Client
     
     private void leaveClient(int leaveClientId)
     {
-        if (this.inNeighbour.getId() == leaveClientId)
+        // Find leaving client
+        Client client = null;
+        Client tempClient = this.outNeighbour;
+        
+        while (client == null)
         {
-            this.inNeighbour = this.inNeighbour.getInNeighbour();
+            if (tempClient.getId() == leaveClientId)
+            {
+                client = tempClient;
+                break;
+            }
+            else
+            {
+                tempClient = client.getOutNeighbour();
+            }
         }
         
-        if (this.outNeighbour.getId() == leaveClientId)
-        {
-            this.outNeighbour = this.outNeighbour.getOutNeighbour();
-        }
+        // Update inNeighbour of client
+        client.getInNeighbour().setOutNeighbour(client.getOutNeighbour());
         
-        if (this.inNeighbour == this)
-        {
-            System.out.println("Game ended. Too little players.");
-            this.game.stop();
-        }
-        
-        leaveClient(this.outNeighbour, leaveClientId);
+        // Update outNeighbour of client
+        client.getOutNeighbour().setInNeighbour(client.getInNeighbour());
         
         /**
          * Remove player from game
@@ -414,28 +419,6 @@ public class Client
         
         Player leavePlayer = this.game.getPlayerById(leaveClientId);
         this.game.removePlayerFromGame(leavePlayer);
-    }
-    
-    private void leaveClient(Client client, int leaveClientId)
-    {
-        if (this.id == leaveClientId || client.equals(this))
-        {
-            return;
-        }
-        else
-        {
-            if (client.inNeighbour.getId() == leaveClientId)
-            {
-                client.setInNeighbour(client.getInNeighbour().getInNeighbour());
-            }
-
-            if (this.outNeighbour.getId() == leaveClientId)
-            {
-                client.setOutNeighbour(client.getOutNeighbour().getOutNeighbour());
-            }
-
-            leaveClient(client.getOutNeighbour(), leaveClientId);
-        }
     }
     
     /**
