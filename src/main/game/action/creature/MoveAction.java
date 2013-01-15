@@ -79,7 +79,8 @@ public class MoveAction extends CreatureAction
     {
         if (this.destination.creatureAllowed(subject)
             && !this.subject.isInFight()
-            && this.subject.getLocation().distance(this.destination) <= this.subject.getActionRadius())
+            && this.subject.getLocation().distance(this.destination) <= this.subject.getActionRadius()
+            && !this.subject.getLocation().equals(this.destination))
         {
             return true;
         }
