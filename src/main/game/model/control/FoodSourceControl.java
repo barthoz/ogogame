@@ -13,6 +13,7 @@ import com.jme3.export.JmeImporter;
 import com.jme3.export.Savable;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
+import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
 import com.jme3.scene.control.Control;
@@ -32,6 +33,7 @@ public class FoodSourceControl extends AbstractControl implements Savable, Clone
      */
     private Game game;
     private FoodSource controllee;
+    private Spatial full;
 
     /**
      * Constructors
@@ -47,9 +49,10 @@ public class FoodSourceControl extends AbstractControl implements Savable, Clone
      * Optional custom constructor with arguments that can init custom fields.
      * Note: you cannot modify the spatial here yet!
      */
-    public FoodSourceControl(Spatial spatial, Game game, FoodSource controllee)
+    public FoodSourceControl(Node spatial, Game game, FoodSource controllee)
     {
         super.setSpatial(spatial);
+        this.full = spatial.getChild("Full");
         this.game = game;
         this.controllee = controllee;
     }
@@ -109,5 +112,13 @@ public class FoodSourceControl extends AbstractControl implements Savable, Clone
     {
         super.write(ex);
         // ex.getCapsule(this).write(...);
+    }
+
+    public Spatial getFull() {
+        return full;
+    }
+
+    public void setFull(Spatial full) {
+        this.full = full;
     }
 }

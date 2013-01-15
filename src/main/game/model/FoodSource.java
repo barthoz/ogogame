@@ -4,6 +4,7 @@
  */
 package main.game.model;
 
+import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import main.game.Game;
 import main.game.model.cell.Cell;
@@ -29,7 +30,7 @@ public class FoodSource
     /**
      * Constructor
      */
-    public FoodSource(int id, Spatial model, Game game, Cell location)
+    public FoodSource(int id, Node model, Game game, Cell location)
     {
         this.id = id;
         this.model = model;
