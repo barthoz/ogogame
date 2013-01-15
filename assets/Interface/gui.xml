@@ -46,15 +46,15 @@
                    valign="bottom" align="center" height="50px" width="100%">
             </image>
         </layer>
-        <layer id="specialActions_forground" childLayout="vertical">
-            <panel width="75%" height="50px" childLayout="vertical" align="center">
-                <control name="button" label="Leave" id="leave" align="center" valign="center" visibleToMouse="true" >
+        <layer id="specialActions_forground" childLayout="center">
+            <panel width="75%" height="50px" childLayout="center" align="center" valign="bottom">
+                <control name="button" label="Leave" id="leave" align="center" valign="center" visibleToMouse="true" width="20%">
                     <interact onClick="leave()"/>
                 </control>
-                <control name="button" label="Eat" id="cancel" align="center" valign="center" visibleToMouse="true" >
+                <control name="button" label="Eat" id="cancel" align="center" valign="center" visibleToMouse="true" width="20%" >
                     <interact onClick="eat()"/>
                 </control>
-                <control name="button" label="Land" id="land" align="center" valign="center" visibleToMouse="true" >
+                <control name="button" label="Land" id="land" align="center" valign="center" visibleToMouse="true" width="20%" >
                     <interact onClick="land()"/>
                 </control>
             </panel>
