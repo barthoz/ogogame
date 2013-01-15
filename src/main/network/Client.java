@@ -295,7 +295,15 @@ public class Client
                                     }
                                     else if (message instanceof MessageQuack)
                                     {
-                                        game.quack();
+                                        Thread playQuack = new Thread(new Runnable()
+                                        {
+                                            public void run()
+                                            {
+                                                game.quack();
+                                            }
+                                        });
+                                        
+                                        playQuack.start();
                                     }
 
                                     // Pass message onto the next neighbour (unchanged)

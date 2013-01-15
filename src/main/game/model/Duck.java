@@ -24,7 +24,7 @@ public class Duck
     private Spatial model;
     private DuckControl controller;
     private Cell location;
-    private boolean quackable;
+    private boolean quackable = true;
 
     /**
      * Constructor
