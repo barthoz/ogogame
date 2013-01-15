@@ -176,7 +176,7 @@ public class Client
                             // Handle message
                             Message message = (Message) messageQueue.poll();
 
-                            if (message instanceof MessagePassToken || message instanceof MessageSetModeDone || message instanceof MessageLeaveGame || message instanceof MessagePlayerActions)
+                            if (message instanceof MessagePassToken || message instanceof MessageSetModeDone || message instanceof MessageLeaveGame || message instanceof MessagePlayerActions || message instanceof MessageQuack)
                             {
                                 byte[] sendBuffer;
                                 DatagramPacket sendPacket;
@@ -295,15 +295,7 @@ public class Client
                                     }
                                     else if (message instanceof MessageQuack)
                                     {
-                                        Thread playQuack = new Thread(new Runnable()
-                                        {
-                                            public void run()
-                                            {
-                                                game.quack();
-                                            }
-                                        });
-                                        
-                                        playQuack.start();
+                                        game.quack();
                                     }
 
                                     // Pass message onto the next neighbour (unchanged)
