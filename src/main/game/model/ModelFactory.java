@@ -204,7 +204,7 @@ public class ModelFactory
         return creature;
     }
     
-    public static Explosion CreateExplosion(Game game, Cell location){
+    public static Explosion createExplosion(Game game, Cell location){
         
         return new Explosion(game, location);
     }
