@@ -192,6 +192,8 @@ public class Client
                                     {
                                         // Leave game
                                         game.stop();
+                                        stopListening();
+                                        stopResponding();
                                     }
                                 }
                                 else if (message instanceof MessagePassToken)
@@ -318,8 +320,6 @@ public class Client
                                     this.setModeDoneMap.remove(this.clientLeaveGame);
                                     leaveClient(this.clientLeaveGame);
                                     this.clientLeaveGame = -1;
-                                    stopListening();
-                                    stopResponding();
                                 }
                             }
                         }

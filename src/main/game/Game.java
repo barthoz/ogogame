@@ -1307,31 +1307,38 @@ public class Game extends SimpleApplication
     }
     
     private void removePlayerInternally()
-    {
+    {        
         Player player = this.receiveLeaveGamePlayer;
         this.receiveLeaveGamePlayer = null;
         
-        // Remove player from players
-        this.players.remove(player);
-        
-        // Remove all creatures from this player from the game
-        Set<Creature> removeSet = new HashSet<Creature>();
-        
-        for (Creature creature : this.world.getCreatures())
+        if (this.me.equals(player))
         {
-            if (creature.getPlayer().equals(player))
+            this.stop();
+        }
+        else
+        {
+            // Remove player from players
+            this.players.remove(player);
+
+            // Remove all creatures from this player from the game
+            Set<Creature> removeSet = new HashSet<Creature>();
+
+            for (Creature creature : this.world.getCreatures())
             {
-                removeSet.add(creature);
+                if (creature.getPlayer().equals(player))
+                {
+                    removeSet.add(creature);
+                }
             }
+
+            for (Creature creature : removeSet)
+            {
+                this.world.removeCreature(creature);
+            }
+
+            // Remove base of player
+            this.world.removebase(player.getBase());
         }
-        
-        for (Creature creature : removeSet)
-        {
-            this.world.removeCreature(creature);
-        }
-        
-        // Remove base of player
-        this.world.removebase(player.getBase());
     }
     
     /**
