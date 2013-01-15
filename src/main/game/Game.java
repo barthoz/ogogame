@@ -443,7 +443,7 @@ public class Game extends SimpleApplication
      * Game constants
      */
     public final static int CONST_CREATURES_LIMIT = 10;
-    public final static int CONST_SET_MODE_TIME_LIMIT = 10;
+    public final static int CONST_SET_MODE_TIME_LIMIT = 20;
     public final static int CONST_INIT_RANGE_OF_SIGHT = 10;
     public final static int CONST_INIT_START_FOOD = 10;
     public final static int CONST_REGENERATE_FOOD_ROUNDS = 5;
@@ -706,7 +706,7 @@ public class Game extends SimpleApplication
     public boolean setModeSent = true;
     public boolean getModeBlocked = false;
     
-    private long countSetMode = 0;
+    private long countSetMode = CONST_SET_MODE_TIME_LIMIT * 1000 - 10;
     private long countGetMode = 0;
     private boolean getModePerformed = false;
     
