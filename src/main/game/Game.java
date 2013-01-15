@@ -105,8 +105,10 @@ public class Game extends SimpleApplication
      * Networking
      */
     
+    private boolean quackReceived = false;
     private boolean quack = false;
     private boolean leaveGame = false;
+    private Player receiveLeaveGamePlayer = null;
     
     /**
      * While running
@@ -128,6 +130,37 @@ public class Game extends SimpleApplication
                 isRunning = !isRunning;
             }
 
+            /**
+             * [RIGHT-CLICK] Select duck
+             */
+            
+            if (!keyPressed && name.equals("RightClick"))
+            {
+                Vector2f click2d = inputManager.getCursorPosition();
+                Vector3f click3d = cam.getWorldCoordinates(new Vector2f(click2d.x, click2d.y), 0f).clone();
+                Vector3f dir = cam.getWorldCoordinates(new Vector2f(click2d.x, click2d.y), 1f).subtractLocal(click3d).normalizeLocal();
+
+                CollisionResults results = new CollisionResults();
+                Ray ray = new Ray(click3d, dir);
+                world.getSelectableObjects().collideWith(ray, results);
+
+                // Check if something was selected
+                if (results.getClosestCollision() != null && results.getClosestCollision().getGeometry().getParent() != null)
+                {
+                    Spatial selectedSpatial = results.getClosestCollision().getGeometry().getParent();
+                    String modelType = selectedSpatial.getUserData("modelType");
+                    
+                    if (modelType != null)
+                    {
+                        if (modelType.equals("Duck") && world.findDuck().isQuackable())
+                        {
+                            quack = true;
+                            world.findDuck().quack(quackAudio, false);
+                        }
+                    }
+                }
+            }
+            
             /**
              * [RIGHT-CLICK] Select creature, base
              */
@@ -154,9 +187,9 @@ public class Game extends SimpleApplication
                     Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
                     mat.setColor("Color", ColorRGBA.Orange);
 
-                    if (selectedSpatial == null)
+                    if (modelType == null)
                     {
-                        
+                        // Do nothing here
                     }
                     else if (modelType.equals("Base"))
                     {
@@ -174,7 +207,7 @@ public class Game extends SimpleApplication
                         System.out.println((String) selectedSpatial.getUserData("parentId"));
                         LandCreature creature = (LandCreature) world.findCreatureById((String) selectedSpatial.getUserData("parentId"));
                         
-                        if (creature.getPlayer().equals(me))
+                        if (creature.getPlayer().equals(me) && creature.isIsAlive())
                         {
                             nifty.gotoScreen("feedMenu");
                             selectedObject = creature;
@@ -191,7 +224,7 @@ public class Game extends SimpleApplication
                     {
                         SeaCreature creature = (SeaCreature) world.findCreatureById((String) selectedSpatial.getUserData("parentId"));
                         
-                        if (creature.getPlayer().equals(me))
+                        if (creature.getPlayer().equals(me) && creature.isIsAlive())
                         {
                             nifty.gotoScreen("feedMenu");
                             selectedObject = creature;
@@ -208,7 +241,7 @@ public class Game extends SimpleApplication
                     {
                         AirborneCreature creature = (AirborneCreature) world.findCreatureById((String) selectedSpatial.getUserData("parentId"));
                         
-                        if (creature.getPlayer().equals(me))
+                        if (creature.getPlayer().equals(me) && creature.isIsAlive())
                         {
                             nifty.gotoScreen("feedMenu");
                             selectedObject = creature;
@@ -271,7 +304,7 @@ public class Game extends SimpleApplication
                     // Determine which model has been selected
                 }
             } /**
-             * [LEFT-CLICK while something selected] Select terrain, food source
+             * [LEFT-CLICK while something selected] Select terrain, food source, other creature
              */
             else if (actionsEnabled && !keyPressed && name.equals("Select") && selectedObject != null)
             {
@@ -706,7 +739,7 @@ public class Game extends SimpleApplication
     public boolean setModeSent = true;
     public boolean getModeBlocked = false;
     
-    private long countSetMode = 0;
+    private long countSetMode = CONST_SET_MODE_TIME_LIMIT - 1000;
     private long countGetMode = 0;
     private boolean getModePerformed = false;
     
@@ -718,6 +751,16 @@ public class Game extends SimpleApplication
     @Override
     public void simpleUpdate(float tpf)
     {
+        /**
+         * Handle quack
+         */
+        
+        if (this.quackReceived)
+        {
+            this.quackReceived = false;
+            this.world.findDuck().quack(this.quackAudio, true);
+        }
+        
         //System.out.println(this.countSetMode + " - " + tpf + " - " + this.countGetMode);
         
         if (this.inSetMode)
@@ -846,6 +889,15 @@ public class Game extends SimpleApplication
                     this.nextRound();
                     
                     /**
+                     * Handle leave games
+                     */
+                    
+                    if (this.receiveLeaveGamePlayer != null)
+                    {
+                        this.removePlayerInternally();
+                    }
+                    
+                    /**
                     * Handle battles
                     */
 
@@ -926,25 +978,32 @@ public class Game extends SimpleApplication
         
         for (Creature creature : this.world.getCreatures())
         {
-            if (creature instanceof AirborneCreature)
+            if (creature.isIsAlive())
             {
-                header = "Health: " + creature.getHealth() + "% / Stamina: " + ((AirborneCreature) creature).getStamina() + "%";
-            }
-            else
-            {
-                header = "Health: " + creature.getHealth() + "%";
-            }
-            
-            if (creature.isInFight())
-            {
-                header += " (!)";
-            }
-            
-            creature.getCreatureHeader().setText(header);
-            
-            if (creature.getLocation().getOccupants().size() > 1)
-            {
-                creature.getCreatureHeader().setLocalTranslation(cam.getScreenCoordinates(creature.getModel().getWorldTranslation().add(0, 20f + Float.parseFloat(creature.getId().split("_")[1]) * creature.getCreatureHeader().getHeight(), 0)).add(-1 * creature.getCreatureHeader().getLineWidth() / 2f, 0f, 0f));
+                if (creature instanceof AirborneCreature)
+                {
+                    header = "Health: " + creature.getHealth() + "% / Stamina: " + ((AirborneCreature) creature).getStamina() + "%";
+                }
+                else
+                {
+                    header = "Health: " + creature.getHealth() + "%";
+                }
+
+                if (creature.isInFight())
+                {
+                    header += " (!)";
+                }
+
+                creature.getCreatureHeader().setText(header);
+
+                if (creature.getLocation().getOccupants().size() > 1)
+                {
+                    creature.getCreatureHeader().setLocalTranslation(cam.getScreenCoordinates(creature.getModel().getWorldTranslation().add(0, 20f + Float.parseFloat(creature.getId().split("_")[1]) * creature.getCreatureHeader().getHeight(), 0)).add(-1 * creature.getCreatureHeader().getLineWidth() / 2f, 0f, 0f));
+                }
+                else
+                {
+                    creature.getCreatureHeader().setLocalTranslation(cam.getScreenCoordinates(creature.getModel().getWorldTranslation().add(0, 20f, 0)).add(-1 * creature.getCreatureHeader().getLineWidth() / 2f, 0f, 0f));
+                }
             }
         }
         
@@ -1244,28 +1303,46 @@ public class Game extends SimpleApplication
     
     public void quack()
     {
-        this.world.findDuck().quack(quackAudio);
+        this.quackReceived = true;
     }
 
     public void removePlayerFromGame(Player player)
     {
-        // Remove player from players
-        this.players.remove(player);
+        this.receiveLeaveGamePlayer = player;
+    }
+    
+    private void removePlayerInternally()
+    {        
+        Player player = this.receiveLeaveGamePlayer;
+        this.receiveLeaveGamePlayer = null;
         
-        // Remove all creatures from this player from the game
-        Set<Creature> removeSet = new HashSet<Creature>();
-        
-        for (Creature creature : this.world.getCreatures())
+        if (this.me.equals(player))
         {
-            if (creature.getPlayer().equals(player))
-            {
-                removeSet.add(creature);
-            }
+            this.stop();
         }
-        
-        for (Creature creature : removeSet)
+        else
         {
-            this.world.removeCreature(creature);
+            // Remove player from players
+            this.players.remove(player);
+
+            // Remove all creatures from this player from the game
+            Set<Creature> removeSet = new HashSet<Creature>();
+
+            for (Creature creature : this.world.getCreatures())
+            {
+                if (creature.getPlayer().equals(player))
+                {
+                    removeSet.add(creature);
+                }
+            }
+
+            for (Creature creature : removeSet)
+            {
+                this.world.removeCreature(creature);
+            }
+
+            // Remove base of player
+            this.world.removebase(player.getBase());
         }
     }
     

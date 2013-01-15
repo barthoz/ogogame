@@ -62,8 +62,13 @@ public class HudController  extends AbstractAppState implements ScreenController
  
   public void onEndScreen() { }
   
+  public void leave()
+  {
+      this.game.setLeaveGame(true);
+  }
+  
   /** jME3 AppState methods */ 
- 
+  
   public void init()
   {
     numLand = nifty.getScreen("hud").findElementByName("num_land_text");

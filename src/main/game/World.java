@@ -206,6 +206,7 @@ public class World
     public void addCreature(Creature creature)
     {
         this.creatures.add(creature);
+        this.creatureContainer.attachChild(creature.getModel());
     }
 
     /**
@@ -215,23 +216,20 @@ public class World
      */
     public void removeCreature(Creature creature)
     {
-        Spatial foundSpatial = null;
-
-        // Find spatial that belongs to this creature
-        for (Spatial spatial : this.creatureContainer.getChildren())
-        {
-            String id = spatial.getUserData("parentId");
-
-            if (creature.getId().equals(id))
-            {
-                foundSpatial = spatial;
-                break;
-            }
-        }
-
-        this.creatureContainer.detachChild(foundSpatial);
+        this.creatureContainer.detachChild(creature.getModel());
         this.creatures.remove(creature);
         creature.getPlayer().removeCreature(creature);
+    }
+    
+    /**
+     * Remove base from the world.
+     * 
+     * @param base 
+     */
+    public void removebase(Base base)
+    {
+       this.baseContainer.detachChild(base.getModel()); 
+       this.bases.remove(base);
     }
 
     /**

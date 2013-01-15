@@ -24,7 +24,7 @@ public class Duck
     private Spatial model;
     private DuckControl controller;
     private Cell location;
-    private boolean quackable;
+    private boolean quackable = true;
 
     /**
      * Constructor
@@ -41,9 +41,9 @@ public class Duck
     /**
      * Business Logic
      */
-    public void quack(AudioNode audio)
+    public void quack(AudioNode audio, boolean force)
     {
-        if (quackable)
+        if (quackable || force)
         {
             audio.playInstance();
             quackable = false;
