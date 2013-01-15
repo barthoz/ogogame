@@ -706,7 +706,7 @@ public class Game extends SimpleApplication
     public boolean setModeSent = true;
     public boolean getModeBlocked = false;
     
-    private long countSetMode = CONST_SET_MODE_TIME_LIMIT * 1000 - 10;
+    private long countSetMode = 0;
     private long countGetMode = 0;
     private boolean getModePerformed = false;
     
@@ -944,7 +944,7 @@ public class Game extends SimpleApplication
             
             if (creature.getLocation().getOccupants().size() > 1)
             {
-                creature.getCreatureHeader().setLocalTranslation(cam.getScreenCoordinates(creature.getModel().getWorldTranslation().add(0, 20f * Float.parseFloat(creature.getId().split("_")[1]), 0)).add(-1 * creature.getCreatureHeader().getLineWidth() / 2f, 0f, 0f));
+                creature.getCreatureHeader().setLocalTranslation(cam.getScreenCoordinates(creature.getModel().getWorldTranslation().add(0, 20f + Float.parseFloat(creature.getId().split("_")[1]) * creature.getCreatureHeader().getHeight(), 0)).add(-1 * creature.getCreatureHeader().getLineWidth() / 2f, 0f, 0f));
             }
         }
         
