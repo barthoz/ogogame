@@ -104,6 +104,26 @@ public class AttackAction extends CreatureAction
             {
                 try
                 {
+                    subject.setInFight(true);
+                    opponent.setInFight(true);
+                    
+                    // in moves that alter the subjects cell we have to check if 
+                    // there are multiple creatures in the new cell and set them 
+                    // all in a fight
+
+                    List<Creature> cell = destination.getOccupants();
+                    for (int i = 0; i < cell.size(); i++)
+                    {
+                        if (!cell.get(i).getPlayer().equals(this.player))
+                        {
+                            for (Creature c : destination.getOccupants())
+                            {
+                                c.setInFight(true);
+                            }
+                            break;
+                        }
+                    }
+                    
                     final MotionPath path = PathFinding.createMotionPath(game.getTerrain(), game.getWorld().getCells(), this.subject.getLocation(), this.destination, this.subject);
 
                     final Cinematic cinematic = new Cinematic(game.getWorld().getWorldNode(), 20);
@@ -195,27 +215,7 @@ public class AttackAction extends CreatureAction
     }
 
     private void fight()
-    {
-        subject.setInFight(true);
-        opponent.setInFight(true);
-
-        // in moves that alter the subjects cell we have to check if 
-        // there are multiple creatures in the new cell and set them 
-        // all in a fight
-
-        List<Creature> cell = destination.getOccupants();
-        for (int i = 0; i < cell.size(); i++)
-        {
-            if (!cell.get(i).getPlayer().equals(this.player))
-            {
-                for (Creature c : destination.getOccupants())
-                {
-                    c.setInFight(true);
-                }
-                break;
-            }
-        }
-        
+    {        
         // define some algorithm to find the winner and the quantity of damage
 
         int hp = (int)Math.sqrt((double)subject.getLevel()/(double)opponent.getLevel());
