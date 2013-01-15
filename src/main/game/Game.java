@@ -1308,6 +1308,9 @@ public class Game extends SimpleApplication
         {
             this.world.removeCreature(creature);
         }
+        
+        // Remove base of player
+        this.world.removebase(player.getBase());
     }
     
     /**
