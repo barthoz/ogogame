@@ -67,7 +67,7 @@ public class Base
         {
             Cell topCell = (Cell) queue.poll();
             
-            if (topCell.creatureAllowed(creature))
+            if (topCell.creatureAllowed(creature) && topCell.getBase() == null)
             {
                 return topCell;
             }

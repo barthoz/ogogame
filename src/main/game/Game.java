@@ -355,15 +355,6 @@ public class Game extends SimpleApplication
                             FleeAction act = new FleeAction(me, (Creature) selectedObject, selectedCell);
                             me.registerAction(act);
                         }
-                        else if (!((Creature) selectedObject).isInFight())
-                        {
-                            /**
-                             * Move action
-                             */
-                            
-                            MoveAction act = new MoveAction(me, (Creature) selectedObject, selectedCell);
-                            me.registerAction(act);
-                        }
                         else if (selectedCell.getFoodSource() != null)
                         {
                             /**
@@ -373,21 +364,26 @@ public class Game extends SimpleApplication
                             PickupFoodAction act = new PickupFoodAction(me, (Creature) selectedObject, selectedCell.getFoodSource());
                             me.registerAction(act);
                         }
-                        else
+                        else if (results.size() > 0)
                         {
-                            if (results.size() > 0)
-                            {
-                                if (results.getClosestCollision().getGeometry().getParent().getUserData("modelType").equals("FoodSource"))
-                                {                                
-                                    /**
-                                     * PickupFoodAction (from clicked food source)
-                                     */
+                            if (results.getClosestCollision().getGeometry().getParent().getUserData("modelType").equals("FoodSource"))
+                            {                                
+                                /**
+                                 * PickupFoodAction (from clicked food source)
+                                 */
 
-                                    PickupFoodAction act = new PickupFoodAction(me, (Creature) selectedObject, world.findFoodSourceById((Integer) results.getClosestCollision().getGeometry().getParent().getUserData("parentId")));
-                                    me.registerAction(act);
-                                }
-                                
+                                PickupFoodAction act = new PickupFoodAction(me, (Creature) selectedObject, world.findFoodSourceById((Integer) results.getClosestCollision().getGeometry().getParent().getUserData("parentId")));
+                                me.registerAction(act);
                             }
+                        }
+                        else if (!((Creature) selectedObject).isInFight())
+                        {
+                            /**
+                             * Move action
+                             */
+                            
+                            MoveAction act = new MoveAction(me, (Creature) selectedObject, selectedCell);
+                            me.registerAction(act);
                         }
                         
                         // De-select creature

@@ -296,7 +296,7 @@ public class PathFinding
         
         for (Cell neighbour : neighbours)
         {
-            if (neighbour.creatureAllowed(creature))
+            if (neighbour.creatureAllowed(creature) && neighbour.getBase() == null)
             {
                 finalNeighbours.add(neighbour);
             }

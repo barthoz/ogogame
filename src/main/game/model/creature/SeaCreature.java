@@ -19,6 +19,7 @@ public class SeaCreature extends Creature
      * Properties
      */
     
+    public final static int CONST_COST = 3;
     public final static String CODE_ID = "Creature-Sea";
     
     /**

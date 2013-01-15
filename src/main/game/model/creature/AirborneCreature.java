@@ -19,6 +19,7 @@ public class AirborneCreature extends Creature
      * Properties
      */
     
+    public final static int CONST_COST = 5;
     public final static int CONST_STAMINA_DECREASE = 15;
     public final static int CONST_STAMINA_INCREASE = 20;
     public final static String CODE_ID = "Creature-Airborne";

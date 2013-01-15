@@ -208,4 +208,20 @@ public class ModelFactory
         
         return new Explosion(game, location);
     }
+    
+    public static int getCreatureCost(String modelType)
+    {
+        if (modelType.equals(AirborneCreature.CODE_ID))
+        {
+            return AirborneCreature.CONST_COST;
+        }
+        else if (modelType.equals(SeaCreature.CODE_ID))
+        {
+            return SeaCreature.CONST_COST;
+        }
+        else
+        {
+            return LandCreature.CONST_COST;
+        }
+    }
 }

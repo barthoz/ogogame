@@ -39,7 +39,14 @@ public class SpawnAction extends Action
     @Override
     public boolean isEnabled(Game game)
     {
-        return true;
+        if (this.player.getFood() - ModelFactory.getCreatureCost(this.creatureType) >= 0)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 
     @Override
@@ -58,6 +65,9 @@ public class SpawnAction extends Action
             game.getWorld().getSelectableObjects().attachChild(creature.getModel());
             creature.getLocation().repositionCreatures();
             System.out.println(id);
+            
+            // Update food
+            this.player.decreaseFood(ModelFactory.getCreatureCost(this.creatureType));
         }
     }
     

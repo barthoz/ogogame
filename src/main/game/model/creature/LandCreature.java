@@ -19,6 +19,7 @@ public class LandCreature extends Creature
      * Properties
      */
     
+    public final static int CONST_COST = 2;
     public final static String CODE_ID = "Creature-Land";
     
     /**
