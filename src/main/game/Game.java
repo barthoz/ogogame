@@ -120,6 +120,7 @@ public class Game extends SimpleApplication
      * Setup
      */
     
+    private boolean showInfo = true;
     private boolean isRunning = true;
     private ActionListener actionListener = new ActionListener()
     {
@@ -127,7 +128,10 @@ public class Game extends SimpleApplication
         {
             if (name.equals("Pause") && !keyPressed)
             {
-                isRunning = !isRunning;
+                showInfo = !showInfo;
+                setDisplayFps(showInfo); // to hide the FPS
+                setDisplayStatView(showInfo); // to hide the statistics 
+                //isRunning = !isRunning;
             }
 
             /**
@@ -1010,21 +1014,6 @@ public class Game extends SimpleApplication
         /**
          * Update hud info
          */
-        
-        modeInfo.setText("Mode: " + (!this.inSetMode ? "Get (" + (10 - (int) (this.countGetMode / 1000f)) + "s left)" : "Set, time left: " + (CONST_SET_MODE_TIME_LIMIT - (int) (this.countSetMode / 1000f)) + "s"));
-        roundInfo.setText("Round number: " + this.round);
-        
-        // Count alive creatures
-        int alive = 0;
-        for (Creature creature : me.getCreatures())
-        {
-            if (creature.isIsAlive())
-            {
-                alive++;
-            }
-        }
-        
-        playerInfo.setText("Creatures: " + alive + " / Food: " + me.getFood());
         
         this.hudController.update(tpf);
         this.cmController.update(tpf);
