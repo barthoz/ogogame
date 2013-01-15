@@ -448,6 +448,12 @@ public class Game extends SimpleApplication
                 diamondGeo.rotate(FastMath.QUARTER_PI, FastMath.QUARTER_PI, FastMath.QUARTER_PI);
                 diamondGeo.setLocalTranslation(creature.getModel().getWorldTranslation().add(0f, 30f, 0f));
                 rootNode.attachChild(diamondGeo);
+                
+                /**
+                 * Create marker here
+                 */
+                
+                
             }
 
         }
