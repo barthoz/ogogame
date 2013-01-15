@@ -354,9 +354,11 @@
                     </panel>
                 </panel>
             </panel>
-            <panel>
-                <control id="cancel" name="button" text="Go Back"/>
-            </panel>
+            <!--<panel width="70%" height="10%" align="center">
+                <control id="cancel" name="button" text="Go Back" >
+                    <interact onClick="cancel()"/>
+                </control>
+            </panel>-->
         </layer>
     </screen>
 
