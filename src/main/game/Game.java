@@ -452,7 +452,7 @@ public class Game extends SimpleApplication
      * Game state variables
      */
     private boolean started;
-    private boolean inSetMode = true;
+    private boolean inSetMode = false;
     private int round = 0;
     private int regenTime = 10;
     
