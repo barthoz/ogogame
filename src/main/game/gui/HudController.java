@@ -64,15 +64,19 @@ public class HudController  extends AbstractAppState implements ScreenController
   
   /** jME3 AppState methods */ 
  
+  public void init()
+  {
+    numLand = nifty.getScreen("hud").findElementByName("num_land_text");
+    numSea = nifty.getScreen("hud").findElementByName("num_sea_text");
+    numAir = nifty.getScreen("hud").findElementByName("num_air_text");
+    numFood = nifty.getScreen("hud").findElementByName("num_food_text");
+    setMode = nifty.getScreen("hud").findElementByName("set_mode_text");
+  }
+  
   @Override
   public void initialize(AppStateManager stateManager, Application app) {
     super.initialize(stateManager, app);
     this.app=(SimpleApplication)app;
-    numLand = nifty.getScreen("hud").findElementByName("num_land_text");
-    numSea = nifty.getScreen("hud").findElementByName("num_sea_text");;
-    numAir = nifty.getScreen("hud").findElementByName("num_air_text");;
-    numFood = nifty.getScreen("hud").findElementByName("num_food_text");;
-    setMode = nifty.getScreen("hud").findElementByName("set_mode_text");;
   }
  
   @Override

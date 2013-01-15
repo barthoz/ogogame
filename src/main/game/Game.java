@@ -94,6 +94,12 @@ import main.lobby.Lobby;
 public class Game extends SimpleApplication
 {
     /**
+     * GUI
+     */
+    
+    private HudController hudController;
+    
+    /**
      * Networking
      */
     
@@ -527,9 +533,10 @@ public class Game extends SimpleApplication
         this.niftyDisplay = new NiftyJmeDisplay(assetManager, inputManager, audioRenderer, guiViewPort);
         this.nifty = niftyDisplay.getNifty();
 
-        nifty.fromXml("Interface/gui.xml", "hud", new HudController(this), new SpawnMenuController(this), new FeedMenuController(this));
+        this.hudController = new HudController(this);
+        nifty.fromXml("Interface/gui.xml", "hud", this.hudController, new SpawnMenuController(this), new FeedMenuController(this));
+        this.hudController.init();
         guiViewPort.addProcessor(niftyDisplay);
-
         nifty.gotoScreen("hud");
 
         /**
@@ -816,6 +823,8 @@ public class Game extends SimpleApplication
                             }
                         }
                     }
+                    
+                    
                 }
                 
                 this.countGetMode += tpf * 1000;
@@ -952,6 +961,8 @@ public class Game extends SimpleApplication
         }
         
         playerInfo.setText("Creatures: " + alive + " / Food: " + me.getFood());
+        
+        this.hudController.update(tpf);
     }
     
     private BitmapText modeInfo;
