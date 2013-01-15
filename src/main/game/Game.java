@@ -103,6 +103,7 @@ public class Game extends SimpleApplication
      * Networking
      */
     
+    private boolean quackReceived = false;
     private boolean quack = false;
     private boolean leaveGame = false;
     
@@ -146,10 +147,10 @@ public class Game extends SimpleApplication
                     Spatial selectedSpatial = results.getClosestCollision().getGeometry().getParent();
                     String modelType = selectedSpatial.getUserData("modelType");
                     
-                    if (modelType.equals("Duck"))
+                    if (modelType.equals("Duck") && world.findDuck().isQuackable())
                     {
                         quack = true;
-                        quack();
+                        world.findDuck().quack(quackAudio, false);
                     }
                 }
             }
@@ -742,6 +743,16 @@ public class Game extends SimpleApplication
     @Override
     public void simpleUpdate(float tpf)
     {
+        /**
+         * Handle quack
+         */
+        
+        if (this.quackReceived)
+        {
+            this.quackReceived = false;
+            this.world.findDuck().quack(this.quackAudio, true);
+        }
+        
         //System.out.println(this.countSetMode + " - " + tpf + " - " + this.countGetMode);
         
         if (this.inSetMode)
@@ -1274,7 +1285,7 @@ public class Game extends SimpleApplication
     
     public void quack()
     {
-        this.world.findDuck().quack(quackAudio);
+        this.quackReceived = true;
     }
 
     public void removePlayerFromGame(Player player)
