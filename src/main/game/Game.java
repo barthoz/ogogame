@@ -813,8 +813,12 @@ public class Game extends SimpleApplication
         if(numFood>this.me.getFood()){
             numFood = this.me.getFood();
         }
-        EatAction act = new EatAction(me, ((Creature) this.selectedObject), numFood);
-        me.registerAction(act);
+        
+        if (this.selectedObject instanceof Creature)
+        {
+            EatAction act = new EatAction(me, ((Creature) this.selectedObject), numFood);
+            me.registerAction(act);
+        }
     }
     
     /**

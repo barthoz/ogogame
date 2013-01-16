@@ -97,17 +97,25 @@ public class FleeAction extends CreatureAction
                 this.player.decreaseFood(this.player.getFleeCost());
                 this.player.increaseFleeCost();
                 
-                if (subject.getLocation().getOccupants().size() <= 2)
+                int countTotalOccupants = this.subject.getLocation().getOccupants().size() + this.subject.getLocation().getAirborneOccupants().size();
+                
+                if (countTotalOccupants <= 2)
                 {
-                    for (Creature c : subject.getLocation().getOccupants())
+                    for (Creature c : this.subject.getLocation().getOccupants())
+                    {
+                        c.setInFight(false);
+                    }
+                    
+                    for (Creature c : this.subject.getLocation().getAirborneOccupants())
                     {
                         c.setInFight(false);
                     }
                 }
                 else
                 {
-                    subject.setInFight(false);
+                    this.subject.setInFight(false);
                 }
+                
                 final MotionPath path = PathFinding.createMotionPath(game.getTerrain(), game.getWorld().getCells(), this.subject.getLocation(), this.destination, this.subject);
 
                 final Cinematic cinematic = new Cinematic(game.getWorld().getWorldNode(), 20);
