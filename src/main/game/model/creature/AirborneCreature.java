@@ -6,8 +6,9 @@ package main.game.model.creature;
 
 import com.jme3.cinematic.Cinematic;
 import com.jme3.cinematic.MotionPath;
+import com.jme3.cinematic.events.CinematicEvent;
+import com.jme3.cinematic.events.CinematicEventListener;
 import com.jme3.cinematic.events.MotionEvent;
-import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import main.game.Player;
@@ -117,7 +118,7 @@ public class AirborneCreature extends Creature
         // If airborne, put it on the ground
         if (this.airborne)
         {
-            Cinematic cinematic = new Cinematic(this.location.getWorld().getWorldNode(), 5);
+            Cinematic cinematic = new Cinematic(this.location.getWorld().getWorldNode(), 3);
             MotionPath path = new MotionPath();
             path.addWayPoint(this.model.getWorldTranslation());
             path.addWayPoint(this.location.getWorldCoordinates());
@@ -127,6 +128,25 @@ public class AirborneCreature extends Creature
             cinematic.fitDuration();
             this.player.getGame().getStateManager().attach(cinematic);
             cinematic.play();
+            path.setCycle(false);
+            cinematic.addListener(new CinematicEventListener()
+            {
+
+                public void onPlay(CinematicEvent cinematic)
+                {
+                    //throw new UnsupportedOperationException("Not supported yet.");
+                }
+
+                public void onPause(CinematicEvent cinematic)
+                {
+                    //throw new UnsupportedOperationException("Not supported yet.");
+                }
+
+                public void onStop(CinematicEvent cinematic)
+                {
+                    model.setLocalTranslation(location.getWorldCoordinates());
+                }
+            });
         }
     }
     

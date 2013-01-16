@@ -704,15 +704,14 @@ public class Game extends SimpleApplication
          * Initialize base diamond
          */
         Material mat2 = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-                mat2.setColor("Color", ColorRGBA.Blue);
-                
-                Box diamond = new Box(3.5f, 3.5f, 3.5f);
-                Geometry diamondGeo = new Geometry("selectionDiamond", diamond);
-                diamondGeo.setMaterial(mat2);
-                diamondGeo.rotate(FastMath.QUARTER_PI, FastMath.QUARTER_PI, FastMath.QUARTER_PI);
-                diamondGeo.setLocalTranslation(this.me.getBase().getLocation().getWorldCoordinates().add(0f, 50f, 0f));
-                rootNode.attachChild(diamondGeo);
-        ;
+        mat2.setColor("Color", ColorRGBA.Blue);
+
+        Box diamond = new Box(3.5f, 3.5f, 3.5f);
+        Geometry diamondGeo = new Geometry("baseDiamond", diamond);
+        diamondGeo.setMaterial(mat2);
+        diamondGeo.rotate(FastMath.QUARTER_PI, FastMath.QUARTER_PI, FastMath.QUARTER_PI);
+        diamondGeo.setLocalTranslation(this.me.getBase().getLocation().getWorldCoordinates().add(0f, 50f, 0f));
+        rootNode.attachChild(diamondGeo);
         
         initKeys();
 
@@ -723,19 +722,6 @@ public class Game extends SimpleApplication
         quackAudio.move(this.world.findDuck().getLocation().getWorldCoordinates());
         quackAudio.setVolume(5);
         rootNode.attachChild(quackAudio);
-        
-        /**
-         * Some testing
-         */
-        //this.world.addCreature(this.me, Creature.TYPE_LAND, this.world.getCells()[32][32]);
-        /*SpawnAction spawn = new SpawnAction(this.me, LandCreature.CODE_ID);
-        try
-        {
-            spawn.performAction(this);
-        } catch (ActionNotEnabledException ex)
-        {
-            Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
-        }*/
     }
 
     /**

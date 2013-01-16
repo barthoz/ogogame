@@ -108,10 +108,24 @@ public abstract class Creature
         this.inFight = false;
         this.health = 0;
         this.isAlive = false;
+        
         if (this.creatureHeader.getParent() != null)
         {
             this.creatureHeader.getParent().detachChild(this.creatureHeader);
         }
+        
+        // Remove from location
+        if (this instanceof AirborneCreature)
+        {
+            this.location.removeCreature(this, ((AirborneCreature) this).isAirborne());
+        }
+        else
+        {
+            this.location.removeCreature(this, false);
+        }
+        
+        // Remove from player
+        this.player.removeCreature(this);
     }
 
     /**
