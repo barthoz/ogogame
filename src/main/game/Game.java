@@ -576,7 +576,7 @@ public class Game extends SimpleApplication
      * Game state variables
      */
     private boolean started;
-    private boolean inSetMode = false;
+    private boolean inSetMode = true;
     private int round = 0;
     private int regenTime = 10;
     
@@ -776,10 +776,6 @@ public class Game extends SimpleApplication
         this.world.initializeBases();
         this.world.initializeFoodSources();
         this.world.initializeDuck();
-        
-        // Spawn a first creature for me
-        SpawnAction act = new SpawnAction(this.me, LandCreature.CODE_ID);
-        this.me.registerAction(act);
         
         /**
          * Initialize base diamond
