@@ -42,11 +42,11 @@ public class AttackAction extends CreatureAction
     /**
      * Properties
      */
-    private transient Cell destination;
+    //private transient Cell destination;
     private transient Creature opponent;
     private String opponentId;
-    private int destinationX;
-    private int destinationY;
+    //private int destinationX;
+    //private int destinationY;
     private int randomKey;
     private boolean isGenerated;
 
@@ -55,15 +55,15 @@ public class AttackAction extends CreatureAction
     /**
      * Constructors
      */
-    public AttackAction(Player player, Creature subject, Creature opponent, Cell destination, boolean isGenerated)
+    public AttackAction(Player player, Creature subject, Creature opponent, boolean isGenerated)
     {
         this.player = player;
         this.subject = subject;
         this.opponent = opponent;
         this.opponentId = opponent.getId();
-        this.destination = destination;
-        this.destinationX = destination.getXCoor();
-        this.destinationY = destination.getYCoor();
+        //this.destination = opponent.getLocation();
+        //this.destinationX = destination.getXCoor();
+        //this.destinationY = destination.getYCoor();
         this.randomKey = new Random().nextInt(1000);
         this.isGenerated = isGenerated;
     }
@@ -82,21 +82,22 @@ public class AttackAction extends CreatureAction
     {
         super.deserialize(game);
         
-        this.destination = game.getWorld().getCells()[this.destinationX][this.destinationY];
         this.opponent = game.getWorld().findCreatureById(this.opponentId);
     }
 
     @Override
     public boolean isEnabled(Game game)
     {
-        if (this.destination.creatureAllowed(subject)
+        Cell destination = this.opponent.getLocation();
+        
+        if (destination.creatureAllowed(subject)
             && !this.player.getCreatures().contains(opponent)
-            && this.subject.getLocation().distance(this.destination) <= this.subject.getActionRadius()
+            && this.subject.getLocation().distance(destination) <= this.subject.getActionRadius()
             && game.getWorld().getCreatures().contains(this.opponent)) // if player has not left yet
         {
             if (this.isGenerated)
             {
-                if (this.destination.getOccupants().contains(this.opponent) || this.destination.getAirborneOccupants().contains(this.opponent))
+                if (destination.getOccupants().contains(this.opponent) || destination.getAirborneOccupants().contains(this.opponent))
                 {
                     return true;
                 }
@@ -119,6 +120,8 @@ public class AttackAction extends CreatureAction
     @Override
     public void performAction(Game game) throws ActionNotEnabledException
     {
+        Cell destination = this.opponent.getLocation();
+        
         this.tempGame = game;
         
         if (!isEnabled(game))
@@ -130,7 +133,7 @@ public class AttackAction extends CreatureAction
             this.subject.setInFight(true);
             this.opponent.setInFight(true);
             
-            if (!this.subject.getLocation().equals(this.destination))
+            if (!this.subject.getLocation().equals(destination))
             {
                 try
                 {                    
@@ -140,7 +143,7 @@ public class AttackAction extends CreatureAction
                     
                     boolean mixedTeamsInCell = false;
                     
-                    for (Creature creature : this.destination.getOccupants())
+                    for (Creature creature : destination.getOccupants())
                     {
                         if (!creature.getPlayer().equals(this.player))
                         {
@@ -149,7 +152,7 @@ public class AttackAction extends CreatureAction
                         }
                     }
                     
-                    for (Creature creature : this.destination.getAirborneOccupants())
+                    for (Creature creature : destination.getAirborneOccupants())
                     {
                         if (!creature.getPlayer().equals(this.player))
                         {
@@ -160,18 +163,18 @@ public class AttackAction extends CreatureAction
                     
                     if (mixedTeamsInCell)
                     {
-                        for (Creature creature : this.destination.getOccupants())
+                        for (Creature creature : destination.getOccupants())
                         {
                             creature.setInFight(true);
                         }
                         
-                        for (Creature creature : this.destination.getAirborneOccupants())
+                        for (Creature creature : destination.getAirborneOccupants())
                         {
                             creature.setInFight(true);
                         }
                     }
                     
-                    final MotionPath path = PathFinding.createMotionPath(game.getTerrain(), game.getWorld().getCells(), this.subject.getLocation(), this.destination, this.subject);
+                    final MotionPath path = PathFinding.createMotionPath(game.getTerrain(), game.getWorld().getCells(), this.subject.getLocation(), destination, this.subject);
 
                     final Cinematic cinematic = new Cinematic(game.getWorld().getWorldNode(), 20);
                     MotionEvent track = new MotionEvent(this.subject.getModel(), path);
@@ -220,6 +223,8 @@ public class AttackAction extends CreatureAction
 
                     final Vector3f airDestination = new Vector3f(destination.getWorldCoordinates().x, PathFinding.airCreatureHeight, destination.getWorldCoordinates().z);
 
+                    final Vector3f worldCoord = destination.getWorldCoordinates();
+                    
                     cinematic.addListener(new CinematicEventListener()
                     {
                         public void onPlay(CinematicEvent cinematic)
@@ -259,10 +264,8 @@ public class AttackAction extends CreatureAction
                                 subject.getModel().setLocalTranslation(airDestination);
                             } else
                             {
-                                subject.getModel().setLocalTranslation(destination.getWorldCoordinates());
+                                subject.getModel().setLocalTranslation(worldCoord);
                             }
-
-                            subject.setLocation(destination);
                             
                             fight();
                         }
@@ -287,11 +290,11 @@ public class AttackAction extends CreatureAction
                 if (this.subject instanceof AirborneCreature)
                 {
                     ((AirborneCreature) this.subject).takeOff();
-                    this.destination.addCreature(this.subject, true);
+                    destination.addCreature(this.subject, true);
                 }
                 else
                 {
-                    this.destination.addCreature(this.subject, false);
+                    destination.addCreature(this.subject, false);
                 }
             }
             else
@@ -299,14 +302,14 @@ public class AttackAction extends CreatureAction
                 fight();
             }
             
-            this.subject.setLocation(this.destination);
+            this.subject.setLocation(destination);
         }
     }
 
     private void fight()
     {        
         // define some algorithm to find the winner and the quantity of damage
-        Explosion explosion = new Explosion(tempGame, destination);
+        Explosion explosion = new Explosion(tempGame, this.opponent.getLocation());
         
         int hp = (int) Math.sqrt((double)subject.getLevel()/(double)opponent.getLevel());
         hp *= 0.02* this.randomKey;

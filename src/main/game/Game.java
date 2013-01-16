@@ -299,6 +299,12 @@ public class Game extends SimpleApplication
              */
             if (!guiSelected && actionsEnabled && !keyPressed && name.equals("Select") && selectedObject != null)
             {
+                if (inputManager.getCursorPosition().y < 50)
+                {
+                    System.out.println("GUI hit!");
+                    return;
+                }
+                
                 // Get rid of radius circle if it is there
                 if (rootNode.getChild("radiusCircle") != null)
                 {
@@ -333,7 +339,7 @@ public class Game extends SimpleApplication
                             
                             Creature enemy = world.findCreatureById((String) selectedSpatial.getUserData("parentId"));
                             
-                            AttackAction act = new AttackAction(me, (Creature) selectedObject, enemy, enemy.getLocation(), false);
+                            AttackAction act = new AttackAction(me, (Creature) selectedObject, enemy, false);
                             me.registerAction(act);
                         }
                         else if (modelType.equals("FoodSource"))
@@ -401,7 +407,7 @@ public class Game extends SimpleApplication
                             * AttackAction
                             */
 
-                           AttackAction act = new AttackAction(me, (Creature) selectedObject, enemy, selectedCell, false);
+                           AttackAction act = new AttackAction(me, (Creature) selectedObject, enemy, false);
                            me.registerAction(act);
                         }
                         else if (((Creature) selectedObject).isInFight())
@@ -1026,7 +1032,7 @@ public class Game extends SimpleApplication
                             {
                                 if (!(this.me.equals(opponent.getPlayer())) && opponent.isIsAlive())
                                 {
-                                    AttackAction act = new AttackAction(this.me, creature, opponent, creature.getLocation(), true);
+                                    AttackAction act = new AttackAction(this.me, creature, opponent, true);
                                     this.me.registerAction(act);
                                 }
                             }

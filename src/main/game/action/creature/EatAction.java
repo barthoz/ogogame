@@ -41,7 +41,7 @@ public class EatAction extends CreatureAction
     @Override
     public boolean isEnabled(Game game)
     {
-        if (this.player.getFood() - numFood < 0 && this.subject.isIsAlive())
+        if (this.player.getFood() - numFood < 0 && this.subject.isIsAlive() && this.subject.getHealth() < 100)
         {
             return false;
         }

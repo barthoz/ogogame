@@ -75,8 +75,11 @@ public class HudController  extends AbstractAppState implements ScreenController
   
   public void land()
   {
-      LandAction act = new LandAction(this.game.getMe(), (AirborneCreature) this.game.getSelectedObject());
-      this.game.getMe().registerAction(act);
+      if (this.game.getSelectedObject() instanceof AirborneCreature)
+      {
+        LandAction act = new LandAction(this.game.getMe(), (AirborneCreature) this.game.getSelectedObject());
+        this.game.getMe().registerAction(act);
+      }
   }
   
   public void leave()
