@@ -68,8 +68,9 @@ public class HudController  extends AbstractAppState implements ScreenController
   
   public void eat()
   {
-    game.feedSelectedCreature(food);
-    nifty.gotoScreen("hud");
+        System.out.println("Eat: " + food);
+        game.feedSelectedCreature(food);
+        nifty.gotoScreen("hud");
   }
   
   public void land()
