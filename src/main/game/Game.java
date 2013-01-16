@@ -437,7 +437,19 @@ public class Game extends SimpleApplication
                 
                 Circle circle = new Circle(creature.getActionRadius() * 32, 100);
                 Geometry circleGeo = new Geometry("selectionCircle", circle);
-                circleGeo.setLocalTranslation(creature.getLocation().getWorldCoordinates());
+                if (creature.getLocation() instanceof DeepWaterCell){   
+                    Vector3f location = creature.getLocation().getWorldCoordinates();
+                    location.y=0.1f;
+                    circleGeo.setLocalTranslation(location);
+                }
+                else if (creature.getLocation() instanceof ShallowWaterCell){   
+                    Vector3f location = creature.getLocation().getWorldCoordinates();
+                    location.y=0.1f;
+                    circleGeo.setLocalTranslation(location);
+                }
+                else {
+                    circleGeo.setLocalTranslation(creature.getLocation().getWorldCoordinates());
+                }
                 circleGeo.setMaterial(mat);
                 rootNode.attachChild(circleGeo);
                 
