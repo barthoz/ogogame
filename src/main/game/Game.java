@@ -576,7 +576,7 @@ public class Game extends SimpleApplication
      * Game state variables
      */
     private boolean started;
-    private boolean inSetMode = true;
+    private boolean inSetMode = false;
     private int round = 0;
     private int regenTime = 10;
     
@@ -856,7 +856,7 @@ public class Game extends SimpleApplication
     public boolean getModeBlocked = false;
     
     private long countSetMode = 0;
-    private long countGetMode = 0;
+    private long countGetMode = 9000;
     private boolean getModePerformed = false;
     
     /**
@@ -867,6 +867,11 @@ public class Game extends SimpleApplication
     @Override
     public void simpleUpdate(float tpf)
     {
+        if (this.round == 0 || this.round == 1)
+        {
+            disableActions();
+        }
+        
         /**
          * Handle quack
          */
@@ -997,7 +1002,7 @@ public class Game extends SimpleApplication
                      * Check if anybody has won
                      */
                     
-                    if (this.round != 0)
+                    if (this.round != 0 && this.round != 1 && this.round != 2)
                     {
                         int loserCount = 0;
                         boolean iLost = false;

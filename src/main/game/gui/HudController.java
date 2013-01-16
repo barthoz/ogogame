@@ -114,8 +114,12 @@ public class HudController  extends AbstractAppState implements ScreenController
           }
           else
           {
-              modeText = "Starting game... (" + (10 - (int) (game.getCountGetMode() / 1000f)) + "s)";
+              modeText = "Starting game...";
           }
+      }
+      else if (this.game.getRound() == 1)
+      {   
+          modeText = "Starting game...";
       }
       else
       {
