@@ -9,6 +9,8 @@ import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
 import de.lessvoid.nifty.Nifty;
+import de.lessvoid.nifty.NiftyEventSubscriber;
+import de.lessvoid.nifty.controls.SliderChangedEvent;
 import de.lessvoid.nifty.elements.Element;
 import de.lessvoid.nifty.elements.render.TextRenderer;
 import de.lessvoid.nifty.screen.Screen;
@@ -40,6 +42,7 @@ public class HudController  extends AbstractAppState implements ScreenController
   private Screen screen;
   private SimpleApplication app;
   private Game game;
+  int food = 1;
  
   /** custom methods */ 
  
@@ -65,7 +68,8 @@ public class HudController  extends AbstractAppState implements ScreenController
   
   public void eat()
   {
-      this.nifty.gotoScreen("feedMenu");
+    game.feedSelectedCreature(food);
+    nifty.gotoScreen("hud");
   }
   
   public void land()
@@ -132,6 +136,13 @@ public class HudController  extends AbstractAppState implements ScreenController
       setMode.getRenderer(TextRenderer.class).setText(modeText);
   }
  
+  @NiftyEventSubscriber(id = "slider")
+    public void onSliderChange(String id, SliderChangedEvent event) 
+    {
+        food=(int)event.getValue();
+    }
+     
+  
   public void showCreatureMenu(){
       nifty.gotoScreen("creatureMenu");
   }

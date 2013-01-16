@@ -746,6 +746,9 @@ public class Game extends SimpleApplication
      */
     public void feedSelectedCreature(int numFood)
     {
+        if(numFood>this.me.getFood()){
+            numFood = this.me.getFood();
+        }
         EatAction act = new EatAction(me, ((Creature) this.selectedObject), numFood);
         me.registerAction(act);
     }
