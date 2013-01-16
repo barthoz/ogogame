@@ -15,6 +15,7 @@ import main.exception.ActionNotEnabledException;
 import main.game.Game;
 import main.game.Player;
 import main.game.algorithm.PathFinding;
+import main.game.model.cell.DeepWaterCell;
 import main.game.model.control.AirborneCreatureControl;
 import main.game.model.control.LandCreatureControl;
 import main.game.model.creature.AirborneCreature;
@@ -43,7 +44,7 @@ public class LandAction extends CreatureAction
     @Override
     public boolean isEnabled(Game game)
     {
-        if (((AirborneCreature) this.subject).isAirborne() && this.subject.getLocation().getBase() == null)
+        if (((AirborneCreature) this.subject).isAirborne() && this.subject.getLocation().getBase() == null && !(this.subject.getLocation() instanceof DeepWaterCell))
         {
             return true;
         }
