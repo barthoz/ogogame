@@ -439,12 +439,12 @@ public class Game extends SimpleApplication
                 Geometry circleGeo = new Geometry("selectionCircle", circle);
                 if (creature.getLocation() instanceof DeepWaterCell){   
                     Vector3f location = creature.getLocation().getWorldCoordinates();
-                    location.y=0.1f;
+                    location.y=100.1f;
                     circleGeo.setLocalTranslation(location);
                 }
                 else if (creature.getLocation() instanceof ShallowWaterCell){   
                     Vector3f location = creature.getLocation().getWorldCoordinates();
-                    location.y=0.1f;
+                    location.y=100.1f;
                     circleGeo.setLocalTranslation(location);
                 }
                 else {
