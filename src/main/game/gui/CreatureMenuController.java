@@ -11,7 +11,7 @@ import com.jme3.app.state.AppStateManager;
 import com.thoughtworks.xstream.XStream;
 import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.builder.ScreenBuilder;
-import de.lessvoid.nifty.controls.CheckBox;
+import de.lessvoid.nifty.controls.RadioButton;
 import de.lessvoid.nifty.effects.EffectEventId;
 import de.lessvoid.nifty.elements.Element;
 import de.lessvoid.nifty.elements.render.ImageRenderer;
@@ -42,7 +42,7 @@ public class CreatureMenuController extends AbstractAppState implements ScreenCo
     private SimpleApplication app;
     private Game game;
     Element[] panel;
-    Element[] checkBox;
+    Element[] radioButton;
     Element[] idLabel;
     Element[] levelLabel;
     Element[] healthLabel;
@@ -62,10 +62,12 @@ public class CreatureMenuController extends AbstractAppState implements ScreenCo
     public void cancel()
     {
         System.out.println("cancelled");
-        for(int i = 0; i < 10; i++){
-            CheckBox c = (CheckBox)checkBox[i];
-            if(c.isChecked()){
-                
+        List<Creature> creatures = game.getMe().getCreatures();
+        for(int i = 0; i < creatures.size(); i++){
+            RadioButton r = (RadioButton)radioButton[i];
+            if(r.isActivated()){
+                game.setSelectedObject(creatures.get(i));
+                break;
             }
         }
         nifty.gotoScreen("hud");
@@ -77,7 +79,7 @@ public class CreatureMenuController extends AbstractAppState implements ScreenCo
         this.nifty = game.getNifty();
 
         panel = new Element[10];
-        checkBox = new Element[10];
+        radioButton = new Element[10];
         idLabel = new Element[10];
         levelLabel = new Element[10];
         healthLabel = new Element[10];
@@ -121,7 +123,7 @@ public class CreatureMenuController extends AbstractAppState implements ScreenCo
         for (int i = 0; i < 10; i++)
         {
             panel[i] = nifty.getScreen("creatureMenu").findElementByName("check_id" + i);
-            checkBox[i] = nifty.getScreen("creatureMenu").findElementByName("mark_id" + i);
+            radioButton[i] = nifty.getScreen("creatureMenu").findElementByName("mark_id" + i);
             idLabel[i] = nifty.getScreen("creatureMenu").findElementByName("number_id" + i);
             levelLabel[i] = nifty.getScreen("creatureMenu").findElementByName("level_id" + i);
             healthLabel[i] = nifty.getScreen("creatureMenu").findElementByName("health_id" + i);

@@ -94,8 +94,7 @@
     </screen>
   
     <screen id="spawnMenu" controller="main.game.gui.SpawnMenuController">
-      
-        <layer id="background" childLayout="center">
+    <layer id="background" childLayout="center">
             <image filename="Interface/background.png"
                    valign="center" align="center" height="100%" width="75%">
             </image>
@@ -117,12 +116,14 @@
                 
                 <panel id="Land_food_display" height="100%" width="45%" align="center" valign="top" childLayout="horizontal" visibleToMouse="true">
                     
-                    <panel id="Land_food_quantity" height="100%" width="20%" align="center" valign="top" childLayout="center" visibleToMouse="true">
-                        <control name="label" text="x2 (should be image)" />
-                    </panel>
-                    <panel id="Land_food_image" height="100%" width="80%" align="center" valign="top" childLayout="center" visibleToMouse="true">
-                        <image filename="Interface/land_food.png" height="128px" width="128px"
+                    <panel id="LandCreature_image" height="100%" width="50%" align="center" valign="top" childLayout="center" visibleToMouse="true">
+                    <image filename="Interface/x2.png" 
                            valign="center" align="center" >
+                    </image>
+                </panel>
+                    <panel id="Land_food_image" height="100%" width="50%" align="center" valign="top" childLayout="center" visibleToMouse="true">
+                        <image filename="Interface/land_food.png" height="128px" width="128px"
+                           valign="center" align="left" >
                         </image>
                     </panel>
                 </panel>
@@ -143,12 +144,14 @@
                 
                 <panel id="Sea_food_display" height="100%" width="45%" align="center" valign="top" childLayout="horizontal" visibleToMouse="true">
                     
-                    <panel id="Sea_food_quantity" height="100%" width="20%" align="center" valign="top" childLayout="center" visibleToMouse="true">
-                        <control name="label" text="x3 (should be image)" />
-                    </panel>
-                    <panel id="Sea_food_image" height="100%" width="80%" align="center" valign="top" childLayout="center" visibleToMouse="true">
-                        <image filename="Interface/land_food.png" height="128px" width="128px"
+                    <panel id="LandCreature_image" height="100%" width="50%" align="center" valign="top" childLayout="center" visibleToMouse="true">
+                    <image filename="Interface/x3.png" 
                            valign="center" align="center" >
+                    </image>
+                </panel>
+                    <panel id="Sea_food_image" height="100%" width="50%" align="center" valign="top" childLayout="center" visibleToMouse="true">
+                        <image filename="Interface/land_food.png" height="128px" width="128px"
+                           valign="center" align="left" >
                         </image>
                     </panel>
                 </panel>
@@ -169,12 +172,14 @@
                 
                 <panel id="Airborne_food_display" height="100%" width="45%" align="center" valign="top" childLayout="horizontal" visibleToMouse="true">
                     
-                    <panel id="Airborne_food_quantity" height="100%" width="20%" align="center" valign="top" childLayout="center" visibleToMouse="true">
-                        <control name="label" text="x5 (should be image)" />
-                    </panel>
-                    <panel id="Airborne_food_image" height="100%" width="80%" align="center" valign="top" childLayout="center" visibleToMouse="true">
-                        <image filename="Interface/land_food.png" height="128px" width="128px"
+                    <panel id="LandCreature_image" height="100%" width="50%" align="center" valign="top" childLayout="center" visibleToMouse="true">
+                    <image filename="Interface/x5.png" 
                            valign="center" align="center" >
+                    </image>
+                </panel>
+                    <panel id="Airborne_food_image" height="100%" width="50%" align="center" valign="top" childLayout="center" visibleToMouse="true">
+                        <image filename="Interface/land_food.png" height="128px" width="128px"
+                           valign="center" align="left" >
                         </image>
                     </panel>
                 </panel>
@@ -189,7 +194,7 @@
     </screen>
     
     <screen id="creatureMenu" controller="main.game.gui.CreatureMenuController">
-       <layer id="background" childLayout="vertical">
+       <layer id="background" childLayout="vertical" >
             <image filename="Interface/background.png"
                    valign="top" align="center" height="100%" width="75%">
             </image>
@@ -197,18 +202,19 @@
         <layer id="foreground" childLayout="vertical">
             <panel width="75%" height="90%" childLayout="vertical" align="center">
                 <panel id="header" align="center" width="100%" height="50px" childLayout="horizontal">
-                    <control id="mark_header" name="label" valign="bottom" align="center" text="Marked" width="16%"/>
+                    <control id="mark_header" name="label" valign="bottom" align="center" text="Select" width="16%"/>
                     <control id="number_header" name="label" valign="bottom" align="center" text="Creature #" width="16%"/>
                     <control id="level_header" name="label" valign="bottom" align="center" text="Level" width="16%"/>
                     <control id="health_header" name="label" valign="bottom" align="center" text="Health" width="16%"/>
                     <control id="mark_header" name="label" valign="bottom" align="center" text="Stamina" width="16%"/>
                     <control id="mark_header" name="label" valign="bottom" align="center" text="Type" width="16%"/>
                 </panel>
+                <control id="radio_group" name="radioButtonGroup" allowDeselection="true"/>
                 <panel id="check_id0" align="center" width="100%" height="75px" childLayout="horizontal">
                     <effect id="effect_id0" name="hide"/>
                     <panel id="mark1_panel_id0" align="center" valign="center" width="16%" childLayout="vertical">
-                        <control id="mark_id0" name="checkbox" valign="center" align="center"/>
-                    </panel>
+                        <control id="mark_id0" name="radioButton" group="radio_group"  valign="center" align="center"/>
+                    </panel>                                   
                     <control id="number_id0" name="label" text="1" valign="center" align="center" width="16%"/>
                     <control id="level_id0" name="label" text="1" valign="center" align="center" width="16%"/>
                     <control id="health_id0" name="label" text="100%" valign="center" align="center" width="16%"/>
@@ -222,7 +228,7 @@
                 <panel id="check_id1" align="center" width="100%" height="75px" childLayout="horizontal">
                     <effect id="effect_id1" name="hide"/>
                     <panel id="mark1_panel_id1" align="center" valign="center" width="16%" childLayout="vertical">
-                        <control id="mark_id1" name="checkbox" valign="center" align="center"/>
+                        <control id="mark_id1" name="radioButton" group="radio_group"  valign="center" align="center"/>
                     </panel>
                     <control id="number_id1" name="label" text="1" valign="center" align="center" width="16%"/>
                     <control id="level_id1" name="label" text="1" valign="center" align="center" width="16%"/>
@@ -237,7 +243,7 @@
                 <panel id="check_id2" align="center" width="100%" height="75px" childLayout="horizontal">
                     <effect id="effect_id2" name="hide"/>
                     <panel id="mark1_panel_id2" align="center" valign="center" width="16%" childLayout="vertical">
-                        <control id="mark_id2" name="checkbox" valign="center" align="center"/>
+                        <control id="mark_id2" name="radioButton" group="radio_group"  valign="center" align="center"/>
                     </panel>
                     <control id="number_id2" name="label" text="1" valign="center" align="center" width="16%"/>
                     <control id="level_id2" name="label" text="1" valign="center" align="center" width="16%"/>
@@ -252,7 +258,7 @@
                 <panel id="check_id3" align="center" width="100%" height="75px" childLayout="horizontal">
                     <effect id="effect_id3" name="hide"/>
                     <panel id="mark1_panel_id3" align="center" valign="center" width="16%" childLayout="vertical">
-                        <control id="mark_id3" name="checkbox" valign="center" align="center"/>
+                        <control id="mark_id3" name="radioButton" group="radio_group"  valign="center" align="center"/>
                     </panel>
                     <control id="number_id3" name="label" text="1" valign="center" align="center" width="16%"/>
                     <control id="level_id3" name="label" text="1" valign="center" align="center" width="16%"/>
@@ -267,7 +273,7 @@
                 <panel id="check_id4" align="center" width="100%" height="75px" childLayout="horizontal">
                     <effect id="effect_id4" name="hide"/>
                     <panel id="mark1_panel_id4" align="center" valign="center" width="16%" childLayout="vertical">
-                        <control id="mark_id4" name="checkbox" valign="center" align="center"/>
+                        <control id="mark_id4" name="radioButton" group="radio_group"  valign="center" align="center"/>
                     </panel>
                     <control id="number_id4" name="label" text="1" valign="center" align="center" width="16%"/>
                     <control id="level_id4" name="label" text="1" valign="center" align="center" width="16%"/>
@@ -282,7 +288,7 @@
                 <panel id="check_id5" align="center" width="100%" height="75px" childLayout="horizontal">
                     <effect id="effect_id5" name="hide"/>
                     <panel id="mark1_panel_id5" align="center" valign="center" width="16%" childLayout="vertical">
-                        <control id="mark_id5" name="checkbox" valign="center" align="center"/>
+                        <control id="mark_id5" name="radioButton" group="radio_group"  valign="center" align="center"/>
                     </panel>
                     <control id="number_id5" name="label" text="1" valign="center" align="center" width="16%"/>
                     <control id="level_id5" name="label" text="1" valign="center" align="center" width="16%"/>
@@ -297,7 +303,7 @@
                 <panel id="check_id6" align="center" width="100%" height="75px" childLayout="horizontal">
                     <effect id="effect_id6" name="hide"/>
                     <panel id="mark1_panel_id6" align="center" valign="center" width="16%" childLayout="vertical">
-                        <control id="mark_id6" name="checkbox" valign="center" align="center"/>
+                        <control id="mark_id6" name="radioButton" group="radio_group"  valign="center" align="center"/>
                     </panel>
                     <control id="number_id6" name="label" text="1" valign="center" align="center" width="16%"/>
                     <control id="level_id6" name="label" text="1" valign="center" align="center" width="16%"/>
@@ -312,7 +318,7 @@
                 <panel id="check_id7" align="center" width="100%" height="75px" childLayout="horizontal">
                     <effect id="effect_id7" name="hide"/>
                     <panel id="mark1_panel_id7" align="center" valign="center" width="16%" childLayout="vertical">
-                        <control id="mark_id7" name="checkbox" valign="center" align="center"/>
+                        <control id="mark_id7" name="radioButton" group="radio_group"  valign="center" align="center"/>
                     </panel>
                     <control id="number_id7" name="label" text="1" valign="center" align="center" width="16%"/>
                     <control id="level_id7" name="label" text="1" valign="center" align="center" width="16%"/>
@@ -327,7 +333,7 @@
                 <panel id="check_id8" align="center" width="100%" height="75px" childLayout="horizontal">
                     <effect id="effect_id8" name="hide"/>
                     <panel id="mark1_panel_id8" align="center" valign="center" width="16%" childLayout="vertical">
-                        <control id="mark_id8" name="checkbox" valign="center" align="center"/>
+                        <control id="mark_id8" name="radioButton" group="radio_group"  valign="center" align="center"/>
                     </panel>
                     <control id="number_id8" name="label" text="1" valign="center" align="center" width="16%"/>
                     <control id="level_id8" name="label" text="1" valign="center" align="center" width="16%"/>
@@ -342,7 +348,7 @@
                 <panel id="check_id9" align="center" width="100%" height="75px" childLayout="horizontal">
                     <effect id="effect_id9" name="hide"/>
                     <panel id="mark1_panel_id9" align="center" valign="center" width="16%" childLayout="vertical">
-                        <control id="mark_id9" name="checkbox" valign="center" align="center"/>
+                        <control id="mark_id9" name="radioButton" group="radio_group"  valign="center" align="center"/>
                     </panel>
                     <control id="number_id9" name="label" text="1" valign="center" align="center" width="16%"/>
                     <control id="level_id9" name="label" text="1" valign="center" align="center" width="16%"/>
@@ -355,11 +361,11 @@
                     </panel>
                 </panel>
             </panel>
-            <!--<panel width="70%" height="10%" align="center">
-                <control id="cancel" name="button" text="Go Back" >
+            <panel width="70%" height="10%" childLayout="center" align="center">
+                <control id="cancel" name="button" label="Go Back" >
                     <interact onClick="cancel()"/>
                 </control>
-            </panel>-->
+            </panel>
         </layer>
     </screen>
 

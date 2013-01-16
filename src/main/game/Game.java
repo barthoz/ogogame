@@ -441,7 +441,7 @@ public class Game extends SimpleApplication
                  */
                 
                 Material mat2 = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-                mat.setColor("Color", ColorRGBA.Orange);
+                mat2.setColor("Color", ColorRGBA.Orange);
                 
                 Box diamond = new Box(3.5f, 3.5f, 3.5f);
                 Geometry diamondGeo = new Geometry("selectionDiamond", diamond);
