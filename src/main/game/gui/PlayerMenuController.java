@@ -128,7 +128,7 @@ public class PlayerMenuController extends AbstractAppState implements ScreenCont
             if (i < players.size())
             {
                 panel[i].setVisible(true);
-                colorPanel[i].getRenderer(PanelRenderer.class).setBackgroundColor(new Color(game.getColors()[i][0],game.getColors()[i][1],game.getColors()[i][2],game.getColors()[i][3]));
+                colorPanel[i].getRenderer(PanelRenderer.class).setBackgroundColor(new Color(game.getColors()[players.get(i).getId()][0],game.getColors()[players.get(i).getId()][1],game.getColors()[players.get(i).getId()][2],game.getColors()[players.get(i).getId()][3]));
                 nameLabel[i].getRenderer(TextRenderer.class).setText(players.get(i).getUsername());
                 creatureLabel[i].getRenderer(TextRenderer.class).setText(Integer.toString(players.get(i).getCreatures().size()));
             }
