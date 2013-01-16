@@ -99,6 +99,10 @@ public class ModelFactory
         fsModel.attachChild(fsFull);
         fsModel.setUserData("modelType", "FoodSource");
         fsModel.setUserData("parentId", id);
+        fsFull.setUserData("modelType", "FoodSource");
+        fsFull.setUserData("parentId", id);
+        fsBase.setUserData("modelType", "FoodSource");
+        fsBase.setUserData("parentId", id);
         
         FoodSource foodSource = new FoodSource(id, fsModel, game, location);
         

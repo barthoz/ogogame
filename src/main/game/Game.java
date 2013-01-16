@@ -700,6 +700,20 @@ public class Game extends SimpleApplication
         this.world.initializeFoodSources();
         this.world.initializeDuck();
 
+        /**
+         * Initialize base diamond
+         */
+        Material mat2 = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+                mat2.setColor("Color", ColorRGBA.Blue);
+                
+                Box diamond = new Box(3.5f, 3.5f, 3.5f);
+                Geometry diamondGeo = new Geometry("selectionDiamond", diamond);
+                diamondGeo.setMaterial(mat2);
+                diamondGeo.rotate(FastMath.QUARTER_PI, FastMath.QUARTER_PI, FastMath.QUARTER_PI);
+                diamondGeo.setLocalTranslation(this.me.getBase().getLocation().getWorldCoordinates().add(0f, 50f, 0f));
+                rootNode.attachChild(diamondGeo);
+        ;
+        
         initKeys();
 
         //(set audio location
