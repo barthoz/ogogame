@@ -368,6 +368,7 @@ public class Game extends SimpleApplication
                         }
                         else if (results.size() > 0)
                         {
+                            //if (results.getClosestCollision().getGeometry().getParent() != null)
                             if (results.getClosestCollision().getGeometry().getParent().getUserData("modelType").equals("FoodSource"))
                             {                                
                                 /**

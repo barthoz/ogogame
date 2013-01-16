@@ -29,7 +29,7 @@ public abstract class Creature
     /**
      * Properties
      */
-    private Cell location;
+    protected Cell location;
     protected Player player;
     protected String id;
     protected Spatial model;
