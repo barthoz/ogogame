@@ -336,6 +336,17 @@ public class Game extends SimpleApplication
                             AttackAction act = new AttackAction(me, (Creature) selectedObject, enemy, enemy.getLocation(), false);
                             me.registerAction(act);
                         }
+                        else if (modelType.equals("FoodSource"))
+                        {
+                            /**
+                             * Create pickup action
+                             */
+                            
+                            FoodSource foodSource = world.findFoodSourceById((Integer) selectedSpatial.getUserData("parentId"));
+                            
+                            PickupFoodAction act = new PickupFoodAction(me, (Creature) selectedObject, foodSource);
+                            me.registerAction(act);
+                        }
                     }
                 }
                 else if (terrainResults.getClosestCollision() != null)
