@@ -42,7 +42,6 @@ public class CreatureMenuController extends AbstractAppState implements ScreenCo
     private SimpleApplication app;
     private Game game;
     Element[] panel;
-    Element[] radioButton;
     Element[] idLabel;
     Element[] levelLabel;
     Element[] healthLabel;
@@ -62,14 +61,6 @@ public class CreatureMenuController extends AbstractAppState implements ScreenCo
     public void cancel()
     {
         System.out.println("cancelled");
-        List<Creature> creatures = game.getMe().getCreatures();
-        for(int i = 0; i < creatures.size(); i++){
-            RadioButton r = (RadioButton)radioButton[i];
-            if(r.isActivated()){
-                game.setSelectedObject(creatures.get(i));
-                break;
-            }
-        }
         nifty.gotoScreen("hud");
     }
 
@@ -79,7 +70,6 @@ public class CreatureMenuController extends AbstractAppState implements ScreenCo
         this.nifty = game.getNifty();
 
         panel = new Element[10];
-        radioButton = new Element[10];
         idLabel = new Element[10];
         levelLabel = new Element[10];
         healthLabel = new Element[10];
@@ -123,7 +113,6 @@ public class CreatureMenuController extends AbstractAppState implements ScreenCo
         for (int i = 0; i < 10; i++)
         {
             panel[i] = nifty.getScreen("creatureMenu").findElementByName("check_id" + i);
-            radioButton[i] = nifty.getScreen("creatureMenu").findElementByName("mark_id" + i);
             idLabel[i] = nifty.getScreen("creatureMenu").findElementByName("number_id" + i);
             levelLabel[i] = nifty.getScreen("creatureMenu").findElementByName("level_id" + i);
             healthLabel[i] = nifty.getScreen("creatureMenu").findElementByName("health_id" + i);
@@ -155,11 +144,11 @@ public class CreatureMenuController extends AbstractAppState implements ScreenCo
 
                 if (creatures.get(i) instanceof LandCreature)
                 {
-                    staminaLabel[i].getRenderer(TextRenderer.class).setText("-");
+                    staminaLabel[i].getRenderer(TextRenderer.class).setText("N/A");
                     img = nifty.getRenderEngine().createImage("Interface/land.png", false);
                 } else if (creatures.get(i) instanceof SeaCreature)
                 {
-                    staminaLabel[i].getRenderer(TextRenderer.class).setText("-");
+                    staminaLabel[i].getRenderer(TextRenderer.class).setText("N/A");
                     img = nifty.getRenderEngine().createImage("Interface/sea.png", false);
                 } else if (creatures.get(i) instanceof AirborneCreature)
                 {
