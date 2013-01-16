@@ -70,7 +70,6 @@
             </panel>
         </layer>
     </screen>
-    </screen>
   
     <screen id="feedMenu" controller="main.game.gui.FeedMenuController">
         
