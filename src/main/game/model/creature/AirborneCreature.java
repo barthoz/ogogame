@@ -4,10 +4,16 @@
  */
 package main.game.model.creature;
 
+import com.jme3.cinematic.Cinematic;
+import com.jme3.cinematic.MotionPath;
+import com.jme3.cinematic.events.MotionEvent;
+import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import main.game.Player;
+import main.game.model.ModelFactory;
 import main.game.model.control.AirborneCreatureControl;
+import main.game.model.control.LandCreatureControl;
 
 /**
  *
@@ -92,6 +98,35 @@ public class AirborneCreature extends Creature
         else
         {
             this.stamina -= CONST_STAMINA_DECREASE;
+        }
+    }
+    
+    @Override
+    public void die()
+    {
+        super.die();
+        
+        // Change model
+        AirborneCreatureControl c = (AirborneCreatureControl) this.controller;
+        Node s = (Node) c.getSpatial();
+        s.detachChild(c.getStand());
+        s.attachChild(ModelFactory.getDeathTomb(this.player.getGame()));
+        c.setSpatial(null);
+        c.setSpatial(s);
+        
+        // If airborne, put it on the ground
+        if (this.airborne)
+        {
+            Cinematic cinematic = new Cinematic(this.location.getWorld().getWorldNode(), 5);
+            MotionPath path = new MotionPath();
+            path.addWayPoint(this.model.getWorldTranslation());
+            path.addWayPoint(this.location.getWorldCoordinates());
+            
+            MotionEvent track = new MotionEvent(this.model, path);
+            cinematic.addCinematicEvent(0, track);
+            cinematic.fitDuration();
+            this.player.getGame().getStateManager().attach(cinematic);
+            cinematic.play();
         }
     }
     

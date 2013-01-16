@@ -33,6 +33,7 @@ public class SeaCreatureControl extends AbstractControl implements Savable, Clon
     /**
      * Properties
      */
+    private Spatial stand;
     private Game game;
     private SeaCreature controllee;
     private AnimChannel channel;
@@ -55,11 +56,12 @@ public class SeaCreatureControl extends AbstractControl implements Savable, Clon
      */
     public SeaCreatureControl(Node spatial, Game game, SeaCreature controllee)
     {
-        Spatial s = spatial.getChild("Move");
+        
+        this.stand= spatial.getChild("Move");
         super.setSpatial(spatial);
         this.game = game;
         this.controllee = controllee;
-        control = s.getControl(AnimControl.class);
+        control = stand.getControl(AnimControl.class);
         control.addListener(this);
         channel = control.createChannel();
         channel.setAnim("Move");
@@ -139,5 +141,15 @@ public class SeaCreatureControl extends AbstractControl implements Savable, Clon
     public void onAnimChange(AnimControl control, AnimChannel channel, String animName)
     {
         //throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public Spatial getStand()
+    {
+        return stand;
+    }
+
+    public void setStand(Spatial stand)
+    {
+        this.stand = stand;
     }
 }
