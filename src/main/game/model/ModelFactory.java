@@ -208,6 +208,13 @@ public class ModelFactory
         return new Explosion(game, location);
     }
     
+    public static Spatial getDeathTomb(Game game){
+        Spatial s = game.getAssetManager().loadModel("Models/Death/death.mesh.xml");
+        s.setName("Death");
+        s.setLocalScale(5f);
+        return s;
+    }
+    
     public static int getCreatureCost(String modelType)
     {
         if (modelType.equals(AirborneCreature.CODE_ID))

@@ -11,6 +11,7 @@ import com.jme3.cinematic.events.CinematicEvent;
 import com.jme3.cinematic.events.CinematicEventListener;
 import com.jme3.cinematic.events.MotionEvent;
 import com.jme3.math.Vector3f;
+import com.jme3.scene.Node;
 import java.util.List;
 import java.util.Random;
 import java.util.logging.Level;
@@ -23,8 +24,10 @@ import main.game.algorithm.PathFinding;
 import main.game.model.Explosion;
 import main.game.model.ModelFactory;
 import main.game.model.cell.Cell;
+import main.game.model.control.LandCreatureControl;
 import main.game.model.creature.AirborneCreature;
 import main.game.model.creature.Creature;
+import main.game.model.creature.LandCreature;
 
 /**
  *
@@ -228,8 +231,18 @@ public class AttackAction extends CreatureAction
         hp *= 0.02*randomKey;
         opponent.decreaseHealth(hp);
         
+        if(subject instanceof LandCreature){
+            LandCreatureControl c= (LandCreatureControl)this.subject.getController();
+                    Node s = (Node) c.getSpatial();
+                    s.detachChild(c.getStand());
+                    s.attachChild(ModelFactory.getDeathTomb(tempGame));
+                    c.setSpatial(null);
+                    c.setSpatial(s);
+        }
+             
         if (subject.getHealth() <= 0)
         {
+            
             //subject.setHealth(0);
             subject.setIsAlive(false);
             subject.setInFight(false);
