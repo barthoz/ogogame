@@ -102,7 +102,7 @@ public class PlayerMenuController extends AbstractAppState implements ScreenCont
 
     public void init()
     {
-        for (int i = 0; i < 10; i++)
+        for (int i = 0; i < 6; i++)
         {
             panel[i] = nifty.getScreen("playerMenu").findElementByName("player_id" + i);
             colorPanel[i] = nifty.getScreen("playerMenu").findElementByName("player_color_id" + i);
@@ -123,7 +123,7 @@ public class PlayerMenuController extends AbstractAppState implements ScreenCont
     public void update(float tpf)
     {
         List<Player> players = game.getPlayers();
-        for (int i = 0; i < 10; i++)
+        for (int i = 0; i < 6; i++)
         {
             if (i < players.size())
             {
