@@ -24,10 +24,13 @@ import main.game.algorithm.PathFinding;
 import main.game.model.Explosion;
 import main.game.model.ModelFactory;
 import main.game.model.cell.Cell;
+import main.game.model.control.AirborneCreatureControl;
 import main.game.model.control.LandCreatureControl;
+import main.game.model.control.SeaCreatureControl;
 import main.game.model.creature.AirborneCreature;
 import main.game.model.creature.Creature;
 import main.game.model.creature.LandCreature;
+import main.game.model.creature.SeaCreature;
 
 /**
  *
@@ -233,6 +236,20 @@ public class AttackAction extends CreatureAction
         
         if(subject instanceof LandCreature){
             LandCreatureControl c= (LandCreatureControl)this.subject.getController();
+                    Node s = (Node) c.getSpatial();
+                    s.detachChild(c.getStand());
+                    s.attachChild(ModelFactory.getDeathTomb(tempGame));
+                    c.setSpatial(null);
+                    c.setSpatial(s);
+        } else if(subject instanceof SeaCreature){
+            SeaCreatureControl c= (SeaCreatureControl)this.subject.getController();
+                    Node s = (Node) c.getSpatial();
+                    s.detachChild(c.getStand());
+                    s.attachChild(ModelFactory.getDeathTomb(tempGame));
+                    c.setSpatial(null);
+                    c.setSpatial(s);
+        } else if(subject instanceof AirborneCreature){
+            AirborneCreatureControl c= (AirborneCreatureControl)this.subject.getController();
                     Node s = (Node) c.getSpatial();
                     s.detachChild(c.getStand());
                     s.attachChild(ModelFactory.getDeathTomb(tempGame));
