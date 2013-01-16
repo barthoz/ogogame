@@ -11,6 +11,7 @@ import com.jme3.cinematic.events.CinematicEvent;
 import com.jme3.cinematic.events.CinematicEventListener;
 import com.jme3.cinematic.events.MotionEvent;
 import com.jme3.math.Vector3f;
+import com.jme3.scene.Node;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import main.exception.ActionNotEnabledException;
@@ -19,8 +20,12 @@ import main.game.Game;
 import main.game.Player;
 import main.game.algorithm.PathFinding;
 import main.game.model.cell.Cell;
+import main.game.model.control.AirborneCreatureControl;
+import main.game.model.control.LandCreatureControl;
 import main.game.model.creature.AirborneCreature;
 import main.game.model.creature.Creature;
+import main.game.model.creature.LandCreature;
+import main.game.model.creature.SeaCreature;
 
 /**
  *
@@ -108,10 +113,32 @@ public class FleeAction extends CreatureAction
                 final Cinematic cinematic = new Cinematic(game.getWorld().getWorldNode(), 20);
                 MotionEvent track = new MotionEvent(this.subject.getModel(), path);
 
-                /**
-                 * Not sure how to fix this
-                 */
-                //track.setDirectionType(MotionEvent.Direction.Path);
+                if(subject instanceof LandCreature)
+                {
+                    LandCreatureControl c= (LandCreatureControl)this.subject.getController();
+                    Node s = (Node) c.getSpatial();
+                    s.detachChild(c.getStand());
+                    s.attachChild(c.getMove());
+                    c.setSpatial(null);
+                    c.setSpatial(s);
+                    track.setDirectionType(MotionEvent.Direction.Path);
+                }
+                else if (subject instanceof SeaCreature){
+                    track.setDirectionType(MotionEvent.Direction.LookAt);
+                    track.setLookAt(destination.getWorldCoordinates(), Vector3f.UNIT_Y);
+
+                }
+                else if (subject instanceof AirborneCreature)
+                {
+                   AirborneCreatureControl c = (AirborneCreatureControl) subject.getController();
+                   Node s = (Node) c.getSpatial();
+                   s.detachChild(c.getStand());
+                   s.attachChild(c.getMove());
+                   c.setSpatial(null);
+                   c.setSpatial(s);
+                   track.setDirectionType(MotionEvent.Direction.None);
+                }
+
                 cinematic.addCinematicEvent(0, track);
                 cinematic.fitDuration();
                 game.getStateManager().attach(cinematic);
@@ -144,8 +171,26 @@ public class FleeAction extends CreatureAction
 
                     public void onStop(CinematicEvent cinematic)
                     {
-                        //throw new UnsupportedOperationException("Not supported yet.");
-
+                        if(subject instanceof LandCreature)
+                        {
+                            LandCreatureControl c= (LandCreatureControl)subject.getController();
+                            Node s = (Node) c.getSpatial();
+                            s.detachChild(c.getMove());
+                            s.attachChild(c.getStand());
+                            c.setSpatial(null);
+                            c.setSpatial(s);
+                        }
+                        
+                        if(subject instanceof AirborneCreature)
+                        {
+                            AirborneCreatureControl c = (AirborneCreatureControl)subject.getController();
+                            Node s = (Node) c.getSpatial();
+                            s.detachChild(c.getMove());
+                            s.attachChild(c.getStand());
+                            c.setSpatial(null);
+                            c.setSpatial(s);
+                        }
+                        
                         if (subject instanceof AirborneCreature)
                         {
                             subject.getModel().setLocalTranslation(airDestination);
