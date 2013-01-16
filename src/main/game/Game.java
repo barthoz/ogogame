@@ -571,7 +571,7 @@ public class Game extends SimpleApplication
     public final static int CONST_CREATURES_LIMIT = 10;
     public final static int CONST_SET_MODE_TIME_LIMIT = 10;
     public final static int CONST_INIT_RANGE_OF_SIGHT = 10;
-    public final static int CONST_INIT_START_FOOD = 10;
+    public final static int CONST_INIT_START_FOOD = 100;
     public final static int CONST_REGENERATE_FOOD_ROUNDS = 5;
     
     /**
