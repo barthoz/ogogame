@@ -121,6 +121,16 @@ public class Lobby
         }
     }
     
+    /**
+     * Leave a game.
+     * 
+     * @Pre player is in a lobby
+     */
+    public void leaveGame()
+    {
+        this.initialClient.leaveLobby();
+    }
+    
     public void joinGame(GameCredentials gameCredentials, String username)
     {
         this.initialClient.joinGame(gameCredentials, username);

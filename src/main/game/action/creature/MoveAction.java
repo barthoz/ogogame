@@ -231,6 +231,28 @@ public class MoveAction extends CreatureAction
                 
                 this.subject.setLocation(this.destination);
                 
+                /**
+                 * Set in fight if necessary after moving
+                 */
+                boolean mixedTeamsInCell = false;
+                    
+                for (Creature creature : this.destination.getOccupants())
+                {
+                    if (!creature.getPlayer().equals(this.player))
+                    {
+                        mixedTeamsInCell = true;
+                        break;
+                    }
+                }
+
+                if (mixedTeamsInCell)
+                {
+                    for (Creature creature : this.destination.getOccupants())
+                    {
+                        creature.setInFight(true);
+                    }
+                }
+                
             } catch (NoReachablePathException ex) {
                 Logger.getLogger(MoveAction.class.getName()).log(Level.SEVERE, null, ex);
             }            

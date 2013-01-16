@@ -19,6 +19,7 @@ import main.game.model.cell.DeepWaterCell;
 import main.game.model.control.AirborneCreatureControl;
 import main.game.model.control.LandCreatureControl;
 import main.game.model.creature.AirborneCreature;
+import main.game.model.creature.Creature;
 import main.game.model.creature.LandCreature;
 
 /**

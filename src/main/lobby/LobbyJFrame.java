@@ -33,6 +33,20 @@ public class LobbyJFrame extends javax.swing.JFrame {
      * Business logic
      */
     
+    public void disableActions()
+    {
+        this.jButton1.setEnabled(false);
+        this.jButton2.setEnabled(false);
+        this.jButton3.setEnabled(false);
+    }
+    
+    public void enableActions()
+    {
+        this.jButton1.setEnabled(true);
+        this.jButton2.setEnabled(true);
+        this.jButton3.setEnabled(true);
+    }
+    
     public void enableRefresh()
     {
         this.jButton1.setEnabled(true);
@@ -179,6 +193,7 @@ public class LobbyJFrame extends javax.swing.JFrame {
             GameCredentials selectedGame = (GameCredentials) this.jList1.getSelectedValue();
             lobby.joinGame(selectedGame, this.jTextField1.getText());
             lobby.getIntermediateClientJFrame().setVisible(true);
+            this.disableActions();
         }
     }//GEN-LAST:event_jButton2ActionPerformed
 

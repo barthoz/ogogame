@@ -214,6 +214,28 @@ public class PickupFoodAction extends CreatureAction
             this.foodSource.getLocation().addCreature(this.subject, false);
             
             this.subject.setLocation(this.foodSource.getLocation());
+            
+            /**
+            * Set in fight if necessary after moving
+            */
+            boolean mixedTeamsInCell = false;
+
+            for (Creature creature : this.foodSource.getLocation().getOccupants())
+            {
+               if (!creature.getPlayer().equals(this.player))
+               {
+                   mixedTeamsInCell = true;
+                   break;
+               }
+            }
+
+            if (mixedTeamsInCell)
+            {
+               for (Creature creature : this.foodSource.getLocation().getOccupants())
+               {
+                   creature.setInFight(true);
+               }
+            }
         }
     }
     

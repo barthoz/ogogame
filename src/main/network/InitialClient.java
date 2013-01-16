@@ -78,6 +78,20 @@ public class InitialClient
      * Business logic
      */
     
+    public void leaveLobby()
+    {
+        try {
+            MessageLeaveLobby messageLeaveLobby = new MessageLeaveLobby();
+            String strMessage = xstream.toXML(messageLeaveLobby);
+            byte[] sendBuffer = strMessage.getBytes();
+            DatagramPacket sendPacket = new DatagramPacket(sendBuffer, sendBuffer.length, serverAddress, InitialServer.PORT);
+            System.out.println("Client out: " + strMessage);
+            this.socket.send(sendPacket);
+        } catch (IOException ex) {
+            Logger.getLogger(InitialClient.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
     /**
      * Listen to server(s) for 10 seconds.
      */

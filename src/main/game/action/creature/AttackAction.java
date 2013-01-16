@@ -145,6 +145,7 @@ public class AttackAction extends CreatureAction
                         if (!creature.getPlayer().equals(this.player))
                         {
                             mixedTeamsInCell = true;
+                            break;
                         }
                     }
                     
