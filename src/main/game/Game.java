@@ -142,10 +142,30 @@ public class Game extends SimpleApplication
             }
 
             /**
+             * Check whether GUI is selected
+             */
+            
+            boolean guiSelected = false;
+            
+            Vector2f gclick2d = inputManager.getCursorPosition();
+            Vector3f gclick3d = cam.getWorldCoordinates(new Vector2f(gclick2d.x, gclick2d.y), 0f).clone();
+            Vector3f gdir = cam.getWorldCoordinates(new Vector2f(gclick2d.x, gclick2d.y), 1f).subtractLocal(gclick3d).normalizeLocal();
+
+            CollisionResults gresults = new CollisionResults();
+            Ray gray = new Ray(gclick3d, gdir);
+            guiNode.collideWith(gray, gresults);
+
+            // Check if something was selected
+            if (gresults.size() > 0)
+            {
+                guiSelected = true;
+            }
+            
+            /**
              * [RIGHT-CLICK] Select duck
              */
             
-            if (!keyPressed && name.equals("RightClick"))
+            if (!guiSelected && !keyPressed && name.equals("RightClick"))
             {
                 Vector2f click2d = inputManager.getCursorPosition();
                 Vector3f click3d = cam.getWorldCoordinates(new Vector2f(click2d.x, click2d.y), 0f).clone();
@@ -176,7 +196,7 @@ public class Game extends SimpleApplication
             /**
              * [RIGHT-CLICK] Select creature, base
              */
-            if (actionsEnabled && !keyPressed && name.equals("RightClick"))
+            if (!guiSelected && actionsEnabled && !keyPressed && name.equals("RightClick"))
             {
                 Vector2f click2d = inputManager.getCursorPosition();
                 Vector3f click3d = cam.getWorldCoordinates(new Vector2f(click2d.x, click2d.y), 0f).clone();
@@ -277,7 +297,7 @@ public class Game extends SimpleApplication
             /**
              * [LEFT-CLICK while something selected] Select terrain, food source, other creature
              */
-            if (actionsEnabled && !keyPressed && name.equals("Select") && selectedObject != null)
+            if (!guiSelected && actionsEnabled && !keyPressed && name.equals("Select") && selectedObject != null)
             {
                 // Get rid of radius circle if it is there
                 if (rootNode.getChild("radiusCircle") != null)
