@@ -501,7 +501,7 @@ public class Game extends SimpleApplication
      * Game constants
      */
     public final static int CONST_CREATURES_LIMIT = 10;
-    public final static int CONST_SET_MODE_TIME_LIMIT = 20;
+    public final static int CONST_SET_MODE_TIME_LIMIT = 10;
     public final static int CONST_INIT_RANGE_OF_SIGHT = 10;
     public final static int CONST_INIT_START_FOOD = 10;
     public final static int CONST_REGENERATE_FOOD_ROUNDS = 5;
@@ -947,12 +947,12 @@ public class Game extends SimpleApplication
                     // For any of our creatures that are in fight
                     for (Creature creature : this.me.getCreatures())
                     {
-                        if (creature.isInFight())
+                        if (creature.isInFight() && creature.isIsAlive())
                         {
                             // Attack anybody who is in the same cell as this creature (from the opposite team)
                             for (Creature opponent : creature.getLocation().getOccupants())
                             {
-                                if (!(this.me.equals(opponent.getPlayer())))
+                                if (!(this.me.equals(opponent.getPlayer())) && opponent.isIsAlive())
                                 {
                                     AttackAction act = new AttackAction(this.me, creature, opponent, creature.getLocation());
                                     this.me.registerAction(act);

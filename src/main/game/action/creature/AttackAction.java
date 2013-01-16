@@ -230,69 +230,21 @@ public class AttackAction extends CreatureAction
         // define some algorithm to find the winner and the quantity of damage
         Explosion explosion = new Explosion(tempGame, destination);
         
-        int hp = (int)Math.sqrt((double)subject.getLevel()/(double)opponent.getLevel());
-        hp *= 0.02*randomKey;
+        int hp = (int) Math.sqrt((double)subject.getLevel()/(double)opponent.getLevel());
+        hp *= 0.02* this.randomKey;
         opponent.decreaseHealth(hp);
-             
-        if (subject.getHealth() <= 0)
+        
+        if (this.subject.getHealth() <= 0)
         {
-            /*if(subject instanceof LandCreature){
-                LandCreatureControl c= (LandCreatureControl)this.subject.getController();
-                Node s = (Node) c.getSpatial();
-                s.detachChild(c.getStand());
-                s.attachChild(ModelFactory.getDeathTomb(tempGame));
-                c.setSpatial(null);
-                c.setSpatial(s);
-            } else if(subject instanceof SeaCreature){
-                SeaCreatureControl c= (SeaCreatureControl)this.subject.getController();
-                Node s = (Node) c.getSpatial();
-                s.detachChild(c.getStand());
-                s.attachChild(ModelFactory.getDeathTomb(tempGame));
-                c.setSpatial(null);
-                c.setSpatial(s);
-            } else if(subject instanceof AirborneCreature){
-                AirborneCreatureControl c= (AirborneCreatureControl)this.subject.getController();
-                Node s = (Node) c.getSpatial();
-                s.detachChild(c.getStand());
-                s.attachChild(ModelFactory.getDeathTomb(tempGame));
-                c.setSpatial(null);
-                c.setSpatial(s);
-            }*/            
-            
             //subject.setHealth(0);
-            subject.setIsAlive(false);
-            subject.setInFight(false);
-            opponent.setInFight(false);
+            this.subject.setInFight(false);
+            this.opponent.setInFight(false);
         }
-        if (opponent.getHealth() <= 0)
+        
+        if (this.opponent.getHealth() <= 0)
         {
-            /*if(subject instanceof LandCreature){
-                LandCreatureControl c= (LandCreatureControl)this.opponent.getController();
-                Node s = (Node) c.getSpatial();
-                s.detachChild(c.getStand());
-                s.attachChild(ModelFactory.getDeathTomb(tempGame));
-                c.setSpatial(null);
-                c.setSpatial(s);
-            } else if(subject instanceof SeaCreature){
-                SeaCreatureControl c= (SeaCreatureControl)this.opponent.getController();
-                Node s = (Node) c.getSpatial();
-                s.detachChild(c.getStand());
-                s.attachChild(ModelFactory.getDeathTomb(tempGame));
-                c.setSpatial(null);
-                c.setSpatial(s);
-            } else if(subject instanceof AirborneCreature){
-                AirborneCreatureControl c= (AirborneCreatureControl)this.opponent.getController();
-                Node s = (Node) c.getSpatial();
-                s.detachChild(c.getStand());
-                s.attachChild(ModelFactory.getDeathTomb(tempGame));
-                c.setSpatial(null);
-                c.setSpatial(s);
-            }*/  
-            
-            //opponent.setHealth(0);
-            opponent.setIsAlive(false);
-            subject.setInFight(false);
-            opponent.setInFight(false);
+            this.subject.setInFight(false);
+            this.opponent.setInFight(false);
         }
     }
     

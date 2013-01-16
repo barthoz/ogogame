@@ -105,6 +105,7 @@ public abstract class Creature
     
     public void die()
     {
+        this.inFight = false;
         this.health = 0;
         this.isAlive = false;
         if (this.creatureHeader.getParent() != null)
