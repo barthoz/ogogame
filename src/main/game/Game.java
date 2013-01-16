@@ -751,7 +751,7 @@ public class Game extends SimpleApplication
          * Initialize base diamond
          */
         Material mat2 = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-        mat2.setColor("Color", ColorRGBA.Blue);
+        mat2.setColor("Color", new ColorRGBA(getColors()[me.getId()][0], getColors()[me.getId()][1], getColors()[me.getId()][2], getColors()[me.getId()][3]));
 
         Box diamond = new Box(3.5f, 3.5f, 3.5f);
         Geometry diamondGeo = new Geometry("baseDiamond", diamond);
