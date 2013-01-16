@@ -135,4 +135,8 @@ public class HudController  extends AbstractAppState implements ScreenController
   public void showCreatureMenu(){
       nifty.gotoScreen("creatureMenu");
   }
+  
+  public void showPlayerMenu(){
+      nifty.gotoScreen("playerMenu");
+  }
 }

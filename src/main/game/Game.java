@@ -53,6 +53,7 @@ import com.jme3.water.WaterFilter;
 import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.builder.ScreenBuilder;
 import de.lessvoid.nifty.screen.DefaultScreenController;
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -74,6 +75,7 @@ import main.game.action.creature.PickupFoodAction;
 import main.game.gui.CreatureMenuController;
 import main.game.gui.FeedMenuController;
 import main.game.gui.HudController;
+import main.game.gui.PlayerMenuController;
 import main.game.gui.SpawnMenuController;
 import main.game.model.Base;
 import main.game.model.Explosion;
@@ -103,6 +105,8 @@ public class Game extends SimpleApplication
     
     private HudController hudController;
     private CreatureMenuController cmController;
+    private PlayerMenuController pController;
+    private float[][] colors;
     
     /**
      * Networking
@@ -588,6 +592,15 @@ public class Game extends SimpleApplication
          * Initialize GUI setup
          */
         
+        colors = new float[][]{
+            {0f,0f,1f,1f}, // blue
+            {0f,1f,0f,1f}, // green
+            {1f,0f,0f,1f}, // red
+            {0f,1f,1f,1f}, // cyan
+            {1f,1f,0f,1f}, // yellow
+            {0f,0f,1f,1f} // magenta
+        };
+        
         initHud();
         
         this.niftyDisplay = new NiftyJmeDisplay(assetManager, inputManager, audioRenderer, guiViewPort);
@@ -595,9 +608,10 @@ public class Game extends SimpleApplication
 
         this.hudController = new HudController(this);
         this.cmController = new CreatureMenuController(this);
-        nifty.fromXml("Interface/gui.xml", "hud", this.cmController, this.hudController, new SpawnMenuController(this), new FeedMenuController(this));
+        nifty.fromXml("Interface/gui.xml", "hud", this.pController, this.cmController, this.hudController, new SpawnMenuController(this), new FeedMenuController(this));
         this.hudController.init();
         this.cmController.init();
+        this.pController.init();
         guiViewPort.addProcessor(niftyDisplay);
         nifty.gotoScreen("hud");
 
@@ -1051,6 +1065,7 @@ public class Game extends SimpleApplication
         
         this.hudController.update(tpf);
         this.cmController.update(tpf);
+        this.pController.update(tpf);
     }
     
     private BitmapText modeInfo;
@@ -1567,5 +1582,15 @@ public class Game extends SimpleApplication
     public void setNifty(Nifty nifty)
     {
         this.nifty = nifty;
+    }
+
+    public float[][] getColors()
+    {
+        return colors;
+    }
+
+    public void setColors(float[][] colors)
+    {
+        this.colors = colors;
     }
 }

@@ -7,7 +7,7 @@
     <useStyles filename="nifty-default-styles.xml" />
     
     <screen id="hud" controller="main.game.gui.HudController">
-        <layer id="background" childLayout="vertical">
+    <layer id="background" childLayout="vertical">
             <image filename="Interface/background.png"
                    valign="top" align="center" height="50px" width="100%">
             </image>
@@ -42,24 +42,34 @@
             </panel>
         </layer>
         <layer id="specialActions_background" childLayout="center">
-                <image filename="Interface/background.png"
-                   valign="bottom" align="center" height="50px" width="100%">
-                </image>
+            <image filename="Interface/background.png"
+                       valign="bottom" align="center" height="50px" width="100%">
+            </image>
         </layer>
-        <layer id="specialActions_forground" childLayout="horizontal">
-            <panel width="20%"></panel>
-            <panel width="60%" height="50px" valign="bottom" align="center" childLayout="horizontal">
-                <control name="button" label="Leave" id="leave" valign="center" visibleToMouse="true" width="33.33%">
-                    <interact onClick="leave()"/>
-                </control>
-                <control name="button" label="Eat" id="cancel" valign="center" visibleToMouse="true" width="33.33%">
-                    <interact onClick="eat()"/>
-                </control>
-                <control name="button" label="Land" id="land" valign="center" visibleToMouse="true" width="33.33%">
-                    <interact onClick="land()"/>
-                </control>
+        <layer id="specialActions_forground" childLayout="center">
+            <panel width="90%" height="50px" valign="bottom" align="center" childLayout="horizontal">
+                <control id="button_to_player_list" name="button" height="50px" width="20%" backgroundColor="#0000" label="Players" align="center" valign="center">
+                    <interact onClick="showPlayerMenu()"/>
+                </control >
+                <panel childLayout="center" align ="center" valing="center" width="20%">
+                    <control name="button" label="Leave" id="leave" valign="center" visibleToMouse="true" width="80%" height="80%">
+                        <interact onClick="leave()"/>
+                    </control>
+                </panel>
+                <panel childLayout="center" align ="center" valing="center" width="20%">
+                    <control name="button" label="Eat" id="cancel" valign="center" visibleToMouse="true" width="80%" height="80%">
+                        <interact onClick="eat()"/>
+                    </control>
+                </panel>
+                <panel childLayout="center" align ="center" valing="center" width="20%">
+                    <control name="button" label="Land" id="land" valign="center" visibleToMouse="true" width="80%" height="80%">
+                        <interact onClick="land()"/>
+                    </control>
+                </panel>
+                <panel width="20%"></panel>
             </panel>
         </layer>
+    </screen>
     </screen>
   
     <screen id="feedMenu" controller="main.game.gui.FeedMenuController">
@@ -337,97 +347,72 @@
             </panel>
         </layer>
     </screen>
-        <screen id="players">
+        <screen id="playerMenu" controller="main.game.gui.PlayerMenuController">
         <layer id="background" childLayout="vertical">
             <image filename="Interface/background.png"
                    valign="top" align="center" height="100%" width="75%">
             </image>
         </layer>
         <layer id="foreground" childLayout="vertical">
-            <panel id="headers" height="5%" width="75%" align="center" childLayout="vertical" visibleToMouse="true">
-                <panel height="5%" ></panel>
-                <panel width = "75%" height="10%" align="center" childLayout="horizontal">
-                    <panel width ="10%" />
-                    <control name="label" text="Color:" font="aurulent-sans-16.fnt"/>
-                    <panel width ="10%" />
-                    <control name="label" text="Username:" />
-                    <panel width ="10%" />
-                    <control name="label" text="AmountOfCreatures:" />
-                </panel>
+            <panel id="playerssection" height="90%" width="75%" align="center" childLayout="vertical" visibleToMouse="true" >
+                    <panel id="playerheader" width = "100%" height="10%" align="center" childLayout="horizontal">
+                        <control name="label" text="Color:" font="aurulent-sans-16.fnt" aling="center" valing="bottom" width="33%" height="100%" />
+                        <control name="label" text="Username:" align="center" valing="bottom" width="33%" height="100%" />
+                        <control name="label" text="AmountOfCreatures:" align="center" valing="bottom"width="33%" height="100%" />
+                    </panel>
+                
+                 <panel id="player_id0" width = "100%" height="15%" align="center" childLayout="horizontal">
+                        <panel childLayout="center" align="center" valing="center" width="33%" height="100%" >
+                        <panel id="player_color_id0" backgroundColor="#AA5ABA" width="15px" height="15px" />
+                        </panel>
+                        <control id="player_name_id0"name="label" text="Username:" align="center" valing="center" width="33%" height="100%" />
+                        <control id="player_creature_id0" name="label" text="AmountOfCreatures:" align="center" valing="center" width="33%" height="100%" />
+                 </panel>
+                
+                 <panel id="player_id1" width = "100%" height="15%" align="center" childLayout="horizontal">
+                        <panel childLayout="center" align="center" valing="center" width="33%" height="100%" >
+                        <panel id="player_color_id1" backgroundColor="#AA5ABA" width="15px" height="15px" />
+                        </panel>
+                        <control id="player_name_id1"name="label" text="Username:" align="center" valing="center" width="33%" height="100%" />
+                        <control id="player_creature_id1" name="label" text="AmountOfCreatures:" align="center" valing="center" width="33%" height="100%" />
+                 </panel>
+                
+                 <panel id="player_id2" width = "100%" height="15%" align="center" childLayout="horizontal">
+                        <panel childLayout="center" align="center" valing="center" width="33%" height="100%" >
+                        <panel id="player_color_id2" backgroundColor="#AA5ABA" width="15px" height="15px" />
+                        </panel>
+                        <control id="player_name_id2"name="label" text="Username:" align="center" valing="center" width="33%" height="100%" />
+                        <control id="player_creature_id2" name="label" text="AmountOfCreatures:" align="center" valing="center" width="33%" height="100%" />
+                 </panel>
+                
+                 <panel id="player_id3" width = "100%" height="15%" align="center" childLayout="horizontal">
+                        <panel childLayout="center" align="center" valing="center" width="33%" height="100%" >
+                        <panel id="player_color_id3" backgroundColor="#AA5ABA" width="15px" height="15px" />
+                        </panel>
+                        <control id="player_name_id3"name="label" text="Username:" align="center" valing="center" width="33%" height="100%" />
+                        <control id="player_creature_id3" name="label" text="AmountOfCreatures:" align="center" valing="center" width="33%" height="100%" />
+                 </panel>
+                
+                 <panel id="player_id4" width = "100%" height="15%" align="center" childLayout="horizontal">
+                        <panel childLayout="center" align="center" valing="center" width="33%" height="100%" >
+                        <panel id="player_color_id4" backgroundColor="#AA5ABA" width="15px" height="15px" />
+                        </panel>
+                        <control id="player_name_id4"name="label" text="Username:" align="center" valing="center" width="33%" height="100%" />
+                        <control id="player_creature_id4" name="label" text="AmountOfCreatures:" align="center" valing="center" width="33%" height="100%" />
+                 </panel>
+                 
+                 <panel id="player_id5" width = "100%" height="15%" align="center" childLayout="horizontal">
+                        <panel childLayout="center" align="center" valing="center" width="33%" height="100%" >
+                        <panel id="player_color_id5" backgroundColor="#AA5ABA" width="15px" height="15px" />
+                        </panel>
+                        <control id="player_name_id5"name="label" text="Username:" align="center" valing="center" width="33%" height="100%" />
+                        <control id="player_creature_id5" name="label" text="AmountOfCreatures:" align="center" valing="center" width="33%" height="100%" />
+                 </panel>
             </panel>
-            <panel id="players" height="95%" width="75%" align="center" childLayout="vertical" visibleToMouse="true" >
-                <panel height="5%" ></panel>
-                <panel width = "75%" height="10%" align="center" childLayout="horizontal">
-                    <panel width ="10%" />
-                    <panel width ="10px" />
-                    <panel width="10px" height="10px" backgroundColor="#A5ABA"/>
-                    <panel width ="10%" />
-                    <panel width="20px" />
-                    <control name="label" text="Player0" />
-                    <panel width ="10%" />
-                    <panel width="18px" />
-                    <control name="label" text="AmountOfCreatures" />
-                </panel>
-                <panel height="5%" ></panel>
-                <panel width = "75%" height="10%" align="center" childLayout="horizontal">
-                    <panel width ="10%" />
-                    <panel width ="10px" />
-                    <panel width="10px" height="10px" backgroundColor="#A5ABA"/>
-                    <panel width ="10%" />
-                    <panel width="20px" />
-                    <control name="label" text="Player1" />
-                    <panel width ="10%" />
-                    <panel width="18px" />
-                    <control name="label" text="AmountOfCreatures" />
-                </panel>
-                <panel height="5%" ></panel>
-                <panel width = "75%" height="10%" align="center" childLayout="horizontal">
-                    <panel width ="10%" />
-                    <panel width ="10px" />
-                    <panel width="10px" height="10px" backgroundColor="#A5ABA"/>
-                    <panel width ="10%" />
-                    <panel width="20px" />
-                    <control name="label" text="Player2" />
-                    <panel width ="10%" />
-                    <panel width="18px" />
-                    <control name="label" text="AmountOfCreatures" />
-                </panel>
-                <panel height="5%" ></panel>
-                <panel width = "75%" height="10%" align="center" childLayout="horizontal">
-                    <panel width ="10%" />
-                    <panel width ="10px" />
-                    <panel width="10px" height="10px" backgroundColor="#A5ABA"/>
-                    <panel width ="10%" />
-                    <panel width="20px" />
-                    <control name="label" text="Player3" />
-                    <panel width ="10%" />
-                    <panel width="18px" />
-                    <control name="label" text="AmountOfCreatures" />
-                </panel>
-                <panel height="5%" ></panel>
-                <panel width = "75%" height="10%" align="center" childLayout="horizontal">
-                    <panel width ="10%" />
-                    <panel width ="10px" />
-                    <panel width="10px" height="10px" backgroundColor="#A5ABA"/>
-                    <panel width ="10%" />
-                    <panel width="20px" />
-                    <control name="label" text="Player4" />
-                    <panel width ="10%" />
-                    <panel width="18px" />
-                    <control name="label" text="AmountOfCreatures" />
-                </panel>
-                <panel height="5%" ></panel>
-                <panel width = "75%" height="10%" align="center" childLayout="horizontal">
-                    <panel width ="10%" />
-                    <panel width ="10px" />
-                    <panel width="10px" height="10px" backgroundColor="#A5ABA"/>
-                    <panel width ="10%" />
-                    <panel width="20px" />
-                    <control name="label" text="Player5" />
-                    <panel width ="10%" />
-                    <panel width="18px" />
-                    <control name="label" text="AmountOfCreatures" />
-                </panel>
+            <panel width="70%" height="10%" childLayout="center" align="center">
+                <control id="pcancel" name="button" label="Go Back" >
+                    <interact onClick="cancel()"/>
+                </control>
             </panel>
         </layer>
     </screen>
