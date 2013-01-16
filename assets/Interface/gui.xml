@@ -52,7 +52,7 @@
                     <interact onClick="showPlayerMenu()"/>
                 </control >
                 <panel childLayout="center" align ="center" valing="center" width="20%">
-                    <control name="button" label="Leave" id="leave" valign="center" visibleToMouse="true" width="80%" height="80%">
+                    <control name="button" label="Leave Game" id="leave" valign="center" visibleToMouse="true" width="80%" height="80%">
                         <interact onClick="leave()"/>
                     </control>
                 </panel>
@@ -107,7 +107,7 @@
                     
                     <panel id="LandCreature_image" height="100%" width="50%" align="center" valign="top" childLayout="center" visibleToMouse="true">
                         <image filename="Interface/x2.png" 
-                           valign="center" align="center" >
+                               valign="center" align="center" >
                         </image>
                     </panel>
                     <panel id="Land_food_image" height="100%" width="50%" align="center" valign="top" childLayout="center" visibleToMouse="true">
@@ -135,7 +135,7 @@
                     
                     <panel id="LandCreature_image" height="100%" width="50%" align="center" valign="top" childLayout="center" visibleToMouse="true">
                         <image filename="Interface/x3.png" 
-                           valign="center" align="center" >
+                               valign="center" align="center" >
                         </image>
                     </panel>
                     <panel id="Sea_food_image" height="100%" width="50%" align="center" valign="top" childLayout="center" visibleToMouse="true">
@@ -163,7 +163,7 @@
                     
                     <panel id="LandCreature_image" height="100%" width="50%" align="center" valign="top" childLayout="center" visibleToMouse="true">
                         <image filename="Interface/x5.png" 
-                           valign="center" align="center" >
+                               valign="center" align="center" >
                         </image>
                     </panel>
                     <panel id="Airborne_food_image" height="100%" width="50%" align="center" valign="top" childLayout="center" visibleToMouse="true">
@@ -329,7 +329,7 @@
     <screen id="playerMenu" controller="main.game.gui.PlayerMenuController">
         <layer id="background" childLayout="vertical">
             <image filename="Interface/background.png"
-                   valign="top" align="center" height="100%" width="75%">
+                   valign="top" align="center" >
             </image>
         </layer>
         <layer id="foreground" childLayout="vertical">
@@ -391,6 +391,52 @@
             <panel width="70%" height="10%" childLayout="center" align="center">
                 <control id="pcancel" name="button" label="Go Back" >
                     <interact onClick="cancel()"/>
+                </control>
+            </panel>
+        </layer>
+    </screen>
+
+    <screen id="winscreen" controller="main.game.gui.WinController">
+        <layer id="background" childLayout="vertical">
+            <image filename="Interface/background.png"
+                   valign="top" align="center" height="100%" width="100%">
+            </image>
+        </layer>
+        <layer id="foreground" childLayout="vertical">
+            <panel id="playerssection" height="90%" width="100%" align="center" childLayout="vertical" visibleToMouse="true" >
+                <panel height="20%"> </panel>
+                <panel childLayout="vertical" width="100%" height="100%">
+                    <image id="win" filename="Interface/lose.png"
+                           valign="center" align="center" >
+                    </image>
+                </panel>
+            </panel>
+            <panel width="100%" height="10%" childLayout="center" align="center">
+                <control id="wincancel" name="button" label="Leave Game" >
+                    <interact onClick="leaveGame()"/>
+                </control>
+            </panel>
+        </layer>
+    </screen>
+
+    <screen id="losescreen" controller="main.game.gui.WinController">
+        <layer id="background" childLayout="vertical">
+            <image filename="Interface/background.png"
+                   valign="top" align="center" height="100%" width="100%">
+            </image>
+        </layer>
+        <layer id="foreground" childLayout="vertical">
+            <panel id="playerssection" height="90%" width="100%" align="center" childLayout="vertical" visibleToMouse="true" >
+                <panel height="20%"> </panel>
+                <panel childLayout="vertical" width="100%" height="100%">
+                    <image id="lose" filename="Interface/lose.png"
+                           valign="center" align="center" >
+                    </image>
+                </panel>
+            </panel>
+            <panel width="100%" height="10%" childLayout="center" align="center">
+                <control id="losecancel" name="button" label="Leave Game" >
+                    <interact onClick="leaveGame()"/>
                 </control>
             </panel>
         </layer>
