@@ -186,14 +186,9 @@ public class ModelFactory
 
         BitmapText text = new BitmapText(game.getGuiFont(), false);
         text.setSize(game.getGuiFont().getCharSet().getRenderedSize());
-        if (game.getMe().equals(player))
-        {
-           text.setColor(ColorRGBA.Blue);
-        }
-        else
-        {
-           text.setColor(ColorRGBA.Red);
-        }
+        
+        text.setColor(new ColorRGBA(game.getColors()[player.getId()][0], game.getColors()[player.getId()][1], game.getColors()[player.getId()][2], game.getColors()[player.getId()][3]));
+        
         game.getGuiNode().attachChild(text);
 
         creature.setCreatureHeader(text);
