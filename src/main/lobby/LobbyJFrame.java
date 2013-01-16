@@ -33,6 +33,11 @@ public class LobbyJFrame extends javax.swing.JFrame {
      * Business logic
      */
     
+    public void enableRefresh()
+    {
+        this.jButton1.setEnabled(true);
+    }
+    
     public void updateAvailableGames()
     {
         DefaultListModel model = new DefaultListModel();
@@ -68,11 +73,6 @@ public class LobbyJFrame extends javax.swing.JFrame {
 
         jLabel1.setText("The games that are open are displayed beneath.");
 
-        jList1.setModel(new javax.swing.AbstractListModel() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public Object getElementAt(int i) { return strings[i]; }
-        });
         jList1.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         jScrollPane1.setViewportView(jList1);
 
@@ -83,7 +83,7 @@ public class LobbyJFrame extends javax.swing.JFrame {
             }
         });
 
-        jTextField1.setText("jTextField1");
+        jTextField1.setText("Player1");
         jTextField1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jTextField1ActionPerformed(evt);
@@ -128,7 +128,7 @@ public class LobbyJFrame extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel2)
                         .addGap(16, 16, 16)
-                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jButton2)
@@ -166,6 +166,7 @@ public class LobbyJFrame extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         this.lobby.getInitialClient().listenToServers();
+        this.jButton1.setEnabled(false);
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
@@ -173,9 +174,12 @@ public class LobbyJFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_jTextField1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        GameCredentials selectedGame = (GameCredentials) this.jList1.getSelectedValue();
-        lobby.joinGame(selectedGame, this.jTextField1.getText());
-        lobby.getIntermediateClientJFrame().setVisible(true);
+        if (this.jList1.getSelectedValue() != null && !this.jTextField1.getText().equals(""))
+        {
+            GameCredentials selectedGame = (GameCredentials) this.jList1.getSelectedValue();
+            lobby.joinGame(selectedGame, this.jTextField1.getText());
+            lobby.getIntermediateClientJFrame().setVisible(true);
+        }
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed

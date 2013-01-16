@@ -154,7 +154,7 @@ public class InitialClient
                     
                     broadcastSocket.close();
                     
-                    System.out.println("Done");
+                    lobby.getLobbyFrame().enableRefresh();
                     
                     //lobby.getLobbyFrame().updateAvailableGames(lobby.getAvailableGames());
                     
