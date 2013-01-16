@@ -187,7 +187,7 @@
             
             <panel id="cancel" height="10%" width="75%" align="center" valign="center"  childLayout="center" visibleToMouse="true">
                 <control name="button" label="Go Back" id="Cancel" align="center" valign="center" visibleToMouse="true" >
-                    <interact onClick="cancel()"/>
+                    <interact onClick="goBack()"/>
                 </control>
             </panel>          
         </layer>
