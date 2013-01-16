@@ -229,6 +229,8 @@ public class MoveAction extends CreatureAction
                     this.destination.addCreature(this.subject, false);
                 }
                 
+                this.subject.setLocation(this.destination);
+                
             } catch (NoReachablePathException ex) {
                 Logger.getLogger(MoveAction.class.getName()).log(Level.SEVERE, null, ex);
             }            

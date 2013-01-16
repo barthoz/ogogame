@@ -212,6 +212,8 @@ public class PickupFoodAction extends CreatureAction
 
             // Update new location
             this.foodSource.getLocation().addCreature(this.subject, false);
+            
+            this.subject.setLocation(this.foodSource.getLocation());
         }
     }
     

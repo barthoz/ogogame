@@ -233,6 +233,8 @@ public class FleeAction extends CreatureAction
             {
                this.destination.addCreature(this.subject, false);
             }
+            
+            this.subject.setLocation(this.destination);
         }
     }
     /**

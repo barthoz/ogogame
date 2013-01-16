@@ -283,6 +283,8 @@ public class AttackAction extends CreatureAction
             {
                 fight();
             }
+            
+            this.subject.setLocation(this.destination);
         }
     }
 
