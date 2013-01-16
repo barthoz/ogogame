@@ -111,27 +111,32 @@ public class AttackAction extends CreatureAction
         }
         else
         {
+            this.subject.setInFight(true);
+            this.opponent.setInFight(true);
+            
             if (!this.subject.getLocation().equals(this.destination))
             {
                 try
-                {
-                    subject.setInFight(true);
-                    opponent.setInFight(true);
-                    
+                {                    
                     // in moves that alter the subjects cell we have to check if 
                     // there are multiple creatures in the new cell and set them 
                     // all in a fight
-
-                    List<Creature> cell = destination.getOccupants();
-                    for (int i = 0; i < cell.size(); i++)
+                    
+                    boolean mixedTeamsInCell = false;
+                    
+                    for (Creature creature : this.destination.getOccupants())
                     {
-                        if (!cell.get(i).getPlayer().equals(this.player))
+                        if (!creature.getPlayer().equals(this.player))
                         {
-                            for (Creature c : destination.getOccupants())
-                            {
-                                c.setInFight(true);
-                            }
-                            break;
+                            mixedTeamsInCell = true;
+                        }
+                    }
+                    
+                    if (mixedTeamsInCell)
+                    {
+                        for (Creature creature : this.destination.getOccupants())
+                        {
+                            creature.setInFight(true);
                         }
                     }
                     
