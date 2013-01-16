@@ -803,6 +803,7 @@ public class Game extends SimpleApplication
         rootNode.attachChild(quackAudio);
         
         this.setDisplayFps(false);
+        this.setDisplayStatView(false);
     }
 
     /**
@@ -1012,7 +1013,7 @@ public class Game extends SimpleApplication
                                 if (player.equals(me))
                                 {
                                     // Show lost screen
-                                    
+                                    this.nifty.gotoScreen("losescreen");
                                     iLost = true;
                                     
                                     this.disableActions();
@@ -1023,6 +1024,7 @@ public class Game extends SimpleApplication
                         if (loserCount == this.players.size() - 1 && !iLost)
                         {
                             // Show win screen
+                            this.nifty.gotoScreen("winscreen");
                             
                             this.disableActions();
                         }
