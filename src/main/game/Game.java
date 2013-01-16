@@ -316,8 +316,29 @@ public class Game extends SimpleApplication
                 terrain.collideWith(ray, terrainResults);
                 world.getSelectableObjects().collideWith(ray, results);
                 
-                // Check if something was selected
-                if (terrainResults.getClosestCollision() != null)
+                // Check if creature was selected
+                if (results.getClosestCollision() != null)
+                {
+                    Spatial selectedSpatial = results.getClosestCollision().getGeometry().getParent();
+                    //Geometry selectedGeometry = results.getClosestCollision().getGeometry();
+                    String modelType = selectedSpatial.getUserData("modelType");
+                    
+                    if (modelType != null)
+                    {
+                        if (modelType.equals(LandCreature.CODE_ID) || modelType.equals(SeaCreature.CODE_ID) || modelType.equals(AirborneCreature.CODE_ID))
+                        {
+                            /**
+                             * Create attack action
+                             */
+                            
+                            Creature enemy = world.findCreatureById((String) selectedSpatial.getUserData("parentId"));
+                            
+                            AttackAction act = new AttackAction(me, (Creature) selectedObject, enemy, enemy.getLocation(), false);
+                            me.registerAction(act);
+                        }
+                    }
+                }
+                else if (terrainResults.getClosestCollision() != null)
                 {
                     Cell selectedCell = null;
 
@@ -369,7 +390,7 @@ public class Game extends SimpleApplication
                             * AttackAction
                             */
 
-                           AttackAction act = new AttackAction(me, (Creature) selectedObject, enemy, selectedCell);
+                           AttackAction act = new AttackAction(me, (Creature) selectedObject, enemy, selectedCell, false);
                            me.registerAction(act);
                         }
                         else if (((Creature) selectedObject).isInFight())
@@ -990,7 +1011,7 @@ public class Game extends SimpleApplication
                             {
                                 if (!(this.me.equals(opponent.getPlayer())) && opponent.isIsAlive())
                                 {
-                                    AttackAction act = new AttackAction(this.me, creature, opponent, creature.getLocation());
+                                    AttackAction act = new AttackAction(this.me, creature, opponent, creature.getLocation(), true);
                                     this.me.registerAction(act);
                                 }
                             }

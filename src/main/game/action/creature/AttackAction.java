@@ -48,13 +48,14 @@ public class AttackAction extends CreatureAction
     private int destinationX;
     private int destinationY;
     private int randomKey;
+    private boolean isGenerated;
 
     private Game tempGame;
     
     /**
      * Constructors
      */
-    public AttackAction(Player player, Creature subject, Creature opponent, Cell destination)
+    public AttackAction(Player player, Creature subject, Creature opponent, Cell destination, boolean isGenerated)
     {
         this.player = player;
         this.subject = subject;
@@ -64,6 +65,7 @@ public class AttackAction extends CreatureAction
         this.destinationX = destination.getXCoor();
         this.destinationY = destination.getYCoor();
         this.randomKey = new Random().nextInt(1000);
+        this.isGenerated = isGenerated;
     }
 
     /**
@@ -92,12 +94,26 @@ public class AttackAction extends CreatureAction
             && this.subject.getLocation().distance(this.destination) <= this.subject.getActionRadius()
             && game.getWorld().getCreatures().contains(this.opponent)) // if player has not left yet
         {
+            if (this.isGenerated)
+            {
+                if (this.destination.getOccupants().contains(this.opponent) || this.destination.getAirborneOccupants().contains(this.opponent))
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else
+            {
                 return true;
+            }
         }
         else
         {
             return false;
-        }        
+        }
     }
 
     @Override
