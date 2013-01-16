@@ -608,6 +608,7 @@ public class Game extends SimpleApplication
 
         this.hudController = new HudController(this);
         this.cmController = new CreatureMenuController(this);
+        this.pController = new PlayerMenuController(this);
         nifty.fromXml("Interface/gui.xml", "hud", this.pController, this.cmController, this.hudController, new SpawnMenuController(this), new FeedMenuController(this));
         this.hudController.init();
         this.cmController.init();
