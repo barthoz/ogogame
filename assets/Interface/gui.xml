@@ -62,7 +62,7 @@
                     </control>
                 </panel>
                 <panel childLayout="center" align ="center" valing="center" width="20%">
-                    <control name="button" label="Eat (Amount of Slider)" id="cancel" valign="center" visibleToMouse="true" width="80%" height="80%">
+                    <control name="button" label="Eat (Amount of Slider)" id="eatAction" valign="center" visibleToMouse="true" width="80%" height="80%">
                         <interact onClick="eat()"/>
                     </control>
                 </panel>
