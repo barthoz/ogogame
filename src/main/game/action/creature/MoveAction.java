@@ -244,10 +244,24 @@ public class MoveAction extends CreatureAction
                         break;
                     }
                 }
+                
+                for (Creature creature : this.destination.getAirborneOccupants())
+                {
+                    if (!creature.getPlayer().equals(this.player))
+                    {
+                        mixedTeamsInCell = true;
+                        break;
+                    }
+                }
 
                 if (mixedTeamsInCell)
                 {
                     for (Creature creature : this.destination.getOccupants())
+                    {
+                        creature.setInFight(true);
+                    }
+                    
+                    for (Creature creature : this.destination.getAirborneOccupants())
                     {
                         creature.setInFight(true);
                     }

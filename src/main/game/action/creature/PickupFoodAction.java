@@ -228,10 +228,24 @@ public class PickupFoodAction extends CreatureAction
                    break;
                }
             }
+            
+            for (Creature creature : this.foodSource.getLocation().getAirborneOccupants())
+            {
+                if (!creature.getPlayer().equals(this.player))
+                {
+                    mixedTeamsInCell = true;
+                    break;
+                }
+            }
 
             if (mixedTeamsInCell)
             {
                for (Creature creature : this.foodSource.getLocation().getOccupants())
+               {
+                   creature.setInFight(true);
+               }
+               
+               for (Creature creature : this.foodSource.getLocation().getAirborneOccupants())
                {
                    creature.setInFight(true);
                }
