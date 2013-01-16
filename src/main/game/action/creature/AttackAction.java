@@ -140,10 +140,32 @@ public class AttackAction extends CreatureAction
                     final Cinematic cinematic = new Cinematic(game.getWorld().getWorldNode(), 20);
                     MotionEvent track = new MotionEvent(this.subject.getModel(), path);
 
-                    /**
-                     * Not sure how to fix this
-                     */
-                    //track.setDirectionType(MotionEvent.Direction.Path);
+                    if(subject instanceof LandCreature)
+                    {
+                        LandCreatureControl c= (LandCreatureControl)this.subject.getController();
+                        Node s = (Node) c.getSpatial();
+                        s.detachChild(c.getStand());
+                        s.attachChild(c.getMove());
+                        c.setSpatial(null);
+                        c.setSpatial(s);
+                        track.setDirectionType(MotionEvent.Direction.Path);
+                    }
+                    else if (subject instanceof SeaCreature){
+                        track.setDirectionType(MotionEvent.Direction.LookAt);
+                        track.setLookAt(destination.getWorldCoordinates(), Vector3f.UNIT_Y);
+
+                    }
+                    else if (subject instanceof AirborneCreature)
+                    {
+                       AirborneCreatureControl c = (AirborneCreatureControl) subject.getController();
+                       Node s = (Node) c.getSpatial();
+                       s.detachChild(c.getStand());
+                       s.attachChild(c.getMove());
+                       c.setSpatial(null);
+                       c.setSpatial(s);
+                       track.setDirectionType(MotionEvent.Direction.None);
+                    }
+                    
                     cinematic.addCinematicEvent(0, track);
                     cinematic.fitDuration();
                     game.getStateManager().attach(cinematic);
@@ -176,7 +198,25 @@ public class AttackAction extends CreatureAction
 
                         public void onStop(CinematicEvent cinematic)
                         {
-                            //throw new UnsupportedOperationException("Not supported yet.");
+                            if(subject instanceof LandCreature)
+                            {
+                                LandCreatureControl c= (LandCreatureControl)subject.getController();
+                                Node s = (Node) c.getSpatial();
+                                s.detachChild(c.getMove());
+                                s.attachChild(c.getStand());
+                                c.setSpatial(null);
+                                c.setSpatial(s);
+                            }
+
+                            if(subject instanceof AirborneCreature)
+                            {
+                                AirborneCreatureControl c = (AirborneCreatureControl)subject.getController();
+                                Node s = (Node) c.getSpatial();
+                                s.detachChild(c.getMove());
+                                s.attachChild(c.getStand());
+                                c.setSpatial(null);
+                                c.setSpatial(s);
+                            }
 
                             if (subject instanceof AirborneCreature)
                             {

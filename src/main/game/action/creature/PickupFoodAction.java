@@ -20,9 +20,13 @@ import main.game.Game;
 import main.game.Player;
 import main.game.algorithm.PathFinding;
 import main.game.model.FoodSource;
+import main.game.model.control.AirborneCreatureControl;
 import main.game.model.control.FoodSourceControl;
+import main.game.model.control.LandCreatureControl;
 import main.game.model.creature.AirborneCreature;
 import main.game.model.creature.Creature;
+import main.game.model.creature.LandCreature;
+import main.game.model.creature.SeaCreature;
 
 /**
  *
@@ -92,6 +96,33 @@ public class PickupFoodAction extends CreatureAction
                 
                 final Cinematic cinematic = new Cinematic(game.getWorld().getWorldNode(), 20);
                 MotionEvent track = new MotionEvent(this.subject.getModel(), path);
+                
+                 if(subject instanceof LandCreature)
+                {
+                    LandCreatureControl c= (LandCreatureControl)this.subject.getController();
+                    Node s = (Node) c.getSpatial();
+                    s.detachChild(c.getStand());
+                    s.attachChild(c.getMove());
+                    c.setSpatial(null);
+                    c.setSpatial(s);
+                    track.setDirectionType(MotionEvent.Direction.Path);
+                }
+                else if (subject instanceof SeaCreature){
+                    track.setDirectionType(MotionEvent.Direction.LookAt);
+                    track.setLookAt(this.foodSource.getLocation().getWorldCoordinates(), Vector3f.UNIT_Y);
+
+                }
+                else if (subject instanceof AirborneCreature)
+                {
+                   AirborneCreatureControl c = (AirborneCreatureControl) subject.getController();
+                   Node s = (Node) c.getSpatial();
+                   s.detachChild(c.getStand());
+                   s.attachChild(c.getMove());
+                   c.setSpatial(null);
+                   c.setSpatial(s);
+                   track.setDirectionType(MotionEvent.Direction.None);
+                }
+                
                 cinematic.addCinematicEvent(0, track);
                 cinematic.fitDuration();
                 game.getStateManager().attach(cinematic);
@@ -113,16 +144,37 @@ public class PickupFoodAction extends CreatureAction
                 cinematic.addListener(new CinematicEventListener()
                 {
 
-                    public void onPlay(CinematicEvent cinematic) {
+                    public void onPlay(CinematicEvent cinematic)
+                    {
                         //throw new UnsupportedOperationException("Not supported yet.");
                     }
 
-                    public void onPause(CinematicEvent cinematic) {
+                    public void onPause(CinematicEvent cinematic)
+                    {
                         //throw new UnsupportedOperationException("Not supported yet.");
                     }
 
-                    public void onStop(CinematicEvent cinematic) {
-                        //throw new UnsupportedOperationException("Not supported yet.");
+                    public void onStop(CinematicEvent cinematic)
+                    {
+                        if(subject instanceof LandCreature)
+                        {
+                            LandCreatureControl c= (LandCreatureControl)subject.getController();
+                            Node s = (Node) c.getSpatial();
+                            s.detachChild(c.getMove());
+                            s.attachChild(c.getStand());
+                            c.setSpatial(null);
+                            c.setSpatial(s);
+                        }
+
+                        if(subject instanceof AirborneCreature)
+                        {
+                            AirborneCreatureControl c = (AirborneCreatureControl)subject.getController();
+                            Node s = (Node) c.getSpatial();
+                            s.detachChild(c.getMove());
+                            s.attachChild(c.getStand());
+                            c.setSpatial(null);
+                            c.setSpatial(s);
+                        }
                         
                         FoodSourceControl c= (FoodSourceControl)foodSource.getController();
                         Node s = (Node) c.getSpatial();
