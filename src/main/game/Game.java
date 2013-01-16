@@ -73,7 +73,6 @@ import main.game.action.creature.FleeAction;
 import main.game.action.creature.MoveAction;
 import main.game.action.creature.PickupFoodAction;
 import main.game.gui.CreatureMenuController;
-import main.game.gui.FeedMenuController;
 import main.game.gui.HudController;
 import main.game.gui.PlayerMenuController;
 import main.game.gui.SpawnMenuController;
@@ -679,7 +678,7 @@ public class Game extends SimpleApplication
         this.hudController = new HudController(this);
         this.cmController = new CreatureMenuController(this);
         this.pController = new PlayerMenuController(this);
-        nifty.fromXml("Interface/gui.xml", "hud", this.pController, this.cmController, this.hudController, new SpawnMenuController(this), new FeedMenuController(this));
+        nifty.fromXml("Interface/gui.xml", "hud", this.pController, this.cmController, this.hudController, new SpawnMenuController(this));
         this.hudController.init();
         this.cmController.init();
         this.pController.init();
