@@ -326,6 +326,7 @@ public class AttackAction extends CreatureAction
         {
             this.subject.setInFight(false);
             this.opponent.setInFight(false);
+            this.subject.levelUp();
         }
     }
     

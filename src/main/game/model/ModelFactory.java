@@ -33,7 +33,7 @@ public class ModelFactory
     public static Duck createDuck(AssetManager assetManager, Game game, Cell location)
     {
         // First create the spatial
-        Spatial duckModel = assetManager.loadModel("Models/Duck/duck.mesh.xml");
+        Spatial duckModel = assetManager.loadModel("Models/Duck/duck.mesh.j3o");
         duckModel.scale(10f);
         
         
@@ -48,7 +48,7 @@ public class ModelFactory
     public static Base createBase(AssetManager assetManager, int id, Player player, Cell location)
     {
         // First create the spatial
-        Spatial baseModel = assetManager.loadModel("Models/Base/base.mesh.xml");
+        Spatial baseModel = assetManager.loadModel("Models/Base/base.mesh.j3o");
         baseModel.setLocalScale(0.2f,0.2f,0.15f);
         baseModel.setUserData("modelType", "Base");
         baseModel.setUserData("parentId", id);
@@ -72,25 +72,25 @@ public class ModelFactory
         if (location instanceof DeepWaterCell)
         {
             // First create the spatial
-            fsBase = (Node) assetManager.loadModel("Models/Food/Sea/seafood.mesh.xml");
+            fsBase = (Node) assetManager.loadModel("Models/Food/Sea/seafood.mesh.j3o");
             fsBase.setLocalScale(0.01f, 0.03f, 0.01f);
-            fsFull = (Node) assetManager.loadModel("Models/Food/Sea/seafood.mesh.xml");
+            fsFull = (Node) assetManager.loadModel("Models/Food/Sea/seafood.mesh.j3o");
             fsFull.setLocalScale(0.015f, 0.05f, 0.015f);
         }
         else if (location instanceof ShallowWaterCell)
         {
             // First create the spatial
-            fsBase = (Node) assetManager.loadModel("Models/Food/Sea/seafood.mesh.xml");
+            fsBase = (Node) assetManager.loadModel("Models/Food/Sea/seafood.mesh.j3o");
             fsBase.setLocalScale(0.01f, 0.01f, 0.01f);
-            fsFull = (Node) assetManager.loadModel("Models/Food/Sea/seafood.mesh.xml");
+            fsFull = (Node) assetManager.loadModel("Models/Food/Sea/seafood.mesh.j3o");
             fsFull.setLocalScale(0.015f, 0.03f, 0.015f);
         }
         else
         {
             // First create the spatial
-            fsBase = assetManager.loadModel("Models/Food/Land/tree.mesh.xml"); 
+            fsBase = assetManager.loadModel("Models/Food/Land/tree.mesh.j3o"); 
             fsBase.setLocalScale(20f);
-            fsFull = assetManager.loadModel("Models/Food/Land/banana.mesh.xml"); 
+            fsFull = assetManager.loadModel("Models/Food/Land/banana.mesh.j3o"); 
             fsFull.setLocalScale(0.003f);
         }
         fsFull.setName("Full");
@@ -130,13 +130,13 @@ public class ModelFactory
             // creatureModel = assetManager.loadModel("Models/Land/stilstaand.mesh.xml");
            // creatureModel.setLocalScale(0.2f);
            
-           creatureStand = assetManager.loadModel("Models/Land/stilstaand.mesh.xml");
+           creatureStand = assetManager.loadModel("Models/Land/stilstaand.mesh.j3o");
            creatureStand.setLocalScale(0.2f);
            creatureStand.setName("Stand");
            creatureStand.setUserData("parentId", id);
            creatureStand.setUserData("modelType", creatureType);
            
-           creatureMove = assetManager.loadModel("Models/Land/move.mesh.xml");
+           creatureMove = assetManager.loadModel("Models/Land/move.mesh.j3o");
            creatureMove.setLocalScale(0.2f);
            creatureMove.setName("Move");
            
@@ -148,7 +148,7 @@ public class ModelFactory
         else if (creatureType.equals(SeaCreature.CODE_ID))
         {
             creatureModel = new Node("SeaCreature");
-            creatureMove = assetManager.loadModel("Models/Sea/move.mesh.xml");
+            creatureMove = assetManager.loadModel("Models/Sea/move.mesh.j3o");
             creatureMove.setLocalScale(4f);
             creatureMove.setName("Move");
             creatureMove.setUserData("parentId", id);
@@ -160,13 +160,13 @@ public class ModelFactory
         {
             creatureModel = new Node("AirborneCreature");
            
-           creatureStand = assetManager.loadModel("Models/Air/stilstaand.mesh.xml");
+           creatureStand = assetManager.loadModel("Models/Air/stilstaand.mesh.j3o");
            creatureStand.setLocalScale(0.5f);
            creatureStand.setName("Stand");
            creatureStand.setUserData("parentId", id);
            creatureStand.setUserData("modelType", creatureType);
            
-           creatureMove = assetManager.loadModel("Models/Air/move.mesh.xml");
+           creatureMove = assetManager.loadModel("Models/Air/move.mesh.j3o");
            creatureMove.setLocalScale(0.5f);
            creatureMove.setName("Move");
            creatureMove.setUserData("parentId", id);
@@ -208,7 +208,7 @@ public class ModelFactory
     }
     
     public static Spatial getDeathTomb(Game game){
-        Spatial s = game.getAssetManager().loadModel("Models/Death/death.mesh.xml");
+        Spatial s = game.getAssetManager().loadModel("Models/Death/death.mesh.j3o");
         s.setName("Death");
         s.setLocalScale(5f);
         return s;

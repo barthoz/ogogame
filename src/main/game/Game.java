@@ -127,20 +127,11 @@ public class Game extends SimpleApplication
      * Setup
      */
     
-    private boolean showInfo = true;
     private boolean isRunning = true;
     private ActionListener actionListener = new ActionListener()
     {
         public void onAction(String name, boolean keyPressed, float tpf)
         {
-            if (name.equals("Pause") && !keyPressed)
-            {
-                showInfo = !showInfo;
-                setDisplayFps(showInfo); // to hide the FPS
-                setDisplayStatView(showInfo); // to hide the statistics 
-                //isRunning = !isRunning;
-            }
-
             /**
              * Check whether GUI is selected
              */
@@ -575,7 +566,7 @@ public class Game extends SimpleApplication
      * Game constants
      */
     public final static int CONST_CREATURES_LIMIT = 10;
-    public final static int CONST_SET_MODE_TIME_LIMIT = 10;
+    public final static int CONST_SET_MODE_TIME_LIMIT = 30;
     public final static int CONST_INIT_RANGE_OF_SIGHT = 10;
     public final static int CONST_INIT_START_FOOD = 100;
     public final static int CONST_REGENERATE_FOOD_ROUNDS = 5;
@@ -784,7 +775,11 @@ public class Game extends SimpleApplication
         this.world.initializeBases();
         this.world.initializeFoodSources();
         this.world.initializeDuck();
-
+        
+        // Spawn a first creature for me
+        SpawnAction act = new SpawnAction(this.me, LandCreature.CODE_ID);
+        this.me.registerAction(act);
+        
         /**
          * Initialize base diamond
          */
@@ -807,6 +802,8 @@ public class Game extends SimpleApplication
         quackAudio.move(this.world.findDuck().getLocation().getWorldCoordinates());
         quackAudio.setVolume(5);
         rootNode.attachChild(quackAudio);
+        
+        this.setDisplayFps(false);
     }
 
     /**
@@ -989,7 +986,48 @@ public class Game extends SimpleApplication
                         }
                     }
                     
+                    /**
+                     * Decrease health of all creatures
+                     */
                     
+                    for (Creature creature : this.world.getCreatures())
+                    {
+                        creature.decreaseHealth(5);
+                    }
+                    
+                    /**
+                     * Check if anybody has won
+                     */
+                    
+                    if (this.round != 0)
+                    {
+                        int loserCount = 0;
+                        boolean iLost = false;
+                        
+                        for (Player player : this.players)
+                        {
+                            if (player.getCreatures().size() == 0)
+                            {
+                                loserCount++;
+                                
+                                if (player.equals(me))
+                                {
+                                    // Show lost screen
+                                    
+                                    iLost = true;
+                                    
+                                    this.disableActions();
+                                }
+                            }
+                        }
+                        
+                        if (loserCount == this.players.size() - 1 && !iLost)
+                        {
+                            // Show win screen
+                            
+                            this.disableActions();
+                        }
+                    }
                 }
                 
                 this.countGetMode += tpf * 1000;
@@ -1223,7 +1261,7 @@ public class Game extends SimpleApplication
         this.started = false;
     }
 
-    private boolean actionsEnabled = true;
+    private boolean actionsEnabled = false;
     
     private void disableActions()
     {

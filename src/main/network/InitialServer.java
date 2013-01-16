@@ -148,7 +148,7 @@ public class InitialServer
                                     String reason;
                                     if (clients.size() > 6)
                                     {
-                                        reason = "Server is full.";
+                                        reason = "Cannot join server. Server is full.";
                                     }
                                     else if (lobby.getPlayersInGame().add(messageJoinReq.getUsername()))
                                     {
@@ -333,14 +333,14 @@ public class InitialServer
                                 Logger.getLogger(InitialServer.class.getName()).log(Level.SEVERE, null, ex);
                             }
 
-                            try
+                            /*try
                             {
                                 Thread.sleep(10);
                             }
                             catch (InterruptedException ex)
                             {
                                 Logger.getLogger(InitialServer.class.getName()).log(Level.SEVERE, null, ex);
-                            }
+                            }*/
                         }
 
                         for (Client client : responded.keySet())
@@ -383,6 +383,7 @@ public class InitialServer
                         }
                         else
                         {
+                            lobby.getIntermediateServerJFrame().updateStatus("Cannot start game.");
                             System.out.println("Cannot start game.");
                         }
                     }

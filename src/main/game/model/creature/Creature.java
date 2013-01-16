@@ -39,7 +39,7 @@ public abstract class Creature
     protected boolean isAlive = true;
     protected int roundDied = -1;
     protected int rangeOfSight = Game.CONST_INIT_RANGE_OF_SIGHT;
-    protected int actionRadius = 20;
+    protected int actionRadius = 10;
     protected boolean inFight = false;
     /**
      * tweakers, possible define a function to give more dynamic changes

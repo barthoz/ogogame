@@ -106,7 +106,21 @@ public class HudController  extends AbstractAppState implements ScreenController
  
   @Override
   public void update(float tpf) { 
-      modeText = "Mode: " + (!game.isInSetMode() ? "Get (" + (10 - (int) (game.getCountGetMode() / 1000f)) + "s left)" : "Set, time left: " + (game.CONST_SET_MODE_TIME_LIMIT - (int) (game.getCountSetMode() / 1000f)) + "s");
+      if (this.game.getRound() == 0)
+      {
+          if (this.game.isInSetMode())
+          {
+              modeText = "Waiting for players...";
+          }
+          else
+          {
+              modeText = "Starting game... (" + (10 - (int) (game.getCountGetMode() / 1000f)) + "s)";
+          }
+      }
+      else
+      {
+        modeText = "Mode: " + (!game.isInSetMode() ? "Get (" + (10 - (int) (game.getCountGetMode() / 1000f)) + "s left)" : "Set, time left: " + (game.CONST_SET_MODE_TIME_LIMIT - (int) (game.getCountSetMode() / 1000f)) + "s");
+      }
      
         
         // Count alive creatures

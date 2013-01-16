@@ -5,6 +5,7 @@
 package main.lobby;
 
 import com.jme3.system.AppSettings;
+import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.net.DatagramSocket;
 import java.net.Inet4Address;
@@ -121,16 +122,6 @@ public class Lobby
         }
     }
     
-    /**
-     * Leave a game.
-     * 
-     * @Pre player is in a lobby
-     */
-    public void leaveGame()
-    {
-        this.initialClient.leaveLobby();
-    }
-    
     public void joinGame(GameCredentials gameCredentials, String username)
     {
         this.initialClient.joinGame(gameCredentials, username);
@@ -162,8 +153,11 @@ public class Lobby
         Game game = buildGame(me, tokenRing, gameCredentials);
         game.setShowSettings(false);
         AppSettings settings = new AppSettings(true);
-        settings.setFullscreen(false);
-        settings.setResolution(1024, 768);
+        settings.setFullscreen(true);
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        double width = screenSize.getWidth();
+        double height = screenSize.getHeight();
+        settings.setResolution((int) width, (int) height);
         settings.setBitsPerPixel(16);
         game.setSettings(settings);
         me.setGame(game);
@@ -190,7 +184,6 @@ public class Lobby
                 game.setMe(newPlayer);
             }
         }
-        
         game.setPlayers(players);
         
         return game;
